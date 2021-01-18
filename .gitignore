@@ -5,3 +5,7 @@ MangaBackend/src/main/resources/static/main-es2015.js.map
 C:\Angular\Mangasite\Manga-Website\MangaBackend\src\main\resources\static
 Frontend/angular.json
 Frontend/angular.json
+target/**
+.project
+.classpath
+*.prefs
