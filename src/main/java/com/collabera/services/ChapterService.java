@@ -121,7 +121,7 @@ public class ChapterService {
               return c;
             })
         .flatMap(repo::save)
-        .doOnNext(c -> System.out.println("Successfully Updated " + c.getMangaName() + "Page"));
+        .doOnNext(c -> System.out.println("Successfully Updated " + c.getMangaName() + " Page"));
   }
 
   /**
