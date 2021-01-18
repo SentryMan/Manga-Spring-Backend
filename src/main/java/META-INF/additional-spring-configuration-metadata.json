@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "reactor.schedulers.defaultBoundedElasticSize",
+  "type": "java.lang.String",
+  "description": "A description for 'reactor.schedulers.defaultBoundedElasticSize'"
+}]}
