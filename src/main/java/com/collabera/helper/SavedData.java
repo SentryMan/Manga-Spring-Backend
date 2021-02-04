@@ -106,7 +106,10 @@ public class SavedData {
     final Iterator<Manga> itr = savedList.iterator();
     while (itr.hasNext()) {
       final Manga manga = itr.next();
-      if (!nameSet.add(manga.getA())) itr.remove();
+      if (!nameSet.add(manga.getA())) {
+        itr.remove();
+        savedList.remove(manga);
+      }
     }
     savedList.addAll(updatedManga);
   }
