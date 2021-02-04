@@ -130,7 +130,7 @@ public class ChapterService {
     .doOnComplete(() -> System.out.println("All Chapters have IDs"))
     .flatMap(
         chapterData ->
-        Flux.fromIterable(savedData.savedList)
+        Flux.fromIterable(savedData.getSavedList())
         .filter(
             m ->
             chapterData.getMangaName().equals(m.getT())

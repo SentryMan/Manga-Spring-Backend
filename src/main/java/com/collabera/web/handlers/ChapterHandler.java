@@ -36,7 +36,7 @@ public class ChapterHandler {
   }
 
   @PutMapping("api/chapters")
-  public synchronized Mono<ServerResponse> addID(ServerRequest request) {
+  public Mono<ServerResponse> addID(ServerRequest request) {
     service.addID();
     return ServerResponse.accepted().build();
   }

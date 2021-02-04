@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import com.collabera.helper.SavedData;
-import com.collabera.models.MangaChapters;
 import com.collabera.models.Manga;
+import com.collabera.models.MangaChapters;
 import com.collabera.models.requests.MangaChangeRequest;
 import com.collabera.repos.ChapterRepo;
 import com.collabera.repos.MangaRepo;
@@ -42,13 +42,15 @@ public class MangaService {
    */
   public Flux<Manga> findAll() throws InterruptedException {
 
-    Flux<Manga> mangaFlux = Flux.from(savedData.multicastMangaListFlux);
+    Flux<Manga> mangaFlux = Flux.from(savedData.getMulticastMangaListFlux());
     if (!savedData.getDataLatch().await(100, TimeUnit.MILLISECONDS)) {
-      mangaFlux = mangaFlux.filter(p -> p.equals(savedData.Update));
-      if (savedData.savedList != null) savedData.savedList.remove(savedData.Update);
+      mangaFlux = mangaFlux.filter(p -> p.equals(savedData.getUpdate()));
+      if (savedData.getSavedList() != null) savedData.getSavedList().remove(savedData.getUpdate());
     }
 
-    return savedData.savedList != null ? Flux.fromIterable(savedData.savedList) : mangaFlux;
+    return savedData.getSavedList() != null
+        ? Flux.fromIterable(savedData.getSavedList())
+            : mangaFlux;
   }
 
   /**
@@ -69,7 +71,7 @@ public class MangaService {
    */
   public Flux<Manga> findPopular() {
 
-    return savedData.popularManga;
+    return savedData.getPopularManga();
   }
 
   /**
@@ -79,7 +81,7 @@ public class MangaService {
    */
   public Flux<Manga> findLatest() {
 
-    return savedData.recentManga;
+    return savedData.getRecentManga();
   }
 
   /**
@@ -103,20 +105,20 @@ public class MangaService {
             })
         .filter(
             listManga ->
-                savedData.savedList.stream().noneMatch(m -> listManga.getA().equals(m.getA())))
+            savedData.getSavedList().stream().noneMatch(m -> listManga.getA().equals(m.getA())))
         .map(
             manga ->
-                Tuples.of(
-                    manga,
-                    new MangaChapters(
-                        manga.getT(),
-                        manga.getRealID(),
-                        request.getFirstChapterIndex(),
-                        request.getFirstPageURL())))
+            Tuples.of(
+                manga,
+                new MangaChapters(
+                    manga.getT(),
+                    manga.getRealID(),
+                    request.getFirstChapterIndex(),
+                    request.getFirstPageURL())))
         .flatMap(
             TupleUtils.function(
                 (manga, chapter) ->
-                    repo.insert(manga).zipWith(chapterRepo.insert(chapter), (m, c) -> m)))
+                repo.insert(manga).zipWith(chapterRepo.insert(chapter), (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()))
         .doOnNext(savedData::addToList);
   }
@@ -137,41 +139,41 @@ public class MangaService {
   public void deleteByChapter(int numberOfChapters) {
 
     final Flux<Manga> mangaflux =
-        savedData.savedList != null
-            ? Flux.fromIterable(savedData.savedList)
-            : Flux.from(savedData.multicastMangaListFlux);
+        savedData.getSavedList() != null
+        ? Flux.fromIterable(savedData.getSavedList())
+            : Flux.from(savedData.getMulticastMangaListFlux());
 
     mangaflux
-        .filter(
-            manga ->
-                manga.getRealID() < 0 || manga.getInfo().getChapters().size() <= numberOfChapters)
-        .doOnComplete(
-            () -> {
-              mangaToBeDeleted
-                  .collectList()
-                  .subscribe(
-                      dedManga -> {
-                        System.out.println("Total deleted manga " + dedManga.size());
-                        repo.deleteAll(dedManga).subscribe();
-                        savedData.savedList.removeAll(dedManga);
-                      });
-              chaptersToBeDeleted
-                  .collectList()
-                  .subscribe(dedChapters -> chapterRepo.deleteAll(dedChapters).subscribe());
-            })
-        .subscribe(
-            dedManga -> {
-              if (dedManga.getA() == null)
-                mangaToBeDeleted =
-                    mangaToBeDeleted.concatWith(repo.getByRealID(dedManga.getRealID()));
-              else {
-                System.out.println("\n Deleting " + dedManga.getA());
-                chaptersToBeDeleted =
-                    chaptersToBeDeleted.concatWith(chapterRepo.getByMangaName(dedManga.getT()));
+    .filter(
+        manga ->
+        manga.getRealID() < 0 || manga.getInfo().getChapters().size() <= numberOfChapters)
+    .doOnComplete(
+        () -> {
+          mangaToBeDeleted
+          .collectList()
+          .subscribe(
+              dedManga -> {
+                System.out.println("Total deleted manga " + dedManga.size());
+                repo.deleteAll(dedManga).subscribe();
+                savedData.getSavedList().removeAll(dedManga);
+              });
+          chaptersToBeDeleted
+          .collectList()
+          .subscribe(dedChapters -> chapterRepo.deleteAll(dedChapters).subscribe());
+        })
+    .subscribe(
+        dedManga -> {
+          if (dedManga.getA() == null)
+            mangaToBeDeleted =
+            mangaToBeDeleted.concatWith(repo.getByRealID(dedManga.getRealID()));
+          else {
+            System.out.println("\n Deleting " + dedManga.getA());
+            chaptersToBeDeleted =
+                chaptersToBeDeleted.concatWith(chapterRepo.getByMangaName(dedManga.getT()));
 
-                mangaToBeDeleted = mangaToBeDeleted.concatWith(repo.getBya(dedManga.getA()));
-              }
-            });
+            mangaToBeDeleted = mangaToBeDeleted.concatWith(repo.getBya(dedManga.getA()));
+          }
+        });
   }
 
   /**
@@ -182,9 +184,9 @@ public class MangaService {
   public void deleteDups() {
 
     final Flux<Manga> mangaflux =
-        savedData.savedList != null
-            ? Flux.fromIterable(savedData.savedList)
-            : Flux.from(savedData.multicastMangaListFlux);
+        savedData.getSavedList() != null
+        ? Flux.fromIterable(savedData.getSavedList())
+            : Flux.from(savedData.getMulticastMangaListFlux());
 
     System.out.println("Deleting Manga Dups");
     final Set<String> mangaSet = new HashSet<>();
@@ -202,16 +204,16 @@ public class MangaService {
     System.out.println("Deleting Chapter Dups");
 
     chapterRepo
-        .findAll()
-        .subscribeOn(boundedElastic())
-        .subscribe(
-            chapter -> {
-              if (chapter.getMangaName() == null || !chapterSet.add(chapter.getMangaName())) {
-                System.out.println("Manga " + chapter.getRealID() + " Deleted ");
-                // run mongo delete c
-                chapterRepo.delete(chapter).subscribe();
-              }
-            });
+    .findAll()
+    .subscribeOn(boundedElastic())
+    .subscribe(
+        chapter -> {
+          if (chapter.getMangaName() == null || !chapterSet.add(chapter.getMangaName())) {
+            System.out.println("Manga " + chapter.getRealID() + " Deleted ");
+            // run mongo delete c
+            chapterRepo.delete(chapter).subscribe();
+          }
+        });
   }
 
   /**
@@ -222,33 +224,33 @@ public class MangaService {
   public void fixDuplicateIDs() {
 
     final Flux<Manga> mangaflux =
-        savedData.savedList != null
-            ? Flux.fromIterable(savedData.savedList)
-            : Flux.from(savedData.multicastMangaListFlux);
+        savedData.getSavedList() != null
+        ? Flux.fromIterable(savedData.getSavedList())
+            : Flux.from(savedData.getMulticastMangaListFlux());
 
     final Set<Integer> idSet = new HashSet<>();
 
     mangaflux
-        .filter(manga -> manga.getRealID() > 0)
-        .subscribe(
-            manga -> {
-              if (!idSet.add(manga.getRealID())) {
-                final int id = manga.getRealID();
-                System.out.println("Duplicate ID " + id + " for " + manga.getA());
-                final int newId = setID();
-                System.out.println("new ID " + newId);
-                manga.setRealID(newId);
-                repo.save(manga).subscribe();
-                chapterRepo
-                    .getDupsByRealID(id)
-                    .filter(c -> c.getMangaName().equals(manga.getT()))
-                    .subscribe(
-                        chapters -> {
-                          chapters.setRealID(newId);
-                          chapterRepo.save(chapters).subscribe();
-                        });
-              }
-            });
+    .filter(manga -> manga.getRealID() > 0)
+    .subscribe(
+        manga -> {
+          if (!idSet.add(manga.getRealID())) {
+            final int id = manga.getRealID();
+            System.out.println("Duplicate ID " + id + " for " + manga.getA());
+            final int newId = setID();
+            System.out.println("new ID " + newId);
+            manga.setRealID(newId);
+            repo.save(manga).subscribe();
+            chapterRepo
+            .getDupsByRealID(id)
+            .filter(c -> c.getMangaName().equals(manga.getT()))
+            .subscribe(
+                chapters -> {
+                  chapters.setRealID(newId);
+                  chapterRepo.save(chapters).subscribe();
+                });
+          }
+        });
   }
 
   public int setID() {
@@ -257,7 +259,7 @@ public class MangaService {
     Optional<Manga> manga;
     do {
       final int ID = id;
-      manga = savedData.savedList.stream().filter(m -> m.getRealID() == ID).findAny();
+      manga = savedData.getSavedList().stream().filter(m -> m.getRealID() == ID).findAny();
 
       if (manga.isPresent() || !IDSet.add(id)) {
         IDSet.add(id);

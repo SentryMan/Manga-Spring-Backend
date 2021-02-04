@@ -26,17 +26,17 @@ public class SavedData {
 
   @Autowired private final MangaRepo repo;
 
-  public Flux<Manga> multicastMangaListFlux = Flux.empty();
-  public Flux<Manga> popularManga;
-  public Flux<Manga> recentManga;
-  public List<Manga> savedList = new ArrayList<>();
-  public Manga Update = new Manga(true);
-  public boolean Starting;
+  private Flux<Manga> multicastMangaListFlux = Flux.empty();
+  private Flux<Manga> popularManga;
+  private Flux<Manga> recentManga;
+  private List<Manga> savedList = new ArrayList<>();
+  private Manga Update = new Manga(true);
+  private boolean Starting;
   private CountDownLatch dataLatch;
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
     this.repo = repo;
-    multicastMangaListFlux = popular(popularMangaAlias).share().cache();
+    multicastMangaListFlux = repo.findAll().share().cache();
     popularManga = popular(popularMangaAlias);
     recentManga = repo.findByLd(new Date().getTime() / 1000 - 604800, new Date().getTime() / 1000);
     startLoad();
