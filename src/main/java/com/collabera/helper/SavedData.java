@@ -32,16 +32,13 @@ public class SavedData {
   public List<Manga> savedList = new ArrayList<>();
   public Manga Update = new Manga(true);
   public boolean Starting;
-  private final CountDownLatch dataLatch;
+  private CountDownLatch dataLatch;
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
     this.repo = repo;
     multicastMangaListFlux = popular(popularMangaAlias).share().cache();
-    // repo.findAll().concatWith(Mono.just(new Manga(true))).share().cache(Duration.ofMinutes(1));
-
     popularManga = popular(popularMangaAlias);
     recentManga = repo.findByLd(new Date().getTime() / 1000 - 604800, new Date().getTime() / 1000);
-    this.dataLatch = new CountDownLatch(1);
     startLoad();
   }
 
@@ -55,20 +52,21 @@ public class SavedData {
 
   // this will get the data from the database on startup
 
-  private void startLoad() {
+  public void startLoad() {
     Starting = true;
+    this.dataLatch = new CountDownLatch(1);
     System.out.println("\nLoading Data");
 
     Flux.from(multicastMangaListFlux)
-        .collectList()
-        .subscribe(
-            mangalist -> {
-              System.out.println("Data Loaded");
-              this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
-              this.savedList = mangalist;
-              dataLatch.countDown();
-            },
-            e -> System.err.println(e));
+    .collectList()
+    .subscribe(
+        mangalist -> {
+          System.out.println("Data Loaded");
+          this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
+          this.savedList = mangalist;
+          dataLatch.countDown();
+        },
+        e -> System.err.println(e));
   }
 
   /**
