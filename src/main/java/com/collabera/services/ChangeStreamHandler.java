@@ -2,6 +2,7 @@ package com.collabera.services;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -20,8 +21,8 @@ public class ChangeStreamHandler {
 
   private final ReactiveMongoTemplate reactiveMongoTemplate;
   private final SavedData data;
-  public ChangeStreamHandler(
-      ReactiveMongoTemplate reactiveMongoTemplate, SavedData data) {
+
+  public ChangeStreamHandler(ReactiveMongoTemplate reactiveMongoTemplate, SavedData data) {
     this.reactiveMongoTemplate = reactiveMongoTemplate;
     this.data = data;
     this.changeStream = watchForDBChanges();
@@ -29,7 +30,6 @@ public class ChangeStreamHandler {
   }
 
   private final Flux<Manga> changeStream;
-
 
   public Mono<ServerResponse> getUpdateEvent(ServerRequest request) {
 
@@ -52,7 +52,12 @@ public class ChangeStreamHandler {
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .map(ChangeStreamEvent::getBody)
         .doOnNext(m -> System.out.println("Changed Manga: " + m.getT()))
-        .doOnNext(m -> data.updateList(Arrays.asList(m), new HashSet<>()))
+        .doOnNext(
+            m -> {
+              final Set<String> nameset = new HashSet<>();
+              nameset.add(m.getA());
+              data.updateList(Arrays.asList(m), nameset);
+            })
         .doOnError(throwable -> System.err.println(throwable));
   }
 }
