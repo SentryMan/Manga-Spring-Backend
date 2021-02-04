@@ -1,5 +1,7 @@
 package com.collabera.web.handlers;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
@@ -40,7 +42,7 @@ public class ChangeStreamHandler {
         .changeStream("Manga", options, Manga.class)
         .map(ChangeStreamEvent::getBody)
         .doOnNext(m -> System.out.println("Changed Manga: " + m.getT()))
-        .doOnNext(m -> data.startLoad())
+        .doOnNext(m -> data.updateList(Arrays.asList(m), new HashSet<>()))
         .doOnError(throwable -> System.err.println(throwable));
   }
 }
