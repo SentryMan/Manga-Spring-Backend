@@ -18,7 +18,7 @@ public class MangaHandler {
   // Get Mappings
 
   // Gets all manga currently stored
-  public synchronized Mono<ServerResponse> getAll(ServerRequest request) {
+  public Mono<ServerResponse> getAll(ServerRequest request) {
 
     try {
       return service
@@ -63,7 +63,7 @@ public class MangaHandler {
         .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga ALready Exists"));
   }
 
-  public synchronized Mono<ServerResponse> fixID(ServerRequest request) {
+  public Mono<ServerResponse> fixID(ServerRequest request) {
     System.out.println("Fixing Manga");
     service.fixDuplicateIDs();
     return ServerResponse.accepted().build();
@@ -80,7 +80,7 @@ public class MangaHandler {
   }
 
   // Deletes duplicates from database
-  public synchronized Mono<ServerResponse> deleteDups(ServerRequest request) {
+  public Mono<ServerResponse> deleteDups(ServerRequest request) {
     service.deleteDups();
     return ServerResponse.accepted().bodyValue("Deleting Duplicate Manga and chapters");
   }

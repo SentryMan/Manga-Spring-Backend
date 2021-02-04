@@ -111,12 +111,8 @@ public class ChapterService {
                 .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
                 .map(Chapter::getImages)
                 .flatMap(List::stream)
-                .filter(i ->
-
-                i.get(0) == request.getPageIndex())
-                .forEach(i ->
-
-                i.set(1, request.getPageURL()));
+                .filter(i -> i.get(0) == request.getPageIndex())
+                .forEach(i -> i.set(1, request.getPageURL()));
               }
               return c;
             })
@@ -132,7 +128,7 @@ public class ChapterService {
     System.out.println("Here We go");
     repo.findAll()
     .doOnComplete(() -> System.out.println("All Chapters have IDs"))
-    .subscribe(
+    .flatMap(
         chapterData ->
         Flux.fromIterable(savedData.savedList)
         .filter(
@@ -141,11 +137,12 @@ public class ChapterService {
             && chapterData.getRealID() == null
             || chapterData.getMangaName().equals(m.getT())
             && chapterData.getRealID() == 0)
-        .subscribe(
+        .flatMap(
             manga -> {
               System.out.println("Adding ID to " + chapterData.getMangaName());
               chapterData.setRealID(manga.getRealID());
-              repo.save(chapterData).subscribe();
-            }));
+              return repo.save(chapterData);
+            }))
+    .subscribe();
   }
 }
