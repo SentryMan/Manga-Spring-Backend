@@ -6,6 +6,4 @@ import lombok.Data;
 public class SetupPayload {
   String clientName;
   String password;
-
-
 }
