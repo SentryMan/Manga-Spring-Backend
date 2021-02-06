@@ -2,7 +2,6 @@ package com.collabera.web.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import com.collabera.models.MangaChapters;
@@ -35,7 +34,6 @@ public class ChapterHandler {
         .flatMap(ServerResponse.ok()::bodyValue);
   }
 
-  @PutMapping("api/chapters")
   public Mono<ServerResponse> addID(ServerRequest request) {
     service.addID();
     return ServerResponse.accepted().build();
