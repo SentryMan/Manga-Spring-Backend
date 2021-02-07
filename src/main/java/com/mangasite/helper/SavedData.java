@@ -1,5 +1,6 @@
 package com.mangasite.helper;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -36,7 +37,7 @@ public class SavedData {
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
     this.repo = repo;
-    multicastMangaListFlux = repo.findAll().share().cache();
+    multicastMangaListFlux = repo.findAll().share().cache(Duration.ofMillis(10000));
     popularManga = popular(popularMangaAlias);
     recentManga = repo.findByLd(new Date().getTime() / 1000 - 604800, new Date().getTime() / 1000);
     startLoad();
@@ -58,15 +59,15 @@ public class SavedData {
     System.out.println("\nLoading Data");
 
     Flux.from(multicastMangaListFlux)
-    .collectList()
-    .subscribe(
-        mangalist -> {
-          System.out.println("Data Loaded");
-          this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
-          this.savedList = mangalist;
-          dataLatch.countDown();
-        },
-        e -> System.err.println(e));
+        .collectList()
+        .subscribe(
+            mangalist -> {
+              System.out.println("Data Loaded");
+              this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
+              this.savedList = mangalist;
+              dataLatch.countDown();
+            },
+            e -> System.err.println(e));
   }
 
   /**
