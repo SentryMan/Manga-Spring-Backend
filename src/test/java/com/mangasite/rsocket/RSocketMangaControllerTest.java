@@ -16,7 +16,7 @@ class RSocketMangaControllerTest {
 
   @Test
   void test() {
-    StepVerifier.create(requester.route("AllManga").retrieveFlux(Manga.class).take(1))
+    StepVerifier.create(requester.route("all-manga").retrieveFlux(Manga.class).take(1))
         .expectNextCount(1)
         .verifyComplete();
   }
