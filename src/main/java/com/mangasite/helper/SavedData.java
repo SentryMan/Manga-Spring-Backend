@@ -31,8 +31,6 @@ public class SavedData {
   private Flux<Manga> popularManga;
   private Flux<Manga> recentManga;
   private List<Manga> savedList = new ArrayList<>();
-  private Manga Update = new Manga(true);
-  private boolean Starting;
   private CountDownLatch dataLatch;
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
@@ -54,7 +52,6 @@ public class SavedData {
   // this will get the data from the database on startup
 
   public void startLoad() {
-    Starting = true;
     this.dataLatch = new CountDownLatch(1);
     System.out.println("\nLoading Data");
 

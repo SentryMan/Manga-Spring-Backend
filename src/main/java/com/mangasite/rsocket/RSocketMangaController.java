@@ -14,7 +14,6 @@ import com.mangasite.helper.SavedData;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.MangaService;
 import lombok.RequiredArgsConstructor;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,12 +31,7 @@ public class RSocketMangaController {
   // Gets all manga currently stored
   @MessageMapping("all-manga")
   public Flux<Manga> getAll() {
-    try {
-
-      return service.findAll().filter(m -> m.getRealID() != -1);
-    } catch (final InterruptedException e) {
-      throw Exceptions.propagate(e);
-    }
+    return service.findAll().filter(m -> m.getRealID() != -1);
   }
 
   @MessageMapping("single-manga")

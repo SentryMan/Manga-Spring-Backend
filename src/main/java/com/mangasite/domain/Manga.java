@@ -41,10 +41,6 @@ public class Manga {
   private String t;
   private MangaInfo info;
 
-  public Manga(boolean starting) {
-    RealID = -2;
-  }
-
   public Manga(MangaChangeRequest request) {
     a = request.getAlias();
     c = request.getGenre();

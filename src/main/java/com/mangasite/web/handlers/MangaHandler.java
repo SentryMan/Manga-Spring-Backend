@@ -1,7 +1,6 @@
 package com.mangasite.web.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -20,16 +19,11 @@ public class MangaHandler {
   // Gets all manga currently stored
   public Mono<ServerResponse> getAll(ServerRequest request) {
 
-    try {
-      return service
-          .findAll()
-          .filter(m -> m.getRealID() != -1)
-          .switchIfEmpty(a -> ServerResponse.notFound().build())
-          .collectList()
-          .flatMap(mangaList -> ServerResponse.ok().bodyValue(mangaList));
-    } catch (final InterruptedException e) {
-      return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(e);
-    }
+    return service
+        .findAll()
+        .switchIfEmpty(a -> ServerResponse.notFound().build())
+        .collectList()
+        .flatMap(mangaList -> ServerResponse.ok().bodyValue(mangaList));
   }
 
   public Mono<ServerResponse> getOne(ServerRequest request) {
