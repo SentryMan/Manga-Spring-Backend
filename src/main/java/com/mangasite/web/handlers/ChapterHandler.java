@@ -1,5 +1,6 @@
 package com.mangasite.web.handlers;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 public class ChapterHandler {
 
   @Autowired private ChapterService service;
+  private AtomicInteger pageIndex;
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {
     return ServerResponse.ok()
@@ -30,6 +32,13 @@ public class ChapterHandler {
   public Mono<ServerResponse> updatePageLink(ServerRequest request) {
     return request
         .bodyToMono(PageChangeRequest.class)
+        .map(
+            p -> {
+              if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
+
+              p.setPageIndex(pageIndex.getAndIncrement());
+              return p;
+            })
         .flatMap(service::updatePageLink)
         .flatMap(ServerResponse.ok()::bodyValue);
   }

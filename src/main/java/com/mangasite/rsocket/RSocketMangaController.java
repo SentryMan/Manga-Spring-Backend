@@ -77,6 +77,6 @@ public class RSocketMangaController {
               data.updateList(Arrays.asList(m), nameset);
             })
         .onErrorContinue(
-            (ex, o) -> System.err.println("error processing " + o + "Exception is " + ex));
+            (ex, o) -> System.err.println("Error processing " + o + "Exception is " + ex));
   }
 }

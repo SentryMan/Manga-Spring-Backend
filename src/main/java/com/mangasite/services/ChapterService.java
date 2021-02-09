@@ -86,7 +86,7 @@ public class ChapterService {
         .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
   }
 
-  public Mono<MangaChapters> updatePageLink(PageChangeRequest request) {
+  public Mono<String> updatePageLink(PageChangeRequest request) {
 
     return repo.getByRealID(request.getMangaId())
         .map(
@@ -95,11 +95,11 @@ public class ChapterService {
 
                 final List<List<Object>> pages =
                     c.getImages()
-                    .stream()
-                    .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
-                    .map(Chapter::getImages)
-                    .findAny()
-                    .get();
+                        .stream()
+                        .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
+                        .map(Chapter::getImages)
+                        .findAny()
+                        .get();
                 pages.add(Arrays.asList(request.getPageIndex(), request.getPageURL(), "", ""));
                 pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
 
@@ -107,17 +107,25 @@ public class ChapterService {
 
               } else {
                 c.getImages()
-                .stream()
-                .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
-                .map(Chapter::getImages)
-                .flatMap(List::stream)
-                .filter(i -> i.get(0) == request.getPageIndex())
-                .forEach(i -> i.set(1, request.getPageURL()));
+                    .stream()
+                    .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
+                    .map(Chapter::getImages)
+                    .flatMap(List::stream)
+                    .filter(i -> i.get(0) == request.getPageIndex())
+                    .forEach(i -> i.set(1, request.getPageURL()));
               }
               return c;
             })
         .flatMap(repo::save)
-        .doOnNext(c -> System.out.println("Successfully Updated " + c.getMangaName() + " Page"));
+        .map(
+            c ->
+                "Updated/Added Page: "
+                    + request.getPageIndex()
+                    + " of manga: "
+                    + c.getMangaName()
+                    + " With Image URL: "
+                    + request.getPageURL())
+        .doOnNext(System.out::println);
   }
 
   /**
@@ -127,22 +135,22 @@ public class ChapterService {
   public void addID() {
     System.out.println("Here We go");
     repo.findAll()
-    .doOnComplete(() -> System.out.println("All Chapters have IDs"))
-    .flatMap(
-        chapterData ->
-        Flux.fromIterable(savedData.getSavedList())
-        .filter(
-            m ->
-            chapterData.getMangaName().equals(m.getT())
-            && chapterData.getRealID() == null
-            || chapterData.getMangaName().equals(m.getT())
-            && chapterData.getRealID() == 0)
+        .doOnComplete(() -> System.out.println("All Chapters have IDs"))
         .flatMap(
-            manga -> {
-              System.out.println("Adding ID to " + chapterData.getMangaName());
-              chapterData.setRealID(manga.getRealID());
-              return repo.save(chapterData);
-            }))
-    .subscribe();
+            chapterData ->
+                Flux.fromIterable(savedData.getSavedList())
+                    .filter(
+                        m ->
+                            chapterData.getMangaName().equals(m.getT())
+                                    && chapterData.getRealID() == null
+                                || chapterData.getMangaName().equals(m.getT())
+                                    && chapterData.getRealID() == 0)
+                    .flatMap(
+                        manga -> {
+                          System.out.println("Adding ID to " + chapterData.getMangaName());
+                          chapterData.setRealID(manga.getRealID());
+                          return repo.save(chapterData);
+                        }))
+        .subscribe();
   }
 }
