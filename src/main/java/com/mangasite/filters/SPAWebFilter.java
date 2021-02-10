@@ -7,7 +7,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Component
-public class SpaWebFilter implements WebFilter {
+public class SPAWebFilter implements WebFilter {
 
   /**
    * This effectively serves as a View Controller by mutating non-api paths into an Angular route
@@ -15,16 +15,13 @@ public class SpaWebFilter implements WebFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     final String path = exchange.getRequest().getURI().getPath();
-    if (!path.startsWith("/api")
-            && path.matches("[^\\\\.]*")
-            && !path.startsWith("/image")
-            && !path.startsWith("/db")
-        || path.startsWith("/manga"))
+    if (!path.startsWith("/api") && path.matches("[^\\\\.]*") || path.startsWith("/manga")) {
       return chain.filter(
           exchange
               .mutate()
               .request(exchange.getRequest().mutate().path("/index.html").build())
               .build());
+    }
 
     return chain.filter(exchange);
   }

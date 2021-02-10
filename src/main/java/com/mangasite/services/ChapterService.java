@@ -1,7 +1,5 @@
 package com.mangasite.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -58,25 +56,22 @@ public class ChapterService {
             repo.getByRealID(request.getMangaId()),
             (m, c) -> {
               System.out.println("Updating " + m.getT() + "\n RealID: " + m.getRealID());
-              final Chapter pages = new Chapter();
-              pages.setChapterIndex("Chapter " + request.getChapterIndex());
+              final var chapter = new Chapter();
+              chapter.setChapterIndex("Chapter " + request.getChapterIndex());
 
-              pages.setImages(
-                  Arrays.asList(
-                      new ArrayList<>(Arrays.asList(1, request.getFirstPageURL(), "", ""))));
-              c.getImages().add(pages);
+              chapter.setImages(List.of(List.of(1, request.getFirstPageURL(), "", "")));
+              c.getImages().add(chapter);
               c.getImages().sort(Comparator.comparing(Chapter::getChapterIndex).reversed());
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               m.setLd(request.getUpdateDate());
               final List<List<String>> chapters = m.getInfo().getChapters();
               chapters.add(
-                  new ArrayList<>(
-                      Arrays.asList(
-                          request.getChapterIndex(),
-                          "" + request.getUpdateDate(),
-                          request.getChapterName(),
-                          "")));
+                  List.of(
+                      request.getChapterIndex(),
+                      "" + request.getUpdateDate(),
+                      request.getChapterName(),
+                      ""));
               chapters.sort(Comparator.comparing(l -> l.get(0)));
               Collections.reverse(chapters);
               System.out.println(
@@ -100,7 +95,7 @@ public class ChapterService {
                         .map(Chapter::getImages)
                         .findAny()
                         .get();
-                pages.add(Arrays.asList(request.getPageIndex(), request.getPageURL(), "", ""));
+                pages.add(List.of(request.getPageIndex(), request.getPageURL(), "", ""));
                 pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
 
                 Collections.reverse(pages);

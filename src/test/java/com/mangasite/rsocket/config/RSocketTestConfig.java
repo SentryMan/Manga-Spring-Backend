@@ -21,7 +21,7 @@ public class RSocketTestConfig {
         .rsocketConnector(
             rSocketConnector ->
                 rSocketConnector.reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2))))
-        .dataMimeType(MediaType.APPLICATION_JSON)
+        .dataMimeType(MediaType.APPLICATION_CBOR)
         .setupData(new SetupPayload("test", "SECRET"))
         .websocket(new URI("ws://localhost:6969/rsocket"));
   }

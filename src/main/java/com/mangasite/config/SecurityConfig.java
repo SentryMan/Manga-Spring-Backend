@@ -7,9 +7,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @EnableWebFluxSecurity
@@ -35,12 +33,12 @@ public class SecurityConfig {
   @Bean
   public MapReactiveUserDetailsService userDetailsService() {
 
-    final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    final UserDetails user =
+    final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    final var userDetails =
         User.withUsername("Jojo").password(encoder.encode("Reference")).roles("USER").build();
-    final UserDetails admin =
+    final var adminDetails =
         User.withUsername("Admin").password(encoder.encode("Betta")).roles("USER", "ADMIN").build();
 
-    return new MapReactiveUserDetailsService(user, admin);
+    return new MapReactiveUserDetailsService(userDetails, adminDetails);
   }
 }
