@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class ChapterHandler {
 
   @Autowired private ChapterService service;
-  private AtomicInteger pageIndex;
+  private AtomicInteger pageIndex = new AtomicInteger();
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {
     return ServerResponse.ok()

@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
@@ -19,7 +18,7 @@ import reactor.util.function.Tuple2;
 public class RSocketChapterController {
 
   private final ChapterService service;
-  private AtomicInteger pageIndex;
+  private AtomicInteger pageIndex = new AtomicInteger();
 
   @MessageMapping("get-chapters")
   public Mono<MangaChapters> getChapter(int id) {
@@ -32,7 +31,7 @@ public class RSocketChapterController {
   }
 
   @MessageMapping("update-page")
-  public Mono<ServerResponse> updatePageLink(ServerRequest request) {
+  public Mono<String> updatePageLink(ServerRequest request) {
     return request
         .bodyToMono(PageChangeRequest.class)
         .map(
@@ -42,7 +41,6 @@ public class RSocketChapterController {
               p.setPageIndex(pageIndex.getAndIncrement());
               return p;
             })
-        .flatMap(service::updatePageLink)
-        .flatMap(ServerResponse.ok()::bodyValue);
+        .flatMap(service::updatePageLink);
   }
 }
