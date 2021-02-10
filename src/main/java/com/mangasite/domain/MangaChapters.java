@@ -1,8 +1,6 @@
 package com.mangasite.domain;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,13 +25,12 @@ public class MangaChapters {
 
   public MangaChapters(String mangaName, int realID, String index, String firstPageURL) {
 
-    final Chapter pages = new Chapter();
-    pages.setChapterIndex("Chapter " + index);
-    final List<List<Object>> image =
-        Arrays.asList(new ArrayList<>(Arrays.asList(0, firstPageURL, "", "")));
-    pages.setImages(image);
+    final var chapter = new Chapter();
+    chapter.setChapterIndex("Chapter " + index);
+    final List<List<Object>> imageList = List.of(List.of(0, firstPageURL, "", ""));
+    chapter.setImages(imageList);
     this.mangaName = mangaName;
-    images = Arrays.asList(pages);
+    images = List.of(chapter);
     this.RealID = realID;
   }
 }

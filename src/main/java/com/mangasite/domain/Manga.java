@@ -1,8 +1,6 @@
 package com.mangasite.domain;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -54,13 +52,12 @@ public class Manga {
     info.setAuthor(request.getAuthor());
 
     final List<List<String>> list =
-        Arrays.asList(
-            new ArrayList<>(
-                Arrays.asList(
-                    request.getFirstChapterIndex(),
-                    "" + request.getUpdateDateint(),
-                    request.getFirstChapterName(),
-                    "")));
+        List.of(
+            List.of(
+                request.getFirstChapterIndex(),
+                "" + request.getUpdateDateint(),
+                request.getFirstChapterName(),
+                ""));
 
     info.setChapters(list);
     info.setDescription(request.getDescription());

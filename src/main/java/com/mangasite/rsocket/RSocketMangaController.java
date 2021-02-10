@@ -1,7 +1,7 @@
 package com.mangasite.rsocket;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
@@ -28,7 +28,7 @@ public class RSocketMangaController {
   // Gets all manga currently stored
   @MessageMapping("get-mangas")
   public Flux<Manga> getAll() {
-    return service.findAll().filter(m -> m.getRealID() != -1);
+    return service.findAll();
   }
 
   @MessageMapping("get-manga")
@@ -53,8 +53,7 @@ public class RSocketMangaController {
   @MessageMapping("mongo-change-stream")
   public Flux<Manga> watchForDBChanges() {
     // set changestream options to watch for any changes to the manga collection
-    final ChangeStreamOptions options =
-        ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
+    final var options = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
 
     // return a flux that watches the changestream and returns the full document
     return reactiveMongoTemplate
@@ -66,7 +65,7 @@ public class RSocketMangaController {
             m -> {
               final Set<String> nameset = new HashSet<>();
               nameset.add(m.getA());
-              data.updateList(Arrays.asList(m), nameset);
+              data.updateList(List.of(m), nameset);
             })
         .onErrorContinue(
             (ex, o) -> System.err.println("Error processing " + o + "Exception is " + ex));
