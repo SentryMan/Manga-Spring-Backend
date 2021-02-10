@@ -9,9 +9,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import com.mangasite.domain.Manga;
-import com.mangasite.domain.MangaChapters;
 import com.mangasite.helper.SavedData;
-import com.mangasite.services.ChapterService;
 import com.mangasite.services.MangaService;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -24,17 +22,16 @@ public class RSocketMangaController {
   private final MangaService service;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
   private final SavedData data;
-  private final ChapterService chapterService;
 
   // Get Mappings
 
   // Gets all manga currently stored
-  @MessageMapping("all-manga")
+  @MessageMapping("get-mangas")
   public Flux<Manga> getAll() {
     return service.findAll().filter(m -> m.getRealID() != -1);
   }
 
-  @MessageMapping("single-manga")
+  @MessageMapping("get-manga")
   public Mono<Manga> getOne(int id) {
 
     return service.findManga(id);
@@ -53,12 +50,7 @@ public class RSocketMangaController {
     return service.findLatest();
   }
 
-  @MessageMapping("manga-chapters")
-  public Mono<MangaChapters> getChapter(int id) {
-    return chapterService.getByID(id);
-  }
-
-  @MessageMapping("realtime-manga")
+  @MessageMapping("mongo-change-stream")
   public Flux<Manga> watchForDBChanges() {
     // set changestream options to watch for any changes to the manga collection
     final ChangeStreamOptions options =

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import com.mangasite.domain.Manga;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.services.MangaService;
 import reactor.core.publisher.Mono;
@@ -13,41 +12,6 @@ import reactor.core.publisher.Mono;
 public class MangaHandler {
 
   @Autowired private MangaService service;
-
-  // Get Mappings
-
-  // Gets all manga currently stored
-  public Mono<ServerResponse> getAll(ServerRequest request) {
-
-    return service
-        .findAll()
-        .switchIfEmpty(a -> ServerResponse.notFound().build())
-        .collectList()
-        .flatMap(mangaList -> ServerResponse.ok().bodyValue(mangaList));
-  }
-
-  public Mono<ServerResponse> getOne(ServerRequest request) {
-
-    return service
-        .findManga(Integer.parseInt(request.pathVariable("id")))
-        .flatMap(manga -> ServerResponse.ok().bodyValue(manga))
-        .switchIfEmpty(ServerResponse.notFound().build());
-  }
-
-  // Gets a set list of popular manga
-  public Mono<ServerResponse> getPopular(ServerRequest request) {
-
-    return ServerResponse.ok().body(service.findPopular(), Manga.class);
-  }
-
-  public Mono<ServerResponse> getLatest(ServerRequest request) {
-
-    return service
-        .findLatest()
-        .switchIfEmpty(a -> ServerResponse.notFound().build())
-        .collectList()
-        .flatMap(latestManga -> ServerResponse.ok().bodyValue(latestManga));
-  }
 
   public Mono<ServerResponse> post(ServerRequest request) {
     return request

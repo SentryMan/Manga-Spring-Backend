@@ -119,7 +119,9 @@ public class ChapterService {
         .flatMap(repo::save)
         .map(
             c ->
-                "Updated/Added Page: "
+                "Updated/Added Chapter "
+                    + request.getChapterIndex()
+                    + " Page "
                     + request.getPageIndex()
                     + " of manga: "
                     + c.getMangaName()
