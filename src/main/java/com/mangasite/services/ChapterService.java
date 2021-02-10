@@ -117,7 +117,7 @@ public class ChapterService {
                 "Updated/Added Chapter "
                     + request.getChapterIndex()
                     + " Page "
-                    + request.getPageIndex()
+                    + (request.getPageIndex() + 1)
                     + " of manga: "
                     + c.getMangaName()
                     + " With Image URL: "
