@@ -7,6 +7,7 @@ import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.stereotype.Controller;
 import com.mangasite.domain.requests.SetupPayload;
+import io.rsocket.exceptions.RejectedException;
 import io.rsocket.exceptions.RejectedSetupException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -49,6 +50,6 @@ public class ConnectController {
   @MessageExceptionHandler(MethodArgumentResolutionException.class)
   public Mono<RejectedSetupException> inavlidPayload() {
 
-    return Mono.error(new RejectedSetupException("Invalid Payload"));
+    return Mono.error(new RejectedException("Invalid Payload"));
   }
 }
