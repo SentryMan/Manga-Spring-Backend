@@ -1,5 +1,6 @@
 package com.mangasite.rsocket;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
@@ -60,7 +61,12 @@ public class RSocketMangaController {
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .map(ChangeStreamEvent::getBody)
         .doOnNext(m -> System.out.println("Changed Manga: " + m.getT()))
-        .doOnNext(m -> data.updateList(List.of(m), Set.of(m.getA())))
+        .doOnNext(
+            m -> {
+              final Set<String> nameset = new HashSet<>();
+              nameset.add(m.getA());
+              data.updateList(List.of(m), nameset);
+            })
         .onErrorContinue(
             (ex, o) -> System.err.println("Error processing " + o + "Exception is " + ex));
   }
