@@ -7,6 +7,7 @@ import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import io.rsocket.core.Resume;
+import io.rsocket.resume.InMemoryResumableFramesStore;
 
 @Configuration
 public class ServerConfig implements WebFluxConfigurer {
@@ -14,12 +15,13 @@ public class ServerConfig implements WebFluxConfigurer {
   @Bean
   RSocketServerCustomizer resumeCustomizer() {
 
-    return s ->
-        s.resume(
+    return server ->
+        server.resume(
             new Resume()
-                .cleanupStoreOnKeepAlive());
+                .cleanupStoreOnKeepAlive()
+                .storeFactory(t -> new InMemoryResumableFramesStore("server", 200_000)));
   }
-  
+
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
