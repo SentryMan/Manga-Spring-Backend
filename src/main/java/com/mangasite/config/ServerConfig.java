@@ -1,13 +1,25 @@
 package com.mangasite.config;
 
+import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import io.rsocket.core.Resume;
 
 @Configuration
-public class WebFluxConfig implements WebFluxConfigurer {
+public class ServerConfig implements WebFluxConfigurer {
 
+  @Bean
+  RSocketServerCustomizer resumeCustomizer() {
+
+    return s ->
+        s.resume(
+            new Resume()
+                .cleanupStoreOnKeepAlive());
+  }
+  
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
