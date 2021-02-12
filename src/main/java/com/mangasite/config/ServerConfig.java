@@ -14,12 +14,11 @@ public class ServerConfig implements WebFluxConfigurer {
 
   @Bean
   RSocketServerCustomizer resumeCustomizer() {
-
-    return server ->
-        server.resume(
-            new Resume()
-                .cleanupStoreOnKeepAlive()
-                .storeFactory(t -> new InMemoryResumableFramesStore("server", 200_000)));
+    final var resumeConfig =
+        new Resume()
+            .cleanupStoreOnKeepAlive()
+            .storeFactory(t -> new InMemoryResumableFramesStore("server", 200_000));
+    return server -> server.resume(resumeConfig);
   }
 
   @Override
