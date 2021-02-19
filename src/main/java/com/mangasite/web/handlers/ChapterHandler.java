@@ -34,9 +34,11 @@ public class ChapterHandler {
         .bodyToMono(PageChangeRequest.class)
         .map(
             p -> {
-              if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
+              if (p.isAutoIncrement()) {
+                if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
 
-              p.setPageIndex(pageIndex.getAndIncrement());
+                p.setPageIndex(pageIndex.getAndIncrement());
+              }
               return p;
             })
         .flatMap(service::updatePageLink)
