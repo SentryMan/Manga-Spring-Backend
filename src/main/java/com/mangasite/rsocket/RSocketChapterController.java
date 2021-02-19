@@ -1,6 +1,5 @@
 package com.mangasite.rsocket;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -44,7 +43,6 @@ public class RSocketChapterController {
               }
               return p;
             })
-        .delayElements(Duration.ofMillis(500))
-        .flatMap(service::updatePageLink);
+        .flatMap(service::updatePageLink, 1);
   }
 }
