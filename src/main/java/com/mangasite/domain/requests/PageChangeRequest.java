@@ -11,7 +11,7 @@ public class PageChangeRequest {
   private Integer pageIndex = 0;
   private String pageURL;
   private boolean newPage;
-  private boolean autoIncrement;
+  private boolean usingAutoIncrement;
 
   public String getChapterIndex() {
     return "Chapter " + chapterIndex;

@@ -34,7 +34,7 @@ public class ChapterHandler {
         .bodyToMono(PageChangeRequest.class)
         .map(
             p -> {
-              if (p.isAutoIncrement()) {
+              if (p.isUsingAutoIncrement()) {
                 if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
 
                 p.setPageIndex(pageIndex.getAndIncrement());

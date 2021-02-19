@@ -3,7 +3,6 @@ package com.mangasite.rsocket;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
@@ -31,16 +30,14 @@ public class RSocketChapterController {
   }
 
   @MessageMapping("update-page")
-  public Mono<String> updatePageLink(ServerRequest request) {
-    return request
-        .bodyToMono(PageChangeRequest.class)
-        .map(
-            p -> {
-              if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
+  public Mono<String> updatePageLink(PageChangeRequest request) {
 
-              p.setPageIndex(pageIndex.getAndIncrement());
-              return p;
-            })
-        .flatMap(service::updatePageLink);
+    if (request.isUsingAutoIncrement()) {
+      if (request.getPageIndex() != -1) this.pageIndex = new AtomicInteger(request.getPageIndex());
+
+      request.setPageIndex(pageIndex.getAndIncrement());
+    }
+
+    return service.updatePageLink(request);
   }
 }
