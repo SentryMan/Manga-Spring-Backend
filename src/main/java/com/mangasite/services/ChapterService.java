@@ -59,7 +59,7 @@ public class ChapterService {
               final var chapter = new Chapter();
               chapter.setChapterIndex("Chapter " + request.getChapterIndex());
 
-              chapter.setImages(List.of(List.of(1, request.getFirstPageURL(), "", "")));
+              chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
               c.getImages().add(chapter);
               c.getImages().sort(Comparator.comparing(Chapter::getChapterIndex).reversed());
               System.out.println(
