@@ -44,7 +44,7 @@ public class RSocketChapterController {
               }
               return p;
             })
-        .delayElements(Duration.ofMillis(1000))
+        .delayElements(Duration.ofMillis(500))
         .flatMap(service::updatePageLink);
   }
 }
