@@ -3,6 +3,7 @@ package com.mangasite.helper;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -99,8 +100,10 @@ public class SavedData {
    * @param updatedManga the list of updated manga
    * @param nameSet the set of names used to remove the old versions
    */
-  public void updateList(List<Manga> updatedManga, Set<String> nameSet) {
+  public void updateList(List<Manga> updatedManga) {
 
+    final Set<String> nameSet = new HashSet<>();
+    updatedManga.stream().map(Manga::getA).forEach(nameSet::add);
     final Iterator<Manga> itr = savedList.iterator();
     while (itr.hasNext()) {
       final Manga manga = itr.next();

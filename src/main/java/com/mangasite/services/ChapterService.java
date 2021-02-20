@@ -85,7 +85,8 @@ public class ChapterService {
               Collections.reverse(chapters);
               return Tuples.of(m, c);
             })
-        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
+        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))))
+        .doOnNext(t2 -> savedData.updateList(List.of(t2.getT1())));
   }
 
   public Mono<String> updatePageLink(PageChangeRequest request) {
