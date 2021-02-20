@@ -58,24 +58,31 @@ public class ChapterService {
               System.out.println("Updating " + m.getT() + "\n RealID: " + m.getRealID());
               final var chapter = new Chapter();
               chapter.setChapterIndex("Chapter " + request.getChapterIndex());
-
               chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
-              c.getImages().add(chapter);
-              c.getImages().sort(Comparator.comparing(Chapter::getChapterIndex).reversed());
+
+              final var images = c.getImages();
+              images.add(chapter);
+
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               m.setLd(request.getUpdateDate());
-              final List<List<String>> chapters = m.getInfo().getChapters();
+
+              final var chapters = m.getInfo().getChapters();
               chapters.add(
                   List.of(
                       request.getChapterIndex(),
                       "" + request.getUpdateDate(),
                       request.getChapterName(),
                       ""));
-              chapters.sort(Comparator.comparing(l -> l.get(0)));
-              Collections.reverse(chapters);
+
               System.out.println(
                   "After change : " + m.getInfo().getChapters().size() + " chapters");
+              images.sort(
+                  Comparator.comparing(
+                      chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
+              chapters.sort(Comparator.comparing(l -> Double.parseDouble(l.get(0))));
+              Collections.reverse(images);
+              Collections.reverse(chapters);
               return Tuples.of(m, c);
             })
         .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
