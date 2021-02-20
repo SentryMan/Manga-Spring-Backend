@@ -1,5 +1,6 @@
 package com.mangasite.services;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -58,14 +59,15 @@ public class ChapterService {
               System.out.println("Updating " + m.getT() + "\n RealID: " + m.getRealID());
               final var chapter = new Chapter();
               chapter.setChapterIndex("Chapter " + request.getChapterIndex());
-              chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
+              chapter.setImages(Arrays.asList(Arrays.asList(0, request.getFirstPageURL(), "", "")));
 
               final var images = c.getImages();
               images.add(chapter);
 
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
-              m.setLd(request.getUpdateDate());
+
+              if (request.getUpdateDate() > m.getLd()) m.setLd(request.getUpdateDate());
 
               final var chapters = m.getInfo().getChapters();
               chapters.add(
@@ -92,31 +94,53 @@ public class ChapterService {
   public Mono<String> updatePageLink(PageChangeRequest request) {
 
     return repo.getByRealID(request.getMangaId())
+        // if Chapter Doesn't exist, create in table
+        .flatMap(
+            c -> {
+              if (c.getImages()
+                  .stream()
+                  .noneMatch(p -> p.getChapterIndex().equals(request.getChapterIndex()))) {
+                return this.addChapter(
+                        new ChapterChangeRequest(
+                            request.getMangaId(),
+                            request.getChapterIndex().replace("Chapter ", ""),
+                            "",
+                            0,
+                            ""))
+                    .map(Tuple2::getT2);
+              } else {
+                return Mono.just(c);
+              }
+            })
         .map(
             c -> {
-              if (request.isNewPage()) {
+              final var pageOp =
+                  c.getImages()
+                      .stream()
+                      .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
+                      .map(Chapter::getImages)
+                      .flatMap(List::stream)
+                      .filter(i -> i.get(0) == request.getPageIndex())
+                      .findFirst();
 
-                final List<List<Object>> pages =
-                    c.getImages()
-                        .stream()
-                        .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
-                        .map(Chapter::getImages)
-                        .findAny()
-                        .get();
-                pages.add(List.of(request.getPageIndex(), request.getPageURL(), "", ""));
-                pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
+              if (pageOp.isEmpty()) {
 
-                Collections.reverse(pages);
-
-              } else {
                 c.getImages()
                     .stream()
                     .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
                     .map(Chapter::getImages)
-                    .flatMap(List::stream)
-                    .filter(i -> i.get(0) == request.getPageIndex())
-                    .forEach(i -> i.set(1, request.getPageURL()));
+                    .forEach(
+                        pages -> {
+                          System.out.println();
+                          pages.add(List.of(request.getPageIndex(), request.getPageURL(), "", ""));
+                          pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
+                          Collections.reverse(pages);
+                        });
+
+              } else {
+                pageOp.get().set(1, request.getPageURL());
               }
+
               return c;
             })
         .flatMap(repo::save)
