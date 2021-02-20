@@ -1,5 +1,6 @@
 package com.mangasite.rsocket;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class RSocketChapterController {
 
   @MessageMapping("new-chapter")
   public Mono<Tuple2<Manga, MangaChapters>> addChapter(ChapterChangeRequest request) {
-    return service.addChapter(request);
+    return service.addChapter(List.of(request));
   }
 
   @MessageMapping("update-page-channel")
@@ -43,6 +44,7 @@ public class RSocketChapterController {
               }
               return p;
             })
+        .buffer(500)
         .flatMap(service::updatePageLink, 1);
   }
 }

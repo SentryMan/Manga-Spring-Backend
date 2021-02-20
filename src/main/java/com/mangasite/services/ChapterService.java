@@ -1,8 +1,13 @@
 package com.mangasite.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.mangasite.domain.Chapter;
 import com.mangasite.domain.Manga;
@@ -48,91 +53,149 @@ public class ChapterService {
     return repo.getByMangaName(name);
   }
 
-  public Mono<Tuple2<Manga, MangaChapters>> addChapter(ChapterChangeRequest request) {
+  public Mono<Tuple2<Manga, MangaChapters>> addChapter(List<ChapterChangeRequest> requestList) {
 
     return mangaRepo
-        .getByRealID(request.getMangaId())
+        .getByRealID(requestList.get(0).getMangaId())
         .zipWith(
-            repo.getByRealID(request.getMangaId()),
+            repo.getByRealID(requestList.get(0).getMangaId()),
             (m, c) -> {
               System.out.println("Updating " + m.getT() + "\n RealID: " + m.getRealID());
-              final var chapter = new Chapter();
-              chapter.setChapterIndex("Chapter " + request.getChapterIndex());
-              chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
-
-              final var images = c.getImages();
-              images.add(chapter);
-
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
-              m.setLd(request.getUpdateDate());
-
-              final var chapters = m.getInfo().getChapters();
-              chapters.add(
-                  List.of(
-                      request.getChapterIndex(),
-                      "" + request.getUpdateDate(),
-                      request.getChapterName(),
-                      ""));
-
+              requestList.forEach(processChapterRequests(m, c));
               System.out.println(
                   "After change : " + m.getInfo().getChapters().size() + " chapters");
-              images.sort(
-                  Comparator.comparing(
-                      chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
-              chapters.sort(Comparator.comparing(l -> Double.parseDouble(l.get(0))));
-              Collections.reverse(images);
-              Collections.reverse(chapters);
               return Tuples.of(m, c);
             })
         .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))))
         .doOnNext(t2 -> savedData.updateList(List.of(t2.getT1())));
   }
 
-  public Mono<String> updatePageLink(PageChangeRequest request) {
+  public Flux<String> updatePageLink(List<PageChangeRequest> requestList) {
 
-    return repo.getByRealID(request.getMangaId())
+    return repo.getByRealID(requestList.get(0).getMangaId())
+        // if Chapter Doesn't exist, create in table
+        .flatMap(chapterExistsFunc(requestList))
         .map(
             c -> {
-              if (request.isNewPage()) {
-
-                final List<List<Object>> pages =
-                    c.getImages()
-                        .stream()
-                        .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
-                        .map(Chapter::getImages)
-                        .findAny()
-                        .get();
-                pages.add(List.of(request.getPageIndex(), request.getPageURL(), "", ""));
-                pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
-
-                Collections.reverse(pages);
-
-              } else {
-                c.getImages()
-                    .stream()
-                    .filter(p -> p.getChapterIndex().equals(request.getChapterIndex()))
-                    .map(Chapter::getImages)
-                    .flatMap(List::stream)
-                    .filter(i -> i.get(0) == request.getPageIndex())
-                    .forEach(i -> i.set(1, request.getPageURL()));
-              }
+              requestList.forEach(processPageRequests(c));
               return c;
             })
         .flatMap(repo::save)
+        .map(MangaChapters::getMangaName)
         .map(
-            c ->
-                "Updated/Added "
-                    + request.getChapterIndex()
-                    + " Page "
-                    + (request.getPageIndex() + 1)
-                    + " of manga: "
-                    + c.getMangaName()
-                    + " With Image URL: "
-                    + request.getPageURL())
+            n ->
+                requestList
+                    .stream()
+                    .map(
+                        r ->
+                            "Updated/Added "
+                                + r.getChapterIndex()
+                                + " Page "
+                                + (r.getPageIndex() + 1)
+                                + " of manga: "
+                                + n
+                                + " With Image URL: "
+                                + r.getPageURL()))
+        .flatMapMany(Flux::fromStream)
         .doOnNext(System.out::println);
   }
 
+  private Consumer<ChapterChangeRequest> processChapterRequests(
+      Manga manga, MangaChapters mangaChapters) {
+
+    return request -> {
+      final var chapter = new Chapter();
+      chapter.setChapterIndex("Chapter " + request.getChapterIndex());
+      chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
+
+      final var images = mangaChapters.getImages();
+      images.add(chapter);
+
+      if (request.getUpdateDate() > manga.getLd()) manga.setLd(request.getUpdateDate());
+
+      final var chapters = manga.getInfo().getChapters();
+      chapters.add(
+          List.of(
+              request.getChapterIndex(),
+              "" + request.getUpdateDate(),
+              request.getChapterName(),
+              ""));
+
+      images.sort(
+          Comparator.comparing(chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
+      chapters.sort(Comparator.comparing(l -> Double.parseDouble(l.get(0))));
+      Collections.reverse(images);
+      Collections.reverse(chapters);
+      System.out.println(chapter.getChapterIndex() + " Added");
+    };
+  }
+
+  private Consumer<PageChangeRequest> processPageRequests(MangaChapters chapters) {
+
+    return r -> {
+      final var pageOp =
+          chapters
+              .getImages()
+              .stream()
+              .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
+              .map(Chapter::getImages)
+              .flatMap(List::stream)
+              .filter(i -> i.get(0) == r.getPageIndex())
+              .findFirst();
+
+      if (pageOp.isEmpty()) {
+
+        chapters
+            .getImages()
+            .stream()
+            .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
+            .map(Chapter::getImages)
+            .forEach(
+                pages -> {
+                  pages.add(List.of(r.getPageIndex(), r.getPageURL(), "", ""));
+                  pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
+                  Collections.reverse(pages);
+                });
+
+      } else pageOp.get().set(1, r.getPageURL());
+    };
+  }
+
+  private Function<MangaChapters, Mono<MangaChapters>> chapterExistsFunc(
+      List<PageChangeRequest> request) {
+    return c -> {
+      final var existingChapterIndice = new ArrayList<Double>();
+
+      c.getImages()
+          .stream()
+          .map(Chapter::getChapterIndex)
+          .map(s -> s.replace("Chapter ", ""))
+          .mapToDouble(Double::parseDouble)
+          .forEach(existingChapterIndice::add);
+
+      final Predicate<PageChangeRequest> indexExistsTest =
+          r ->
+              !existingChapterIndice.contains(
+                  Double.parseDouble(r.getChapterIndex().replace("Chapter ", "")));
+
+      final var chapterExists = request.stream().anyMatch(indexExistsTest);
+      if (chapterExists) {
+        final var chapterRequests =
+            request
+                .stream()
+                .filter(indexExistsTest)
+                .map(
+                    r ->
+                        new ChapterChangeRequest(
+                            r.getMangaId(), r.getChapterIndex().replace("Chapter ", ""), "", 0, ""))
+                .distinct()
+                .collect(Collectors.toList());
+        return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
+      } else return Mono.just(c);
+    };
+  }
   /**
    * This method adds numerical IDs to Chapters <br>
    * Use in the event that there are missing IDs in the database

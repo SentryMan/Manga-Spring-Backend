@@ -10,6 +10,7 @@ import com.mangasite.domain.requests.SetupPayload;
 import io.rsocket.exceptions.RejectedException;
 import io.rsocket.exceptions.RejectedSetupException;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -47,9 +48,9 @@ public class ConnectController {
     return Mono.empty();
   }
 
-  @MessageExceptionHandler(MethodArgumentResolutionException.class)
-  public Mono<RejectedSetupException> inavlidPayload() {
+  @MessageExceptionHandler
+  public Flux<RejectedException> invalidPayload(MethodArgumentResolutionException marex) {
 
-    return Mono.error(new RejectedException("Invalid Payload"));
+    return Flux.error(new RejectedException("Invalid Payload", marex));
   }
 }

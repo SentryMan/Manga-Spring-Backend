@@ -1,5 +1,6 @@
 package com.mangasite.web.handlers;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class ChapterHandler {
   public Mono<ServerResponse> addChapter(ServerRequest request) {
     return request
         .bodyToMono(ChapterChangeRequest.class)
+        .map(List::of)
         .flatMap(service::addChapter)
         .flatMap(ServerResponse.ok()::bodyValue);
   }
@@ -41,7 +43,9 @@ public class ChapterHandler {
               }
               return p;
             })
-        .flatMap(service::updatePageLink)
+        .map(List::of)
+        .flatMapMany(service::updatePageLink)
+        .next()
         .flatMap(ServerResponse.ok()::bodyValue);
   }
 
