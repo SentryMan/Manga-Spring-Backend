@@ -48,9 +48,9 @@ public class ConnectController {
     return Mono.empty();
   }
 
-  @MessageExceptionHandler(MethodArgumentResolutionException.class)
-  public Flux<RejectedException> invalidPayload() {
+  @MessageExceptionHandler
+  public Flux<RejectedException> invalidPayload(MethodArgumentResolutionException marex) {
 
-    return Flux.error(new RejectedException("Invalid Payload"));
+    return Flux.error(new RejectedException("Invalid Payload", marex));
   }
 }

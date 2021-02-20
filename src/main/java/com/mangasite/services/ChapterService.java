@@ -1,7 +1,6 @@
 package com.mangasite.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -109,7 +108,7 @@ public class ChapterService {
     return request -> {
       final var chapter = new Chapter();
       chapter.setChapterIndex("Chapter " + request.getChapterIndex());
-      chapter.setImages(Arrays.asList(Arrays.asList(0, request.getFirstPageURL(), "", "")));
+      chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
 
       final var images = mangaChapters.getImages();
       images.add(chapter);
@@ -118,7 +117,7 @@ public class ChapterService {
 
       final var chapters = manga.getInfo().getChapters();
       chapters.add(
-          Arrays.asList(
+          List.of(
               request.getChapterIndex(),
               "" + request.getUpdateDate(),
               request.getChapterName(),
@@ -155,8 +154,7 @@ public class ChapterService {
             .map(Chapter::getImages)
             .forEach(
                 pages -> {
-                  System.out.println();
-                  pages.add(Arrays.asList(r.getPageIndex(), r.getPageURL(), "", ""));
+                  pages.add(List.of(r.getPageIndex(), r.getPageURL(), "", ""));
                   pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
                   Collections.reverse(pages);
                 });
@@ -194,7 +192,7 @@ public class ChapterService {
                             r.getMangaId(), r.getChapterIndex().replace("Chapter ", ""), "", 0, ""))
                 .distinct()
                 .collect(Collectors.toList());
-        return this.addChapter(chapterRequests).map(Tuple2::getT2);
+        return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
       } else return Mono.just(c);
     };
   }
