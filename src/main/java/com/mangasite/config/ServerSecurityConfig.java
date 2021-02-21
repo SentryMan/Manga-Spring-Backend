@@ -45,7 +45,7 @@ public class ServerSecurityConfig {
         User.withUsername(userUsername).password(encoder.encode("Reference")).roles("USER").build();
     final var adminDetails =
         User.withUsername(adminUsername)
-            .password(encoder.encode("Betta"))
+            .password(encoder.encode(adminPassword))
             .roles("USER", "ADMIN")
             .build();
 
@@ -66,7 +66,8 @@ public class ServerSecurityConfig {
   @Bean
   public PayloadSocketAcceptorInterceptor authorization(RSocketSecurity security) {
     security
-        .authorizePayload(authorize -> authorize.setup().hasRole("USER").anyExchange().permitAll())
+        .authorizePayload(
+            authorize -> authorize.setup().hasAnyRole("USER", "ADMIN").anyExchange().permitAll())
         .simpleAuthentication(Customizer.withDefaults());
     return security.build();
   }
