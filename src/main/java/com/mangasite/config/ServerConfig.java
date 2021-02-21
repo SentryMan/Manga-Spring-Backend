@@ -1,5 +1,6 @@
 package com.mangasite.config;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,11 @@ public class ServerConfig implements WebFluxConfigurer {
             .cleanupStoreOnKeepAlive()
             .storeFactory(t -> new InMemoryResumableFramesStore("server", 200_000));
     return server -> server.resume(resumeConfig);
+  }
+
+  @Bean
+  AtomicInteger activeConnections() {
+    return new AtomicInteger();
   }
 
   @Override

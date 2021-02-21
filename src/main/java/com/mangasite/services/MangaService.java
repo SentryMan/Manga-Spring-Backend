@@ -1,9 +1,16 @@
 package com.mangasite.services;
 
+import static com.mongodb.client.model.changestream.OperationType.DELETE;
 import static reactor.core.scheduler.Schedulers.boundedElastic;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.PostConstruct;
+import org.springframework.data.mongodb.core.ChangeStreamEvent;
+import org.springframework.data.mongodb.core.ChangeStreamOptions;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
@@ -26,12 +33,18 @@ import reactor.util.function.Tuples;
 @RequiredArgsConstructor
 public class MangaService {
 
+  private final AtomicInteger activeConnections;
   private final MangaRepo repo;
   private final ChapterRepo chapterRepo;
+  private final ReactiveMongoTemplate reactiveMongoTemplate;
   private final SavedData savedData;
 
-  Set<Integer> IDSet = new HashSet<>();
+  Set<Integer> iDSet = new HashSet<>();
 
+  @PostConstruct
+  private void watchDB() {
+    this.watchDBChanges(true).subscribe();
+  }
   // Get Methods
   /**
    * Gets all Manga stored in the SavedData class
@@ -116,6 +129,43 @@ public class MangaService {
         .doOnNext(savedData::addToList);
   }
 
+  public Flux<Manga> watchDBChanges(boolean isServer) {
+    // set changestream options to watch for any changes to the manga collection
+    final var options = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
+
+    // return a flux that watches the changestream and returns the full document
+    return reactiveMongoTemplate
+        .changeStream("Manga", options, Manga.class)
+        .filter(e -> !isServer||activeConnections.intValue() < 1  )
+        .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
+        .doOnNext(
+            event -> {
+              final var changedManga = event.getBody();
+              final var operation = event.getOperationType();
+
+
+              switch (operation) {
+                case DELETE ->  savedData.refreshCache();
+
+                case INSERT -> operation.getValue();
+
+                default ->
+                savedData.updateList(List.of(changedManga));
+              }
+
+              if (changedManga != null)
+                System.out.println(
+                    "Operation "
+                        + operation.getValue()
+                        + " Performed on Manga: "
+                        + changedManga.getT());
+            })
+        .filter(e -> !e.getOperationType().equals(DELETE))
+        .map(ChangeStreamEvent::getBody)
+        .onErrorContinue(
+            (ex, o) -> System.err.println("Error processing " + o + "Exception is " + ex));
+  }
+
   Flux<Manga> mangaToBeDeleted = Flux.empty();
   Flux<MangaChapters> chaptersToBeDeleted = Flux.empty();
 
@@ -134,7 +184,7 @@ public class MangaService {
     final Flux<Manga> mangaflux =
         savedData.getSavedList() != null
             ? Flux.fromIterable(savedData.getSavedList())
-            : Flux.from(savedData.getMulticastMangaListFlux());
+            : savedData.getMulticastMangaListFlux();
 
     mangaflux
         .filter(
@@ -179,7 +229,7 @@ public class MangaService {
     final Flux<Manga> mangaflux =
         savedData.getSavedList() != null
             ? Flux.fromIterable(savedData.getSavedList())
-            : Flux.from(savedData.getMulticastMangaListFlux());
+            : savedData.getMulticastMangaListFlux();
 
     System.out.println("Deleting Manga Dups");
     final Set<String> mangaSet = new HashSet<>();
@@ -219,7 +269,7 @@ public class MangaService {
     final Flux<Manga> mangaflux =
         savedData.getSavedList() != null
             ? Flux.fromIterable(savedData.getSavedList())
-            : Flux.from(savedData.getMulticastMangaListFlux());
+            : savedData.getMulticastMangaListFlux();
 
     final Set<Integer> idSet = new HashSet<>();
 
@@ -254,11 +304,11 @@ public class MangaService {
       final int ID = id;
       manga = savedData.getSavedList().stream().filter(m -> m.getRealID() == ID).findAny();
 
-      if (manga.isPresent() || !IDSet.add(id)) {
-        IDSet.add(id);
+      if (manga.isPresent() || !iDSet.add(id)) {
+        iDSet.add(id);
         id++;
       } else {
-        IDSet.add(id);
+        iDSet.add(id);
         break;
       }
 
