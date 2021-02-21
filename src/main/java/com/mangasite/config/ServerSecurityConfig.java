@@ -3,7 +3,6 @@ package com.mangasite.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpMethod;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import org.springframework.security.config.Customizer;
@@ -79,12 +78,8 @@ public class ServerSecurityConfig {
   @Bean
   @Primary
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http.csrf()
-        .disable()
-        .authorizeExchange()
+    http.authorizeExchange()
         .pathMatchers("/api/**")
-        .hasAnyRole(USER, ADMIN)
-        .pathMatchers(HttpMethod.GET, "admin/KatanaFish")
         .hasRole(ADMIN)
         .pathMatchers("/**")
         .permitAll()
