@@ -8,5 +8,25 @@
     "name": "popular.manga",
     "type": "java.lang.String",
     "description": "A description for 'popular.manga'"
+  },
+  {
+    "name": "roles.admin.username",
+    "type": "java.lang.String",
+    "description": "A description for 'roles.admin.username'"
+  },
+  {
+    "name": "roles.user.username",
+    "type": "java.lang.String",
+    "description": "A description for 'roles.user.username'"
+  },
+  {
+    "name": "roles.user.password",
+    "type": "java.lang.String",
+    "description": "A description for 'roles.user.password'"
+  },
+  {
+    "name": "roles.admin.password",
+    "type": "java.lang.String",
+    "description": "A description for 'roles.admin.password'"
   }
 ]}
