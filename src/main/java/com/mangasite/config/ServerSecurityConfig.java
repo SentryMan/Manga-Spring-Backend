@@ -24,6 +24,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableReactiveMethodSecurity
 public class ServerSecurityConfig {
 
+  public static final String ADMIN = "ADMIN";
+  public static final String USER = "USER";
+
   @Value("${roles.admin.username}")
   String adminUsername;
 
@@ -42,11 +45,11 @@ public class ServerSecurityConfig {
 
     final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     final var userDetails =
-        User.withUsername(userUsername).password(encoder.encode("Reference")).roles("USER").build();
+        User.withUsername(userUsername).password(encoder.encode(userPassword)).roles(USER).build();
     final var adminDetails =
         User.withUsername(adminUsername)
             .password(encoder.encode(adminPassword))
-            .roles("USER", "ADMIN")
+            .roles(USER, ADMIN)
             .build();
 
     return new MapReactiveUserDetailsService(userDetails, adminDetails);
@@ -55,7 +58,7 @@ public class ServerSecurityConfig {
   // RSocket Security configuration
   @Bean
   public RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
-    final RSocketMessageHandler handler = new RSocketMessageHandler();
+    final var handler = new RSocketMessageHandler();
     handler
         .getArgumentResolverConfigurer()
         .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
@@ -67,7 +70,7 @@ public class ServerSecurityConfig {
   public PayloadSocketAcceptorInterceptor authorization(RSocketSecurity security) {
     security
         .authorizePayload(
-            authorize -> authorize.setup().hasAnyRole("USER", "ADMIN").anyExchange().permitAll())
+            authorize -> authorize.setup().hasAnyRole(USER, ADMIN).anyExchange().permitAll())
         .simpleAuthentication(Customizer.withDefaults());
     return security.build();
   }
@@ -80,9 +83,9 @@ public class ServerSecurityConfig {
         .disable()
         .authorizeExchange()
         .pathMatchers("/api/**")
-        .hasRole("USER")
+        .hasAnyRole(USER, ADMIN)
         .pathMatchers(HttpMethod.GET, "admin/KatanaFish")
-        .hasRole("ADMIN")
+        .hasRole(ADMIN)
         .pathMatchers("/**")
         .permitAll()
         .and()
