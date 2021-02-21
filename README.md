@@ -1,3 +1,5 @@
 # Manga-Spring.com
 
-A live website built using Angular, Java, Javascript, SpringBoot, MongoDB, CSS, and Other Technologies for reading manga
+This is the backend to [manga-spring](manga-spring.com) built using Java, SpringBoot, RSocket, MongoDB, and Other Technologies 
+
+
