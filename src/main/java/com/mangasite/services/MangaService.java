@@ -136,21 +136,19 @@ public class MangaService {
     // return a flux that watches the changestream and returns the full document
     return reactiveMongoTemplate
         .changeStream("Manga", options, Manga.class)
-        .filter(e -> !isServer||activeConnections.intValue() < 1  )
+        .filter(e -> !isServer || activeConnections.intValue() < 1)
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .doOnNext(
             event -> {
               final var changedManga = event.getBody();
               final var operation = event.getOperationType();
 
-
               switch (operation) {
                 case DELETE ->  savedData.refreshCache();
 
                 case INSERT -> operation.getValue();
 
-                default ->
-                savedData.updateList(List.of(changedManga));
+                default -> savedData.updateList(List.of(changedManga));
               }
 
               if (changedManga != null)
