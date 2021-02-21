@@ -45,7 +45,7 @@ public class ServerSecurityConfig {
 
     final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     final var userDetails =
-        User.withUsername(userUsername).password(encoder.encode("Reference")).roles(USER).build();
+        User.withUsername(userUsername).password(encoder.encode(userPassword)).roles(USER).build();
     final var adminDetails =
         User.withUsername(adminUsername)
             .password(encoder.encode(adminPassword))
@@ -58,7 +58,7 @@ public class ServerSecurityConfig {
   // RSocket Security configuration
   @Bean
   public RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
-    final RSocketMessageHandler handler = new RSocketMessageHandler();
+    final var handler = new RSocketMessageHandler();
     handler
         .getArgumentResolverConfigurer()
         .addCustomResolver(new AuthenticationPrincipalArgumentResolver());

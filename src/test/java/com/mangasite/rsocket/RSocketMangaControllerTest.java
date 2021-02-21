@@ -13,7 +13,6 @@ import org.springframework.security.rsocket.metadata.UsernamePasswordMetadata;
 import org.springframework.util.MimeTypeUtils;
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.domain.requests.SetupPayload;
 import io.rsocket.exceptions.RejectedSetupException;
 import io.rsocket.metadata.WellKnownMimeType;
 import reactor.core.publisher.Mono;
@@ -36,7 +35,7 @@ class RSocketMangaControllerTest {
                 rSocketConnector ->
                     rSocketConnector.reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2))))
             .dataMimeType(MediaType.APPLICATION_CBOR)
-            .setupData(new SetupPayload("test", "SECRET"))
+            .setupData("Test")
             .setupMetadata(
                 new UsernamePasswordMetadata("Jojo", "Reference"),
                 MimeTypeUtils.parseMimeType(
