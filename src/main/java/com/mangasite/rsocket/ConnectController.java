@@ -1,5 +1,6 @@
 package com.mangasite.rsocket;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.invocation.MethodArgumentResolutionException;
@@ -17,6 +18,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ConnectController {
 
+  private final AtomicInteger activeConnections;
+
   @ConnectMapping
   public Mono<Void> onConnect(
       RSocketRequester rSocketRequester, @Payload SetupPayload setupPayload) {
@@ -30,17 +33,21 @@ public class ConnectController {
           .rsocket()
           .onClose()
           .doFirst(
-              () -> System.out.println("Client: " + setupPayload.getClientName() + " CONNECTED"))
-          .doOnError(
-              error ->
-                  // Warn when channels are closed by clients
-                  System.out.println(
-                      "Channel to client " + setupPayload.getClientName() + " CLOSED"))
+              () -> {
+                System.out.println("Client: " + setupPayload.getClientName() + " CONNECTED");
+                System.out.println(
+                    "Total Active Connections: " + activeConnections.incrementAndGet());
+              })
           .doFinally(
-              f -> System.out.println("Client " + setupPayload.getClientName() + " DISCONNECTED"))
+              f -> {
+                System.out.println("Client " + setupPayload.getClientName() + " DISCONNECTED");
+                System.out.println(
+                    "Total Active Connections: " + activeConnections.decrementAndGet());
+              })
           .subscribe(
               null,
               error ->
+                  // Warn when channels are closed by clients
                   System.err.println(
                       "Client " + setupPayload.getClientName() + " Closed Connection With Error"),
               () -> System.out.println("Connection Closed"));

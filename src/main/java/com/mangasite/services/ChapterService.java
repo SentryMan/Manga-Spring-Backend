@@ -189,7 +189,11 @@ public class ChapterService {
                 .map(
                     r ->
                         new ChapterChangeRequest(
-                            r.getMangaId(), r.getChapterIndex().replace("Chapter ", ""), "", 0, ""))
+                            r.getMangaId(),
+                            r.getChapterIndex().replace("Chapter ", ""),
+                            r.getChapterName(),
+                            0,
+                            ""))
                 .distinct()
                 .collect(Collectors.toList());
         return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));

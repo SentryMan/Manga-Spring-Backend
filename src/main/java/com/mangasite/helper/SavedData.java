@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.mangasite.domain.Manga;
@@ -26,7 +25,7 @@ import reactor.core.publisher.Flux;
 @Component
 public class SavedData {
 
-  @Autowired private final MangaRepo repo;
+  private final MangaRepo repo;
 
   private Flux<Manga> multicastMangaListFlux = Flux.empty();
   private Flux<Manga> popularManga;
@@ -39,7 +38,7 @@ public class SavedData {
     multicastMangaListFlux = repo.findAll().share().cache(Duration.ofMillis(10000));
     popularManga = popular(popularMangaAlias);
     recentManga = repo.findByLd(new Date().getTime() / 1000 - 604800, new Date().getTime() / 1000);
-    startLoad();
+    loadManga();
   }
 
   public void awaitLatch() {
@@ -52,11 +51,11 @@ public class SavedData {
 
   // this will get the data from the database on startup
 
-  public void startLoad() {
+  public void loadManga() {
     this.dataLatch = new CountDownLatch(1);
     System.out.println("\nLoading Data");
 
-    Flux.from(multicastMangaListFlux)
+    multicastMangaListFlux
         .collectList()
         .subscribe(
             mangalist -> {
@@ -113,5 +112,17 @@ public class SavedData {
       }
     }
     savedList.addAll(updatedManga);
+  }
+
+  public void refreshCache() {
+    repo.findAll()
+        .collectList()
+        .subscribe(
+            mangalist -> {
+              System.out.println("Refreshed List");
+              this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
+              this.savedList = mangalist;
+            },
+            e -> System.err.println(e));
   }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 public class PageChangeRequest {
   private Integer mangaId;
   private String chapterIndex;
+  private String chapterName = "";
   private Integer pageIndex = 0;
   private String pageURL;
   private boolean usingAutoIncrement;
