@@ -78,7 +78,9 @@ public class ServerSecurityConfig {
   @Bean
   @Primary
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http.authorizeExchange()
+    http.csrf()
+        .disable()
+        .authorizeExchange()
         .pathMatchers("/api/**")
         .hasRole(ADMIN)
         .pathMatchers("/**")
