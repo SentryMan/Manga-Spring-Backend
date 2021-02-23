@@ -1,0 +1,18 @@
+popular:
+  manga: one-punch-man, record-of-ragnarock, vagabond, one-piece, fate-redline
+roles:
+  admin:
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
+  user:
+    username: ${USER_USERNAME}
+    password: ${USER_PASSWORD}
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+  rsocket:
+    server:
+      mapping-path: /rsocket
+      port: 6969
+      transport: websocket
