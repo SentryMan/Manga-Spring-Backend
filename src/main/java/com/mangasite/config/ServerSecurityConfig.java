@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
@@ -17,6 +16,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import com.mangasite.service.jwt.TokenService;
 
 @EnableRSocketSecurity
 @EnableWebFluxSecurity
@@ -66,11 +66,20 @@ public class ServerSecurityConfig {
   }
 
   @Bean
-  public PayloadSocketAcceptorInterceptor authorization(RSocketSecurity security) {
+  public PayloadSocketAcceptorInterceptor authorization(
+      RSocketSecurity security, TokenService tokenService) {
     security
         .authorizePayload(
-            authorize -> authorize.setup().hasAnyRole(USER, ADMIN).anyExchange().permitAll())
-        .simpleAuthentication(Customizer.withDefaults());
+            authorize ->
+                authorize
+                    .setup()
+                    .hasAnyRole(USER, ADMIN)
+                    .anyRequest()
+                    .authenticated()
+                    .anyExchange()
+                    .permitAll())
+        .jwt(jwtSpec -> jwtSpec.authenticationManager(tokenService::authenticateToken));
+
     return security.build();
   }
 
@@ -81,6 +90,8 @@ public class ServerSecurityConfig {
     http.csrf()
         .disable()
         .authorizeExchange()
+        .pathMatchers("/api/getToken")
+        .hasRole(USER)
         .pathMatchers("/api/**")
         .hasRole(ADMIN)
         .pathMatchers("/**")

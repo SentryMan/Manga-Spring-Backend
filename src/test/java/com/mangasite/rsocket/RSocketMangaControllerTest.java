@@ -2,13 +2,13 @@ package com.mangasite.rsocket;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.security.rsocket.metadata.BearerTokenMetadata;
 import org.springframework.security.rsocket.metadata.UsernamePasswordMetadata;
 import org.springframework.util.MimeTypeUtils;
 import com.mangasite.domain.Manga;
@@ -17,7 +17,6 @@ import io.rsocket.exceptions.RejectedSetupException;
 import io.rsocket.metadata.WellKnownMimeType;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import reactor.util.retry.Retry;
 
 @SpringBootTest
 class RSocketMangaControllerTest {
@@ -26,18 +25,19 @@ class RSocketMangaControllerTest {
 
   String rsocketUri = "ws://localhost:6969/rsocket";
 
+  private final BearerTokenMetadata credentials =
+      new BearerTokenMetadata(
+          "eyJhbGciOiJIUzUxM9.eyJzdWIiOiJJQ2FuJ3RUaGlua09mQUdvb2RPbmUiLCJleHAiOjE2MTQyMjIwMzEsImlhdCI6MTYxNDIyMDIzMX0.Vzis1EWefvnl_V85fOQVwx9xezzn5Fl03H-FQYYBFCHEuZoKzhFIMggquYs1so1v8Uim4gIosRWd1LwnCw6OZw");
+
   @BeforeEach
   void before() {
 
     builder =
         builder
-            .rsocketConnector(
-                rSocketConnector ->
-                    rSocketConnector.reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2))))
             .dataMimeType(MediaType.APPLICATION_CBOR)
             .setupData("Test")
             .setupMetadata(
-                new UsernamePasswordMetadata("Jojo", "Reference"),
+                credentials,
                 MimeTypeUtils.parseMimeType(
                     WellKnownMimeType.MESSAGE_RSOCKET_AUTHENTICATION.getString()));
   }
@@ -73,8 +73,7 @@ class RSocketMangaControllerTest {
 
     final Mono<Manga> mono =
         requester
-            .route("get-manga")
-            .data(0)
+            .route("get-manga-0")
             .retrieveMono(Manga.class)
             .doOnError(Throwable::printStackTrace);
     StepVerifier.create(mono).expectNextCount(1).verifyComplete();
