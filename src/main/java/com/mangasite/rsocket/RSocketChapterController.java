@@ -2,6 +2,7 @@ package com.mangasite.rsocket;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -22,8 +23,8 @@ public class RSocketChapterController {
   private final ChapterService service;
   private AtomicInteger pageIndex = new AtomicInteger();
 
-  @MessageMapping("get-chapters")
-  public Mono<MangaChapters> getChapter(int id) {
+  @MessageMapping("get-chapters-{id}")
+  public Mono<MangaChapters> getChapter(@DestinationVariable("id") int id) {
     return service.getByID(id);
   }
 

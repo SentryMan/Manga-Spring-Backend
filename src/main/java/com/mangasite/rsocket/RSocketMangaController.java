@@ -1,5 +1,6 @@
 package com.mangasite.rsocket;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import com.mangasite.domain.Manga;
@@ -22,8 +23,8 @@ public class RSocketMangaController {
     return service.findAll();
   }
 
-  @MessageMapping("get-manga")
-  public Mono<Manga> getOne(int id) {
+  @MessageMapping("get-manga-{id}")
+  public Mono<Manga> getOne(@DestinationVariable("id") int id) {
 
     return service.findManga(id);
   }

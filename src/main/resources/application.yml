@@ -1,5 +1,20 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+  rsocket:
+    server:
+      port: 6969
+      mapping-path: /rsocket
+      transport: websocket
+jwt:
+  validity: 18000
+  secret:
+     key: ${SECRET_KEY}
+
 popular:
   manga: one-punch-man, record-of-ragnarock, vagabond, one-piece, fate-redline
+
 roles:
   admin:
     username: ${ADMIN_USERNAME}
@@ -7,12 +22,3 @@ roles:
   user:
     username: ${USER_USERNAME}
     password: ${USER_PASSWORD}
-spring:
-  data:
-    mongodb:
-      uri: ${MONGO_URI}
-  rsocket:
-    server:
-      mapping-path: /rsocket
-      port: 6969
-      transport: websocket
