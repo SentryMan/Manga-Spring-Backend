@@ -29,20 +29,6 @@ public class TokenService {
 
   private final MapReactiveUserDetailsService userService;
 
-  public Mono<Authentication> authenticateToken(Authentication authentication) {
-    final var jwt = authentication.getCredentials().toString();
-    final var parser = Jwts.parser().setSigningKey(key);
-
-    return Mono.fromSupplier(parser.parseClaimsJws(jwt)::getBody)
-        .map(Claims::getSubject)
-        .flatMap(subject -> userService.findByUsername(subject))
-        .switchIfEmpty(Mono.error(new RejectedSetupException("User Doesn't Exist")))
-        .map(
-            user ->
-                new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), null, user.getAuthorities()));
-  }
-
   public Mono<ServerResponse> getToken(ServerRequest request) {
     return request
         .principal()
@@ -58,5 +44,19 @@ public class TokenService {
                     .signWith(HS256, key)
                     .compact())
         .flatMap(ServerResponse.ok()::bodyValue);
+  }
+
+  public Mono<Authentication> authenticateToken(Authentication authentication) {
+    final var jwt = authentication.getCredentials().toString();
+    final var parser = Jwts.parser().setSigningKey(key);
+
+    return Mono.fromSupplier(parser.parseClaimsJws(jwt)::getBody)
+        .map(Claims::getSubject)
+        .flatMap(userService::findByUsername)
+        .switchIfEmpty(Mono.error(new RejectedSetupException("User Doesn't Exist")))
+        .map(
+            user ->
+                new UsernamePasswordAuthenticationToken(
+                    user.getUsername(), null, user.getAuthorities()));
   }
 }
