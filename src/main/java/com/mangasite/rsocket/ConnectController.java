@@ -1,12 +1,16 @@
 package com.mangasite.rsocket;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collection;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.invocation.MethodArgumentResolutionException;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import com.mangasite.services.ConnectService;
 import io.rsocket.exceptions.RejectedException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -16,34 +20,24 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ConnectController {
 
-  private final AtomicInteger activeConnections;
+  private final ConnectService service;
+  private final MapReactiveUserDetailsService userService;
 
   @ConnectMapping
-  public Mono<Void> onConnect(RSocketRequester rSocketRequester, @Payload String clientName) {
+  public Mono<Void> onConnect(
+      @Payload String clientName,
+      RSocketRequester rSocketRequester,
+      @AuthenticationPrincipal String authName) {
 
-    rSocketRequester
-        .rsocket()
-        .onClose()
-        .doFirst(
-            () -> {
-              System.out.println("Client: " + clientName + " CONNECTED");
-              System.out.println(
-                  "Total Active Connections: " + activeConnections.incrementAndGet());
-            })
-        .doFinally(
-            f -> {
-              System.out.println("Client " + clientName + " DISCONNECTED");
-              System.out.println(
-                  "Total Active Connections: " + activeConnections.decrementAndGet());
-            })
-        .subscribe(
-            null,
-            error ->
-                // Warn when channels are closed by clients
-                System.err.println("Client " + clientName + " Closed Connection With Error"),
-            () -> System.out.println("Connection Closed"));
+    service.handleIncomingConnection(rSocketRequester, clientName);
 
-    return Mono.empty();
+    return userService
+        .findByUsername(authName)
+        .map(UserDetails::getAuthorities)
+        .map(Collection::stream)
+        .filter(s -> s.noneMatch(a -> a.getAuthority().contains("ADMIN")))
+        .doOnNext(s -> service.watchUserStream(rSocketRequester, clientName))
+        .then();
   }
 
   @MessageExceptionHandler
