@@ -16,3 +16,9 @@ spring:
     server:
       mapping-path: /rsocket
       port: 6969
+      
+logging:
+    level:
+        io:
+         rsocket:
+#           FrameLogger: DEBUG
