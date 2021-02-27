@@ -8,7 +8,7 @@ import io.rsocket.RSocket;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Service Class That Returns Manga Chapters and Sets Missing IDs in a pinch
+ * Service Class That Handles RSocket Connections
  *
  * @author Josiah
  */
@@ -50,7 +50,7 @@ public class ConnectService {
   public void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
-        .route("")
+        .route("Yo Client, what's good?")
         .retrieveFlux(String.class)
         .subscribe(
             n -> System.out.println(CLIENT + clientName + " Is Currently Viewing: " + n), ex -> {});
