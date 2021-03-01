@@ -65,8 +65,9 @@ public class ServerSecurityConfig {
     return handler;
   }
 
+  // RSocket JWT Security Config
   @Bean
-  public PayloadSocketAcceptorInterceptor authorization(
+  public PayloadSocketAcceptorInterceptor rsocketTokenAcceptor(
       RSocketSecurity security, TokenService tokenService) {
     security
         .authorizePayload(

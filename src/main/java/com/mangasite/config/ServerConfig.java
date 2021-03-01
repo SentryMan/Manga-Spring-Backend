@@ -16,6 +16,7 @@ import io.rsocket.resume.InMemoryResumableFramesStore;
 @Configuration
 public class ServerConfig implements WebFluxConfigurer {
 
+  // Enable and Configure RSocket Resume
   @Bean
   RSocketServerCustomizer resumeCustomizer() {
     final var resumeConfig =

@@ -29,8 +29,9 @@ public class ConnectController {
       RSocketRequester rSocketRequester,
       @AuthenticationPrincipal String authName) {
 
-    service.handleIncomingConnection(rSocketRequester, clientName);
+    service.startConnectionLog(rSocketRequester, clientName);
 
+    // If Client isn't an Admin, Query Client for Chapters being read
     return userService
         .findByUsername(authName)
         .map(UserDetails::getAuthorities)

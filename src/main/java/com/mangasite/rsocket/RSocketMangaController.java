@@ -15,16 +15,13 @@ public class RSocketMangaController {
 
   private final MangaService service;
 
-  // Get Mappings
-
-  // Gets all manga currently stored
   @MessageMapping("get-mangas")
   public Flux<Manga> getAll() {
     return service.findAll();
   }
 
   @MessageMapping("get-manga-{id}")
-  public Mono<Manga> getOne(@DestinationVariable("id") int id) {
+  public Mono<Manga> getMangaByID(@DestinationVariable("id") int id) {
 
     return service.findManga(id);
   }

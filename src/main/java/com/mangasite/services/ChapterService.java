@@ -53,6 +53,11 @@ public class ChapterService {
     return repo.getByMangaName(name);
   }
 
+  /**
+   * Adds Chapters to a specific Manga
+   *
+   * @param requestList list of chapter requests to execute
+   */
   public Mono<Tuple2<Manga, MangaChapters>> addChapter(List<ChapterChangeRequest> requestList) {
 
     return mangaRepo
@@ -72,6 +77,11 @@ public class ChapterService {
         .doOnNext(t2 -> savedData.updateList(List.of(t2.getT1())));
   }
 
+  /**
+   * Adds Pages to a Chapter
+   *
+   * @param requestList list of page requests to execute
+   */
   public Flux<String> updatePageLink(List<PageChangeRequest> requestList) {
 
     return repo.getByRealID(requestList.get(0).getMangaId())
@@ -102,6 +112,12 @@ public class ChapterService {
         .doOnNext(System.out::println);
   }
 
+  /**
+   * Consumer that appends new chapters
+   *
+   * @param manga the current manga that's being modified
+   * @param mangaChapters the chapter object being modified
+   */
   private Consumer<ChapterChangeRequest> processChapterRequests(
       Manga manga, MangaChapters mangaChapters) {
 
@@ -132,6 +148,11 @@ public class ChapterService {
     };
   }
 
+  /**
+   * Consumer that appends/updates pages to a chapter
+   *
+   * @param mangaChapters the chapter object being modified
+   */
   private Consumer<PageChangeRequest> processPageRequests(MangaChapters chapters) {
 
     return r -> {
@@ -163,6 +184,11 @@ public class ChapterService {
     };
   }
 
+  /**
+   * Function to add new chapter if a pageRequest is for a non-existent chapter
+   *
+   * @param request List of page requests to check
+   */
   private Function<MangaChapters, Mono<MangaChapters>> chapterExistsFunc(
       List<PageChangeRequest> request) {
     return c -> {
@@ -200,6 +226,7 @@ public class ChapterService {
       } else return Mono.just(c);
     };
   }
+
   /**
    * This method adds numerical IDs to Chapters <br>
    * Use in the event that there are missing IDs in the database

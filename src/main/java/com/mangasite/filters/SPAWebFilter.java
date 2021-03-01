@@ -9,9 +9,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class SPAWebFilter implements WebFilter {
 
-  /**
-   * This effectively serves as a View Controller by mutating non-api paths into an Angular route
-   */
+  /** Redirects Angular requests to Angular Router */
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     final String path = exchange.getRequest().getURI().getPath();

@@ -6,14 +6,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.mangasite.domain.Manga;
 import com.mangasite.repos.MangaRepo;
 import lombok.Data;
-import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 
 /**
@@ -31,7 +28,6 @@ public class SavedData {
   private Flux<Manga> popularManga;
   private Flux<Manga> recentManga;
   private List<Manga> savedList = new ArrayList<>();
-  private CountDownLatch dataLatch;
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
     this.repo = repo;
@@ -41,18 +37,9 @@ public class SavedData {
     loadManga();
   }
 
-  public void awaitLatch() {
-    try {
-      dataLatch.await();
-    } catch (final InterruptedException e) {
-      throw Exceptions.propagate(e);
-    }
-  }
-
   // this will get the data from the database on startup
 
   public void loadManga() {
-    this.dataLatch = new CountDownLatch(1);
     System.out.println("\nLoading Data");
 
     multicastMangaListFlux
@@ -62,7 +49,6 @@ public class SavedData {
               System.out.println("Data Loaded");
               this.multicastMangaListFlux = Flux.fromIterable(mangalist).share();
               this.savedList = mangalist;
-              dataLatch.countDown();
             },
             e -> System.err.println(e));
   }
@@ -101,7 +87,7 @@ public class SavedData {
    */
   public void updateList(List<Manga> updatedManga) {
 
-    final Set<String> nameSet = new HashSet<>();
+    final var nameSet = new HashSet<String>();
     updatedManga.stream().map(Manga::getA).forEach(nameSet::add);
     final Iterator<Manga> itr = savedList.iterator();
     while (itr.hasNext()) {

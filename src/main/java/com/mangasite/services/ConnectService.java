@@ -20,7 +20,13 @@ public class ConnectService {
   private final AtomicInteger activeConnections;
   private final Map<String, RSocketRequester> responderMap;
 
-  public void handleIncomingConnection(RSocketRequester rSocketRequester, String clientName) {
+  /**
+   * Logs Rsocket Connect/Discconect events
+   *
+   * @param rSocketRequester The clients RSocket
+   * @param clientName The name of the client
+   */
+  public void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
         .rsocketClient()
@@ -47,6 +53,12 @@ public class ConnectService {
             () -> System.out.println("Connection Closed"));
   }
 
+  /**
+   * Request User chapter information from client
+   *
+   * @param rSocketRequester The clients RSocket
+   * @param clientName The name of the client
+   */
   public void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester

@@ -4,7 +4,6 @@ import static com.mongodb.client.model.changestream.OperationType.DELETE;
 import static reactor.core.scheduler.Schedulers.boundedElastic;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -99,7 +98,6 @@ public class MangaService {
    */
   public Mono<Manga> postNewManga(MangaChangeRequest request) {
 
-    savedData.awaitLatch();
     System.out.println("Populating Database");
 
     return Mono.just(request)
@@ -129,13 +127,16 @@ public class MangaService {
         .doOnNext(savedData::addToList);
   }
 
+  /**
+   * Creates a Flux that watches the mongo change stream and returns updated manga;
+   *
+   * @return Mongo ChangeStream Flux
+   */
   public Flux<Manga> watchDBChanges(boolean isServer) {
-    // set changestream options to watch for any changes to the manga collection
-    final var options = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
+    final var fulldocOption = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
 
-    // return a flux that watches the changestream and returns the full document
     return reactiveMongoTemplate
-        .changeStream("Manga", options, Manga.class)
+        .changeStream("Manga", fulldocOption, Manga.class)
         .filter(e -> !isServer || activeConnections.intValue() < 1)
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .doOnNext(
@@ -144,11 +145,16 @@ public class MangaService {
               final var operation = event.getOperationType();
 
               switch (operation) {
-                case DELETE ->  savedData.refreshCache();
+                case DELETE:
+                  savedData.refreshCache();
+                  break;
 
-                case INSERT -> operation.getValue();
+                case INSERT:
+                  operation.getValue();
+                  break;
 
-                default -> savedData.updateList(List.of(changedManga));
+                default:
+                  savedData.updateList(List.of(changedManga));
               }
 
               if (changedManga != null)
@@ -297,10 +303,10 @@ public class MangaService {
   public int setID() {
 
     int id = 0;
-    Optional<Manga> manga;
     do {
       final int ID = id;
-      manga = savedData.getSavedList().stream().filter(m -> m.getRealID() == ID).findAny();
+      final var manga =
+          savedData.getSavedList().stream().filter(m -> m.getRealID() == ID).findAny();
 
       if (manga.isPresent() || !iDSet.add(id)) {
         iDSet.add(id);
