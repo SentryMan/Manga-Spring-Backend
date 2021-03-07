@@ -1,5 +1,7 @@
 package com.mangasite.services;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -19,15 +21,14 @@ public class ConnectService {
   private static final String CLIENT = "Client: ";
   private final AtomicInteger activeConnections;
   private final Map<String, RSocketRequester> responderMap;
-
   /**
-   * Logs Rsocket Connect/Discconect events
+   * Logs Rsocket Connect/Disconnect events
    *
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
   public void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
-
+    final var startTime = Instant.now();
     rSocketRequester
         .rsocketClient()
         .source()
@@ -40,9 +41,13 @@ public class ConnectService {
             })
         .doFinally(
             f -> {
-              System.out.println(CLIENT + clientName + " DISCONNECTED");
+              final var connectionLifetime =
+                  Duration.between(startTime, Instant.now()).getSeconds();
+
               System.out.println(
-                  "Total Active Connections: " + activeConnections.decrementAndGet());
+                  CLIENT + clientName + " DISCONNECTED after " + connectionLifetime + " Seconds");
+              System.out.println(
+                  "Total Remaining Connections: " + activeConnections.decrementAndGet());
               responderMap.remove(clientName);
             })
         .subscribe(
