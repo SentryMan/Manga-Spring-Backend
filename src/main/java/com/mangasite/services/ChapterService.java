@@ -126,13 +126,13 @@ public class ChapterService {
       chapter.setChapterIndex("Chapter " + request.getChapterIndex());
       chapter.setImages(List.of(List.of(0, request.getFirstPageURL(), "", "")));
 
-      final var images = mangaChapters.getImages();
+      final var images = mangaChapters.getChapters();
       images.add(chapter);
 
       if (request.getUpdateDate() > manga.getLd()) manga.setLd(request.getUpdateDate());
 
-      final var chapters = manga.getInfo().getChapters();
-      chapters.add(
+      final var mangaInfoChapters = manga.getInfo().getChapters();
+      mangaInfoChapters.add(
           List.of(
               request.getChapterIndex(),
               "" + request.getUpdateDate(),
@@ -141,9 +141,9 @@ public class ChapterService {
 
       images.sort(
           Comparator.comparing(chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
-      chapters.sort(Comparator.comparing(l -> Double.parseDouble(l.get(0))));
+      mangaInfoChapters.sort(Comparator.comparing(l -> Double.parseDouble(l.get(0))));
       Collections.reverse(images);
-      Collections.reverse(chapters);
+      Collections.reverse(mangaInfoChapters);
       System.out.println(chapter.getChapterIndex() + " Added");
     };
   }
@@ -158,7 +158,7 @@ public class ChapterService {
     return r -> {
       final var pageOp =
           chapters
-              .getImages()
+              .getChapters()
               .stream()
               .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
               .map(Chapter::getImages)
@@ -169,7 +169,7 @@ public class ChapterService {
       if (pageOp.isEmpty()) {
 
         chapters
-            .getImages()
+            .getChapters()
             .stream()
             .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
             .map(Chapter::getImages)
@@ -194,7 +194,7 @@ public class ChapterService {
     return c -> {
       final var existingChapterIndice = new ArrayList<Double>();
 
-      c.getImages()
+      c.getChapters()
           .stream()
           .map(Chapter::getChapterIndex)
           .map(s -> s.replace("Chapter ", ""))

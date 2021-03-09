@@ -15,11 +15,11 @@ public class MangaChapters {
   @Id private BigInteger id;
   private Integer RealID;
   private String mangaName;
-  private List<Chapter> images;
+  private List<Chapter> chapters;
 
   public MangaChapters(String mangaName, int realID, List<Chapter> pageList) {
     this.mangaName = mangaName;
-    images = pageList;
+    chapters = pageList;
     this.RealID = realID;
   }
 
@@ -27,10 +27,10 @@ public class MangaChapters {
 
     final var chapter = new Chapter();
     chapter.setChapterIndex("Chapter " + index);
-    final List<List<Object>> imageList = List.of(List.of(0, firstPageURL, "", ""));
+    final List<List<Object>> imageList = List.of(List.of(0, firstPageURL));
     chapter.setImages(imageList);
     this.mangaName = mangaName;
-    images = List.of(chapter);
+    chapters = List.of(chapter);
     this.RealID = realID;
   }
 }
