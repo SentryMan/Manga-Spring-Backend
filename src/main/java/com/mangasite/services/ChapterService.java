@@ -65,7 +65,7 @@ public class ChapterService {
         .zipWith(
             repo.getByRealID(requestList.get(0).getMangaId()),
             (m, c) -> {
-              System.out.println("Updating " + m.getT() + "\n RealID: " + m.getRealID());
+              System.out.println("Updating " + m.getT() + "\nRealID: " + m.getRealID());
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               requestList.forEach(processChapterRequests(m, c));
@@ -129,8 +129,9 @@ public class ChapterService {
       final var images = mangaChapters.getChapters();
       images.add(chapter);
 
-      if (request.getUpdateDate() > manga.getLd()) manga.setLd(request.getUpdateDate());
-
+      if (request.getUpdateDate() > manga.getLd()) {
+        manga.setLd(request.getUpdateDate());
+      }
       final var mangaInfoChapters = manga.getInfo().getChapters();
       mangaInfoChapters.add(
           List.of(

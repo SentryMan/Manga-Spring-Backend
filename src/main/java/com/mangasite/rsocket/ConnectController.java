@@ -15,6 +15,8 @@ import io.rsocket.exceptions.RejectedException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.function.TupleUtils;
+import reactor.util.function.Tuples;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,7 +39,9 @@ public class ConnectController {
         .map(UserDetails::getAuthorities)
         .map(Collection::stream)
         .filter(s -> s.noneMatch(a -> a.getAuthority().contains("ADMIN")))
-        .doOnNext(s -> service.watchUserStream(rSocketRequester, clientName))
+        .map(s -> Tuples.of(rSocketRequester, clientName))
+        .doOnNext(TupleUtils.consumer(service::watchUserStream))
+        .doOnNext(TupleUtils.consumer(service::requestDeviceInfo))
         .then();
   }
 
