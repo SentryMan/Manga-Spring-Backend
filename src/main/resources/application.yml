@@ -22,3 +22,8 @@ roles:
   user:
     username: ${USER_USERNAME}
     password: ${USER_PASSWORD}
+logging:
+    level:
+        io:
+         rsocket:
+#           FrameLogger: DEBUG
