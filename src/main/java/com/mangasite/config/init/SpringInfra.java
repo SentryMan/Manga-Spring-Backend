@@ -1,4 +1,4 @@
-package com.mangasite.config;
+package com.mangasite.config.init;
 
 import java.util.Collection;
 import java.util.Set;
@@ -12,7 +12,7 @@ import org.springframework.init.func.FunctionalInstallerImportRegistrars;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureProvider;
 
-public class BasicInit implements InfrastructureProvider {
+public class SpringInfra implements InfrastructureProvider {
 
   @Override
   public Collection<? extends ApplicationContextInitializer<GenericApplicationContext>>
