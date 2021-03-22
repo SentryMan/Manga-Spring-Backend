@@ -16,7 +16,8 @@ public class SpringInfra implements InfrastructureProvider {
 
   @Override
   public Collection<? extends ApplicationContextInitializer<GenericApplicationContext>>
-      getInitializers(GenericApplicationContext main) {
+      getInitializers(GenericApplicationContext context) {
+
     return Set.of(
         ac ->
             ac.registerBean(

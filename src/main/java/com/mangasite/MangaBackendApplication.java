@@ -15,9 +15,13 @@ import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfigurati
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.fu.jafu.JafuApplication;
-import com.mangasite.config.init.RegistrarDeferredInitializer;
+import org.springframework.init.func.ImportRegistrars;
+import org.springframework.init.func.InfrastructureUtils;
+import com.mangasite.config.init.ConditionServiceInitializer;
 
 @EnableReactiveMongoRepositories
 @SpringBootApplication(
@@ -40,8 +44,14 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
 
+    final ApplicationContextInitializer<GenericApplicationContext> delayedRegisterInit =
+        context ->
+            InfrastructureUtils.getBean(context.getBeanFactory(), ImportRegistrars.class)
+                .processDeferred(context);
+
     JafuApplication app =
-        reactiveWebApplication(dsl -> dsl.enable(new RegistrarDeferredInitializer()));
+        reactiveWebApplication(
+            dsl -> dsl.enable(new ConditionServiceInitializer()).enable(delayedRegisterInit));
 
     app.run(args);
   }
