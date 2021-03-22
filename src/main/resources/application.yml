@@ -1,3 +1,6 @@
+context: 
+  initializer:
+    classes: com.mangasite.MangaBackendApplicationInitializer
 spring:
   data:
     mongodb:
