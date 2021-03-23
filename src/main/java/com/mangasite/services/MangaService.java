@@ -308,13 +308,12 @@ public class MangaService {
       final var manga =
           savedData.getSavedList().stream().filter(m -> m.getRealID() == ID).findAny();
 
-      if (manga.isPresent() || !iDSet.add(id)) {
-        iDSet.add(id);
-        id++;
-      } else {
+      if (!manga.isPresent() && iDSet.add(id)) {
         iDSet.add(id);
         break;
       }
+      iDSet.add(id);
+      id++;
 
     } while (true);
 

@@ -14,12 +14,12 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 public class ServerConfig implements WebFluxConfigurer {
 
   @Bean
-  AtomicInteger activeConnections() {
+  public AtomicInteger activeConnections() {
     return new AtomicInteger();
   }
 
   @Bean
-  Map<String, RSocketRequester> requesterMap() {
+  public Map<String, RSocketRequester> requesterMap() {
     return new HashMap<>();
   }
 

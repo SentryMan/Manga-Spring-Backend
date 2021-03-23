@@ -54,7 +54,7 @@ public class SavedData {
   }
 
   /**
-   * @param popularManga2
+   * @param popularMangaAlias
    * @return a flux resolving into the popular list of manga<br>
    *     sourced from the DB
    */

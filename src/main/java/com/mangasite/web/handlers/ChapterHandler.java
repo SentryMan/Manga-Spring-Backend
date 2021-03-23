@@ -2,7 +2,6 @@ package com.mangasite.web.handlers;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -10,12 +9,14 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class ChapterHandler {
 
-  @Autowired private ChapterService service;
+  private final ChapterService service;
   private AtomicInteger pageIndex = new AtomicInteger();
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {

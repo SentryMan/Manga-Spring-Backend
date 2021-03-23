@@ -1,3 +1,6 @@
+context: 
+  initializer:
+    classes: com.mangasite.MangaBackendApplicationInitializer
 spring:
   data:
     mongodb:
@@ -13,7 +16,7 @@ jwt:
      key: ${SECRET_KEY}
 
 popular:
-  manga: eminence-in-shadow, record-of-ragnarock, one-punch-man, one-piece, fate-redline
+  manga: fate-redline, vagabond, record-of-ragnarock, one-punch-man, eminence-in-shadow 
 
 roles:
   admin:

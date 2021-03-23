@@ -37,6 +37,9 @@ public class ConnectController {
     return userService
         .findByUsername(authName)
         .map(UserDetails::getAuthorities)
+        .doOnNext(
+            auth ->
+                System.out.println("Client: " + clientName + " is connected with Roles " + auth))
         .map(Collection::stream)
         .filter(s -> s.noneMatch(a -> a.getAuthority().contains("ADMIN")))
         .map(s -> Tuples.of(rSocketRequester, clientName))

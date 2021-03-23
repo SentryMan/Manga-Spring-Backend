@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -16,11 +15,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import com.mangasite.service.jwt.TokenService;
+import com.mangasite.services.TokenService;
 
 @EnableRSocketSecurity
 @EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
 public class ServerSecurityConfig {
 
   public static final String ADMIN = "ADMIN";
@@ -74,7 +72,11 @@ public class ServerSecurityConfig {
             authorize ->
                 authorize
                     .setup()
-                    .hasAnyRole(USER, ADMIN)
+                    .authenticated()
+                    .route("new-chapter")
+                    .hasRole(ADMIN)
+                    .route("update-page-channel")
+                    .hasRole(USER)
                     .anyRequest()
                     .authenticated()
                     .anyExchange()
