@@ -14,6 +14,7 @@ public class ConditionServiceInitializer
   @Override
   public void initialize(GenericApplicationContext context) {
 
+    // fix RSocket Condition
     final var fallBackConditionService =
         new SimpleConditionService(
             new AnnotationMetadataConditionService(context),

@@ -15,7 +15,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import com.mangasite.service.jwt.TokenService;
+import com.mangasite.services.TokenService;
 
 @EnableRSocketSecurity
 @EnableWebFluxSecurity

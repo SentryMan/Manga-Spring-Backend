@@ -1,4 +1,4 @@
-package com.mangasite.service.jwt;
+package com.mangasite.services;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import java.security.Principal;
