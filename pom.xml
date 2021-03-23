@@ -10,15 +10,16 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mangasite</groupId>
-	<artifactId>MangaBackend</artifactId>
+	<artifactId>manga-backend</artifactId>
 	<version>2.0.0</version>
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring</description>
 
 	<properties>
-		<java.version>15</java.version>
-		<maven.compiler.target>15</maven.compiler.target>
-		<maven.compiler.source>15</maven.compiler.source>
+		<java.version>11</java.version>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<start-class>com.mangasite.MangaBackendApplication</start-class>
 	</properties>
 
 
@@ -143,7 +144,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-messaging</artifactId>
 		</dependency>
-		
+
 		<!--/Boot Dependencies -->
 
 		<dependency>
@@ -156,6 +157,14 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
+
+		<!-- GraalVM Stuff -->
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-native</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+
 	</dependencies>
 
 
@@ -165,6 +174,10 @@
 			<plugin>
 				<groupId>org.springframework.experimental</groupId>
 				<artifactId>spring-init-maven-plugin</artifactId>
+				<configuration>
+					<closedWorld>true</closedWorld>
+					<customBinders>true</customBinders>
+				</configuration>
 				<executions>
 					<execution>
 						<id>sources</id>
@@ -175,17 +188,13 @@
 						<inherited>false</inherited>
 					</execution>
 				</executions>
-
-				<configuration>
-					<closedWorld>true</closedWorld>
-					<customBinders>true</customBinders>
-				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<classifier>exec</classifier>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -199,6 +208,26 @@
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>2.0.13</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-aot-maven-plugin</artifactId>
+				<version>0.9.0</version>
+				<executions>
+					<execution>
+						<id>test-generate</id>
+						<goals>
+							<goal>test-generate</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -225,6 +254,13 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+
+
+		<repository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -248,5 +284,42 @@
 				<enabled>true</enabled>
 			</releases>
 		</pluginRepository>
+		<pluginRepository>
+			<id>spring-release</id>
+			<name>Spring release</name>
+			<url>https://repo.spring.io/release</url>
+		</pluginRepository>
 	</pluginRepositories>
+
+	<profiles>
+		<profile>
+			<id>native-image</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.graalvm.nativeimage</groupId>
+						<artifactId>native-image-maven-plugin</artifactId>
+						<version>21.0.0.2</version>
+						<configuration>
+							<!-- The native image build needs to know the entry point to your 
+								application -->
+								<imageName>graal</imageName>
+							<mainClass>com.mangasite.MangaBackendApplication</mainClass>
+							<buildArgs>
+								--no-fallback
+							</buildArgs>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>native-image</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
