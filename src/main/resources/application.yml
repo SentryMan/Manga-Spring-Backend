@@ -16,7 +16,7 @@ jwt:
      key: ${SECRET_KEY}
 
 popular:
-  manga: eminence-in-shadow, record-of-ragnarock, one-punch-man, one-piece, fate-redline
+  manga: eminence-in-shadow, record-of-ragnarock, one-punch-man, vagabond, fate-redline
 
 roles:
   admin:

@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -20,7 +19,6 @@ import com.mangasite.service.jwt.TokenService;
 
 @EnableRSocketSecurity
 @EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
 public class ServerSecurityConfig {
 
   public static final String ADMIN = "ADMIN";
@@ -74,7 +72,11 @@ public class ServerSecurityConfig {
             authorize ->
                 authorize
                     .setup()
-                    .hasAnyRole(USER, ADMIN)
+                    .authenticated()
+                    .route("new-chapter")
+                    .hasRole(ADMIN)
+                    .route("update-page-channel")
+                    .hasRole(USER)
                     .anyRequest()
                     .authenticated()
                     .anyExchange()
