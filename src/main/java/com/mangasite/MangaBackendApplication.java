@@ -26,7 +26,6 @@ import com.mangasite.config.init.ConditionServiceInitializer;
 @EnableReactiveMongoRepositories
 @SpringBootApplication(
     exclude = {
-      JmxAutoConfiguration.class,
       AopAutoConfiguration.class,
       CacheAutoConfiguration.class,
       WebClientAutoConfiguration.class,
