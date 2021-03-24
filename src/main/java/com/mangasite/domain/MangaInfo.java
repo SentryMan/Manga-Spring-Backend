@@ -1,11 +1,9 @@
 package com.mangasite.domain;
 
-import java.io.Serializable;
 import java.util.List;
+import org.springframework.data.annotation.PersistenceConstructor;
 
-public class MangaInfo implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class MangaInfo {
 
   private String artist;
   private String author;
@@ -20,8 +18,22 @@ public class MangaInfo implements Serializable {
   private String description;
   private Integer released;
 
-  public static long getSerialversionuid() {
-    return serialVersionUID;
+  public MangaInfo() {}
+
+  @PersistenceConstructor
+  public MangaInfo(
+      String artist,
+      String author,
+      List<List<String>> chapters,
+      Double created,
+      String description,
+      Integer released) {
+    this.artist = artist;
+    this.author = author;
+    this.chapters = chapters;
+    this.created = created;
+    this.description = description;
+    this.released = released;
   }
 
   public String getArtist() {
