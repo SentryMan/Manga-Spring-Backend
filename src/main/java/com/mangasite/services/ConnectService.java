@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ServerMessage;
 import io.rsocket.RSocket;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Service Class That Handles RSocket Connections
@@ -18,12 +17,18 @@ import lombok.RequiredArgsConstructor;
  * @author Josiah
  */
 @Service
-@RequiredArgsConstructor
 public class ConnectService {
 
   private static final String CLIENT = "Client: ";
   private final AtomicInteger activeConnections;
   private final Map<String, RSocketRequester> responderMap;
+
+  public ConnectService(
+      AtomicInteger activeConnections, Map<String, RSocketRequester> responderMap) {
+    this.activeConnections = activeConnections;
+    this.responderMap = responderMap;
+  }
+
   /**
    * Logs Rsocket Connect/Disconnect events
    *

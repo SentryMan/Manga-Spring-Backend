@@ -4,11 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @Document(collection = "Chapters")
 public class MangaChapters {
 
@@ -16,6 +12,8 @@ public class MangaChapters {
   private Integer RealID;
   private String mangaName;
   private List<Chapter> chapters;
+
+  public MangaChapters() {}
 
   public MangaChapters(String mangaName, int realID, List<Chapter> pageList) {
     this.mangaName = mangaName;
@@ -32,5 +30,37 @@ public class MangaChapters {
     this.mangaName = mangaName;
     chapters = List.of(chapter);
     this.RealID = realID;
+  }
+
+  public BigInteger getId() {
+    return id;
+  }
+
+  public void setId(BigInteger id) {
+    this.id = id;
+  }
+
+  public Integer getRealID() {
+    return RealID;
+  }
+
+  public void setRealID(Integer realID) {
+    RealID = realID;
+  }
+
+  public String getMangaName() {
+    return mangaName;
+  }
+
+  public void setMangaName(String mangaName) {
+    this.mangaName = mangaName;
+  }
+
+  public List<Chapter> getChapters() {
+    return chapters;
+  }
+
+  public void setChapters(List<Chapter> chapters) {
+    this.chapters = chapters;
   }
 }

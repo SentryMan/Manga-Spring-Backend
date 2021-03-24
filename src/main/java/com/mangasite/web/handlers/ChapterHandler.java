@@ -9,15 +9,17 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class ChapterHandler {
 
   private final ChapterService service;
   private AtomicInteger pageIndex = new AtomicInteger();
+
+  public ChapterHandler(ChapterService service) {
+    this.service = service;
+  }
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {
     return ServerResponse.ok()

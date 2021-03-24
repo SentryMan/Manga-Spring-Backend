@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.mangasite.domain.Manga;
 import com.mangasite.repos.MangaRepo;
-import lombok.Data;
 import reactor.core.publisher.Flux;
 
 /**
@@ -18,15 +17,14 @@ import reactor.core.publisher.Flux;
  *
  * @author Josiah
  */
-@Data
 @Component
 public class SavedData {
 
   private final MangaRepo repo;
 
   private Flux<Manga> multicastMangaListFlux = Flux.empty();
-  private Flux<Manga> popularManga;
-  private Flux<Manga> recentManga;
+  private final Flux<Manga> popularManga;
+  private final Flux<Manga> recentManga;
   private List<Manga> savedList = new ArrayList<>();
 
   SavedData(MangaRepo repo, @Value("${popular.manga}") String[] popularMangaAlias) {
@@ -110,5 +108,29 @@ public class SavedData {
               this.savedList = mangalist;
             },
             e -> System.err.println(e));
+  }
+
+  public Flux<Manga> getMulticastMangaListFlux() {
+    return multicastMangaListFlux;
+  }
+
+  public Flux<Manga> getPopularManga() {
+    return popularManga;
+  }
+
+  public Flux<Manga> getRecentManga() {
+    return recentManga;
+  }
+
+  public List<Manga> getSavedList() {
+    return savedList;
+  }
+
+  public void setMulticastMangaListFlux(Flux<Manga> multicastMangaListFlux) {
+    this.multicastMangaListFlux = multicastMangaListFlux;
+  }
+
+  public void setSavedList(List<Manga> savedList) {
+    this.savedList = savedList;
   }
 }

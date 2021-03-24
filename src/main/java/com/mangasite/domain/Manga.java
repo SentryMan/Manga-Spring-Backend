@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.mangasite.domain.requests.MangaChangeRequest;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * A class that represents a single manga <br>
@@ -23,8 +21,6 @@ import lombok.NoArgsConstructor;
  *
  * @author Josiah
  */
-@Data
-@NoArgsConstructor
 @Document(collection = "Manga")
 public class Manga {
 
@@ -38,6 +34,8 @@ public class Manga {
   private Integer s;
   private String t;
   private MangaInfo info;
+
+  public Manga() {}
 
   public Manga(MangaChangeRequest request) {
     a = request.getAlias();
@@ -62,5 +60,85 @@ public class Manga {
     info.setChapters(list);
     info.setDescription(request.getDescription());
     info.setReleased(request.getReleaseDate());
+  }
+
+  public BigInteger getID() {
+    return ID;
+  }
+
+  public void setID(BigInteger iD) {
+    ID = iD;
+  }
+
+  public int getRealID() {
+    return RealID;
+  }
+
+  public void setRealID(int realID) {
+    RealID = realID;
+  }
+
+  public String getA() {
+    return a;
+  }
+
+  public void setA(String a) {
+    this.a = a;
+  }
+
+  public List<String> getC() {
+    return c;
+  }
+
+  public void setC(List<String> c) {
+    this.c = c;
+  }
+
+  public Integer getH() {
+    return h;
+  }
+
+  public void setH(Integer h) {
+    this.h = h;
+  }
+
+  public String getIm() {
+    return im;
+  }
+
+  public void setIm(String im) {
+    this.im = im;
+  }
+
+  public Integer getLd() {
+    return ld;
+  }
+
+  public void setLd(Integer ld) {
+    this.ld = ld;
+  }
+
+  public Integer getS() {
+    return s;
+  }
+
+  public void setS(Integer s) {
+    this.s = s;
+  }
+
+  public String getT() {
+    return t;
+  }
+
+  public void setT(String t) {
+    this.t = t;
+  }
+
+  public MangaInfo getInfo() {
+    return info;
+  }
+
+  public void setInfo(MangaInfo info) {
+    this.info = info;
   }
 }

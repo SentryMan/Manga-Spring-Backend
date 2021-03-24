@@ -2,11 +2,7 @@ package com.mangasite.domain;
 
 import java.io.Serializable;
 import java.util.List;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 public class MangaInfo implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -23,4 +19,56 @@ public class MangaInfo implements Serializable {
   private Double created;
   private String description;
   private Integer released;
+
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public String getArtist() {
+    return artist;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public List<List<String>> getChapters() {
+    return chapters;
+  }
+
+  public Double getCreated() {
+    return created;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public Integer getReleased() {
+    return released;
+  }
+
+  public void setArtist(String artist) {
+    this.artist = artist;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public void setChapters(List<List<String>> chapters) {
+    this.chapters = chapters;
+  }
+
+  public void setCreated(Double created) {
+    this.created = created;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setReleased(Integer released) {
+    this.released = released;
+  }
 }

@@ -17,7 +17,6 @@ import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.helper.SavedData;
 import com.mangasite.repos.ChapterRepo;
 import com.mangasite.repos.MangaRepo;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -29,7 +28,6 @@ import reactor.util.function.Tuples;
  * @author Josiah
  */
 @Service
-@RequiredArgsConstructor
 public class MangaService {
 
   private final AtomicInteger activeConnections;
@@ -39,6 +37,19 @@ public class MangaService {
   private final SavedData savedData;
 
   Set<Integer> iDSet = new HashSet<>();
+
+  public MangaService(
+      AtomicInteger activeConnections,
+      MangaRepo repo,
+      ChapterRepo chapterRepo,
+      ReactiveMongoTemplate reactiveMongoTemplate,
+      SavedData savedData) {
+    this.activeConnections = activeConnections;
+    this.repo = repo;
+    this.chapterRepo = chapterRepo;
+    this.reactiveMongoTemplate = reactiveMongoTemplate;
+    this.savedData = savedData;
+  }
 
   @PostConstruct
   private void watchDB() {
