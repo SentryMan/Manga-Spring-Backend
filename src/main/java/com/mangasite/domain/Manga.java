@@ -3,6 +3,7 @@ package com.mangasite.domain;
 import java.math.BigInteger;
 import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.mangasite.domain.requests.MangaChangeRequest;
 
@@ -35,7 +36,29 @@ public class Manga {
   private String t;
   private MangaInfo info;
 
-  public Manga() {}
+  @PersistenceConstructor
+  public Manga(
+      BigInteger iD,
+      int realID,
+      String a,
+      List<String> c,
+      Integer h,
+      String im,
+      Integer ld,
+      Integer s,
+      String t,
+      MangaInfo info) {
+    ID = iD;
+    RealID = realID;
+    this.a = a;
+    this.c = c;
+    this.h = h;
+    this.im = im;
+    this.ld = ld;
+    this.s = s;
+    this.t = t;
+    this.info = info;
+  }
 
   public Manga(MangaChangeRequest request) {
     a = request.getAlias();

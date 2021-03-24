@@ -3,6 +3,7 @@ package com.mangasite.domain;
 import java.math.BigInteger;
 import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Chapters")
@@ -13,7 +14,13 @@ public class MangaChapters {
   private String mangaName;
   private List<Chapter> chapters;
 
-  public MangaChapters() {}
+  @PersistenceConstructor
+  public MangaChapters(BigInteger id, Integer realID, String mangaName, List<Chapter> chapters) {
+    this.id = id;
+    RealID = realID;
+    this.mangaName = mangaName;
+    this.chapters = chapters;
+  }
 
   public MangaChapters(String mangaName, int realID, List<Chapter> pageList) {
     this.mangaName = mangaName;
