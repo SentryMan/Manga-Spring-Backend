@@ -222,7 +222,8 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>generate</id>
+						<id>sources</id>
+						<phase>process-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
