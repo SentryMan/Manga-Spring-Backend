@@ -1,7 +1,6 @@
 package com.mangasite;
 
 import static org.springframework.fu.jafu.Jafu.reactiveWebApplication;
-import static org.springframework.fu.jafu.webflux.WebFluxServerDsl.webFlux;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -22,6 +21,7 @@ import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureUtils;
 import com.mangasite.config.init.AppInitializer;
+import com.mangasite.config.init.NettyInitializer;
 
 @EnableReactiveMongoRepositories
 @SpringBootApplication(
@@ -50,7 +50,10 @@ public class MangaBackendApplication {
 
     JafuApplication app =
         reactiveWebApplication(
-            dsl -> dsl.enable(new AppInitializer()).enable(webFlux()).enable(delayedRegisterInit));
+            dsl ->
+                dsl.enable(new AppInitializer())
+                    .enable(new NettyInitializer())
+                    .enable(delayedRegisterInit));
 
     app.run(args);
   }
