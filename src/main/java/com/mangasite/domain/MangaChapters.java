@@ -15,9 +15,9 @@ public class MangaChapters {
   private List<Chapter> chapters;
 
   @PersistenceConstructor
-  public MangaChapters(BigInteger id, Integer realID, String mangaName, List<Chapter> chapters) {
+  public MangaChapters(BigInteger id, Integer RealID, String mangaName, List<Chapter> chapters) {
     this.id = id;
-    RealID = realID;
+    this.RealID = RealID;
     this.mangaName = mangaName;
     this.chapters = chapters;
   }

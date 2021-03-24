@@ -25,7 +25,7 @@ import com.mangasite.domain.requests.MangaChangeRequest;
 @Document(collection = "Manga")
 public class Manga {
 
-  @Id private BigInteger ID;
+  @Id private BigInteger id;
   private int RealID;
   private String a;
   private List<String> c;
@@ -38,8 +38,8 @@ public class Manga {
 
   @PersistenceConstructor
   public Manga(
-      BigInteger iD,
-      int realID,
+      BigInteger id,
+      int RealID,
       String a,
       List<String> c,
       Integer h,
@@ -48,8 +48,8 @@ public class Manga {
       Integer s,
       String t,
       MangaInfo info) {
-    ID = iD;
-    RealID = realID;
+    this.id = id;
+    this.RealID = RealID;
     this.a = a;
     this.c = c;
     this.h = h;
@@ -86,11 +86,11 @@ public class Manga {
   }
 
   public BigInteger getID() {
-    return ID;
+    return id;
   }
 
   public void setID(BigInteger iD) {
-    ID = iD;
+    id = iD;
   }
 
   public int getRealID() {
