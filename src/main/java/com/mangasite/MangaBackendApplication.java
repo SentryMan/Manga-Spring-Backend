@@ -1,6 +1,7 @@
 package com.mangasite;
 
 import static org.springframework.fu.jafu.Jafu.reactiveWebApplication;
+import static org.springframework.fu.jafu.webflux.WebFluxServerDsl.webFlux;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
@@ -19,7 +21,7 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureUtils;
-import com.mangasite.config.init.ConditionServiceInitializer;
+import com.mangasite.config.init.AppInitializer;
 
 @EnableReactiveMongoRepositories
 @SpringBootApplication(
@@ -34,6 +36,7 @@ import com.mangasite.config.init.ConditionServiceInitializer;
       UserDetailsServiceAutoConfiguration.class,
       ClientHttpConnectorAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
+      ReactiveWebServerFactoryAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
     })
 public class MangaBackendApplication {
@@ -47,7 +50,7 @@ public class MangaBackendApplication {
 
     JafuApplication app =
         reactiveWebApplication(
-            dsl -> dsl.enable(new ConditionServiceInitializer()).enable(delayedRegisterInit));
+            dsl -> dsl.enable(new AppInitializer()).enable(webFlux()).enable(delayedRegisterInit));
 
     app.run(args);
   }
