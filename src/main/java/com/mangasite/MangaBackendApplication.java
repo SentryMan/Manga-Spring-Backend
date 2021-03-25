@@ -1,6 +1,8 @@
 package com.mangasite;
 
 import static org.springframework.fu.jafu.Jafu.reactiveWebApplication;
+import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
+import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -19,26 +21,29 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureUtils;
-import org.springframework.nativex.hint.AccessBits;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.config.init.AppInitializer;
 import com.mangasite.config.init.NettyInitializer;
+import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.domain.requests.ServerMessage;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 // set native image reflective access
 @NativeHint(
     types =
         @TypeHint(
-            access = AccessBits.PUBLIC_CONSTRUCTORS,
+            access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
             types = {
               MangaChangeRequest.class,
               ChapterChangeRequest.class,
               PageChangeRequest.class,
-              ServerMessage.class
+              ServerMessage.class,
+              DeviceInfo.class,
+              ChangeStreamDocument.class,
             }))
 @SpringBootApplication(
     exclude = {

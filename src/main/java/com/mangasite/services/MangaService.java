@@ -17,6 +17,7 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -165,9 +166,13 @@ public class MangaService {
         .filter(e -> !e.getOperationType().equals(DELETE))
         .map(ChangeStreamEvent::getBody)
         .onErrorContinue(
-            (ex, o) -> System.err.println("Error processing " + o + " Exception is " + ex));
+            (ex, o) -> {
+              System.err.println("Error processing " + o + " Exception is " + ex);
+              ex.printStackTrace();
+            });
   }
 
+  ChangeStreamDocument c = null;
   Flux<Manga> mangaToBeDeleted = Flux.empty();
   Flux<MangaChapters> chaptersToBeDeleted = Flux.empty();
 
