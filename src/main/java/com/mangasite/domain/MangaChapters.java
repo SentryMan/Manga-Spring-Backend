@@ -15,18 +15,14 @@ public class MangaChapters {
   private List<Chapter> chapters;
 
   @PersistenceConstructor
-  public MangaChapters(BigInteger id, Integer RealID, String mangaName, List<Chapter> chapters) {
-    this.id = id;
+  public MangaChapters(int RealID, String mangaName, List<Chapter> chapters) {
+
     this.RealID = RealID;
     this.mangaName = mangaName;
     this.chapters = chapters;
   }
 
-  public MangaChapters(String mangaName, int realID, List<Chapter> pageList) {
-    this.mangaName = mangaName;
-    chapters = pageList;
-    this.RealID = realID;
-  }
+  public MangaChapters() {}
 
   public MangaChapters(String mangaName, int realID, String index, String firstPageURL) {
 

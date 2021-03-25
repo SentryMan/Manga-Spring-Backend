@@ -178,7 +178,7 @@ public class MangaService {
         .filter(e -> !e.getOperationType().equals(DELETE))
         .map(ChangeStreamEvent::getBody)
         .onErrorContinue(
-            (ex, o) -> System.err.println("Error processing " + o + "Exception is " + ex));
+            (ex, o) -> System.err.println("Error processing " + o + " Exception is " + ex));
   }
 
   Flux<Manga> mangaToBeDeleted = Flux.empty();

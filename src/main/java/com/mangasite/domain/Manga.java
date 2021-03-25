@@ -26,7 +26,7 @@ import com.mangasite.domain.requests.MangaChangeRequest;
 public class Manga {
 
   @Id private BigInteger id;
-  private int RealID;
+  private int realID;
   private String a;
   private List<String> c;
   private Integer h;
@@ -38,8 +38,7 @@ public class Manga {
 
   @PersistenceConstructor
   public Manga(
-      BigInteger id,
-      int RealID,
+      int realID,
       String a,
       List<String> c,
       Integer h,
@@ -48,8 +47,7 @@ public class Manga {
       Integer s,
       String t,
       MangaInfo info) {
-    this.id = id;
-    this.RealID = RealID;
+    this.realID = realID;
     this.a = a;
     this.c = c;
     this.h = h;
@@ -85,20 +83,12 @@ public class Manga {
     info.setReleased(request.getReleaseDate());
   }
 
-  public BigInteger getID() {
-    return id;
-  }
-
-  public void setID(BigInteger iD) {
-    id = iD;
-  }
-
   public int getRealID() {
-    return RealID;
+    return realID;
   }
 
   public void setRealID(int realID) {
-    RealID = realID;
+    this.realID = realID;
   }
 
   public String getA() {
@@ -163,5 +153,13 @@ public class Manga {
 
   public void setInfo(MangaInfo info) {
     this.info = info;
+  }
+
+  public BigInteger getId() {
+    return id;
+  }
+
+  public void setId(BigInteger id) {
+    this.id = id;
   }
 }

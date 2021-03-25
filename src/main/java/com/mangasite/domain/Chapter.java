@@ -1,6 +1,7 @@
 package com.mangasite.domain;
 
 import java.util.List;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Chapter {
 
@@ -12,6 +13,14 @@ public class Chapter {
    * [3] is y resolution
    */
   private List<List<Object>> images;
+
+  @PersistenceConstructor
+  public Chapter(String chapterIndex, List<List<Object>> images) {
+    this.chapterIndex = chapterIndex;
+    this.images = images;
+  }
+
+  public Chapter() {}
 
   public String getChapterIndex() {
     return chapterIndex;
