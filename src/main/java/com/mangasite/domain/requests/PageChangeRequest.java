@@ -8,7 +8,7 @@ public class PageChangeRequest {
   private String pageURL;
   private boolean usingAutoIncrement;
 
-  PageChangeRequest() {}
+  public PageChangeRequest() {}
 
   public String getChapterIndex() {
     return "Chapter " + chapterIndex;

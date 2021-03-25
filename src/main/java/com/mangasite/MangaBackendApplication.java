@@ -16,14 +16,30 @@ import org.springframework.boot.autoconfigure.web.reactive.function.client.Clien
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureUtils;
+import org.springframework.nativex.hint.AccessBits;
+import org.springframework.nativex.hint.NativeHint;
+import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.config.init.AppInitializer;
 import com.mangasite.config.init.NettyInitializer;
+import com.mangasite.domain.requests.ChapterChangeRequest;
+import com.mangasite.domain.requests.MangaChangeRequest;
+import com.mangasite.domain.requests.PageChangeRequest;
+import com.mangasite.domain.requests.ServerMessage;
 
-@EnableReactiveMongoRepositories
+// set native image reflective access
+@NativeHint(
+    types =
+        @TypeHint(
+            access = AccessBits.PUBLIC_CONSTRUCTORS,
+            types = {
+              MangaChangeRequest.class,
+              ChapterChangeRequest.class,
+              PageChangeRequest.class,
+              ServerMessage.class
+            }))
 @SpringBootApplication(
     exclude = {
       AopAutoConfiguration.class,

@@ -34,7 +34,7 @@ public class MangaChangeRequest {
   private String firstChapterIndex;
   private String firstPageURL;
 
-  MangaChangeRequest() {}
+  public MangaChangeRequest() {}
 
   public String getAlias() {
     return alias;
