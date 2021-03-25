@@ -1,4 +1,4 @@
-package com.mangasite.repos;
+package com.mangasite.repo;
 
 import java.math.BigInteger;
 import org.springframework.data.mongodb.repository.Query;

@@ -14,9 +14,8 @@ import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
-import com.mangasite.helper.SavedData;
-import com.mangasite.repos.ChapterRepo;
-import com.mangasite.repos.MangaRepo;
+import com.mangasite.repo.ChapterRepo;
+import com.mangasite.repo.MangaRepo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -33,12 +32,10 @@ public class ChapterService {
 
   private final ChapterRepo repo;
   private final MangaRepo mangaRepo;
-  private final SavedData savedData;
 
-  public ChapterService(ChapterRepo repo, MangaRepo mangaRepo, SavedData savedData) {
+  public ChapterService(ChapterRepo repo, MangaRepo mangaRepo) {
     this.repo = repo;
     this.mangaRepo = mangaRepo;
-    this.savedData = savedData;
   }
 
   /**
@@ -77,8 +74,7 @@ public class ChapterService {
                   "After change : " + m.getInfo().getChapters().size() + " chapters");
               return Tuples.of(m, c);
             })
-        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))))
-        .doOnNext(t2 -> savedData.updateList(List.of(t2.getT1())));
+        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
   }
 
   /**
@@ -239,7 +235,8 @@ public class ChapterService {
         .doOnComplete(() -> System.out.println("All Chapters have IDs"))
         .flatMap(
             chapterData ->
-                Flux.fromIterable(savedData.getSavedList())
+                mangaRepo
+                    .findAll()
                     .filter(
                         m ->
                             chapterData.getMangaName().equals(m.getT())

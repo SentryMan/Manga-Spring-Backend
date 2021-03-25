@@ -1,4 +1,4 @@
-package com.mangasite.repos;
+package com.mangasite.repo;
 
 import java.math.BigInteger;
 import org.springframework.data.mongodb.repository.Query;
@@ -13,7 +13,7 @@ public interface MangaRepo extends ReactiveMongoRepository<Manga, BigInteger> {
 
   Mono<Manga> getBya(String a);
 
-  @Query("{'RealID' : ?0}")
+  @Query("{'realID' : ?0}")
   Mono<Manga> getByRealID(int RealID);
 
   @Query("{'ld' : { $gte: ?0, $lte: ?1 } }")

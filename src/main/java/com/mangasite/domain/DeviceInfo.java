@@ -43,4 +43,17 @@ public class DeviceInfo {
   public void setBrowserVersion(String browserVersion) {
     this.browserVersion = browserVersion;
   }
+
+  @Override
+  public String toString() {
+    return "DeviceInfo [os="
+        + os
+        + ", browser="
+        + browser
+        + ", osVersion="
+        + osVersion
+        + ", browserVersion="
+        + browserVersion
+        + "]";
+  }
 }
