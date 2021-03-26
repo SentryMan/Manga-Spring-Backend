@@ -13,9 +13,8 @@ public interface ChapterRepo extends ReactiveMongoRepository<MangaChapters, BigI
 
   Mono<MangaChapters> getByMangaName(String Name);
 
-  @Query("{'RealID' : ?0}")
-  Mono<MangaChapters> getByRealID(int id);
+  Mono<MangaChapters> getByRealID(int realID);
 
-  @Query("{'RealID' : ?0}")
-  Flux<MangaChapters> getDupsByRealID(int RealID);
+  @Query("{'realID' : ?0}")
+  Flux<MangaChapters> getDupsByRealID(int realID);
 }

@@ -10,14 +10,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MangaChapters {
 
   @Id private BigInteger id;
-  private Integer RealID;
+  private Integer realID;
   private String mangaName;
   private List<Chapter> chapters;
 
   @PersistenceConstructor
-  public MangaChapters(int RealID, String mangaName, List<Chapter> chapters) {
+  public MangaChapters(int realID, String mangaName, List<Chapter> chapters) {
 
-    this.RealID = RealID;
+    this.realID = realID;
     this.mangaName = mangaName;
     this.chapters = chapters;
   }
@@ -32,7 +32,7 @@ public class MangaChapters {
     chapter.setImages(imageList);
     this.mangaName = mangaName;
     chapters = List.of(chapter);
-    this.RealID = realID;
+    this.realID = realID;
   }
 
   public BigInteger getId() {
@@ -44,11 +44,11 @@ public class MangaChapters {
   }
 
   public Integer getRealID() {
-    return RealID;
+    return realID;
   }
 
   public void setRealID(Integer realID) {
-    RealID = realID;
+    this.realID = realID;
   }
 
   public String getMangaName() {
