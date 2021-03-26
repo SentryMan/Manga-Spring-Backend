@@ -37,10 +37,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2-
 
       - name: Build Image with Boot
-        run: mvn spring-boot:build-image && export IMAGE_ID=$(docker images --filter=reference=manga-backend --format "{{.ID}}")
+        run: mvn spring-boot:build-image
 
       - name: Save Image to Heroku
-        run: docker tag $IMAGE_ID registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
+        run: docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
       - name: Deploy to Heroku
         run: heroku container:release web

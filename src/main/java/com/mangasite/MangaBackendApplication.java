@@ -18,7 +18,6 @@ import org.springframework.boot.autoconfigure.web.reactive.function.client.Clien
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.fu.jafu.JafuApplication;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureUtils;
 import org.springframework.nativex.hint.NativeHint;
