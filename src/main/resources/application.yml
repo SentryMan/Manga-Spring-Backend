@@ -1,6 +1,5 @@
-context: 
-  initializer:
-    classes: com.mangasite.MangaBackendApplicationInitializer
+server:
+   port: ${PORT:8080}
 spring:
   data:
     mongodb:

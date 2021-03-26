@@ -1,8 +1,14 @@
 package com.mangasite.domain.requests;
 
-import lombok.Data;
-
-@Data
 public class ServerMessage {
+
   final String message;
+
+  public ServerMessage(String message) {
+    this.message = message;
+  }
+
+  public String getMessage() {
+    return message;
+  }
 }

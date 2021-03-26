@@ -12,18 +12,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import com.mangasite.services.ConnectService;
 import io.rsocket.exceptions.RejectedException;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
 import reactor.util.function.Tuples;
 
 @Controller
-@RequiredArgsConstructor
 public class ConnectController {
 
   private final ConnectService service;
   private final MapReactiveUserDetailsService userService;
+
+  public ConnectController(ConnectService service, MapReactiveUserDetailsService userService) {
+    this.service = service;
+    this.userService = userService;
+  }
 
   @ConnectMapping
   public Mono<Void> onConnect(

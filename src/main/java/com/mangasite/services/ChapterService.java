@@ -14,10 +14,8 @@ import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
-import com.mangasite.helper.SavedData;
-import com.mangasite.repos.ChapterRepo;
-import com.mangasite.repos.MangaRepo;
-import lombok.RequiredArgsConstructor;
+import com.mangasite.repo.ChapterRepo;
+import com.mangasite.repo.MangaRepo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -30,12 +28,15 @@ import reactor.util.function.Tuples;
  * @author Josiah
  */
 @Service
-@RequiredArgsConstructor
 public class ChapterService {
 
   private final ChapterRepo repo;
   private final MangaRepo mangaRepo;
-  private final SavedData savedData;
+
+  public ChapterService(ChapterRepo repo, MangaRepo mangaRepo) {
+    this.repo = repo;
+    this.mangaRepo = mangaRepo;
+  }
 
   /**
    * Returns a Mono<Chapter> that contains the Chapter with the given name
@@ -73,8 +74,7 @@ public class ChapterService {
                   "After change : " + m.getInfo().getChapters().size() + " chapters");
               return Tuples.of(m, c);
             })
-        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))))
-        .doOnNext(t2 -> savedData.updateList(List.of(t2.getT1())));
+        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
   }
 
   /**
@@ -129,9 +129,7 @@ public class ChapterService {
       final var images = mangaChapters.getChapters();
       images.add(chapter);
 
-      if (request.getUpdateDate() > manga.getLd()) {
-        manga.setLd(request.getUpdateDate());
-      }
+      if (request.getUpdateDate() > manga.getLd()) manga.setLd(request.getUpdateDate());
       final var mangaInfoChapters = manga.getInfo().getChapters();
       mangaInfoChapters.add(
           List.of(
@@ -167,8 +165,7 @@ public class ChapterService {
               .filter(i -> i.get(0) == r.getPageIndex())
               .findFirst();
 
-      if (pageOp.isEmpty()) {
-
+      if (pageOp.isEmpty())
         chapters
             .getChapters()
             .stream()
@@ -180,8 +177,7 @@ public class ChapterService {
                   pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
                   Collections.reverse(pages);
                 });
-
-      } else pageOp.get().set(1, r.getPageURL());
+      else pageOp.get().set(1, r.getPageURL());
     };
   }
 
@@ -224,7 +220,8 @@ public class ChapterService {
                 .distinct()
                 .collect(Collectors.toList());
         return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
-      } else return Mono.just(c);
+      }
+      return Mono.just(c);
     };
   }
 
@@ -238,7 +235,8 @@ public class ChapterService {
         .doOnComplete(() -> System.out.println("All Chapters have IDs"))
         .flatMap(
             chapterData ->
-                Flux.fromIterable(savedData.getSavedList())
+                mangaRepo
+                    .findAll()
                     .filter(
                         m ->
                             chapterData.getMangaName().equals(m.getT())

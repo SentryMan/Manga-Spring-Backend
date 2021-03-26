@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy to heroku.
+name: Compile/Deploy Native Image To Heroku.
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -11,39 +11,38 @@ on:
 
 # Your workflows jobs.
 jobs:
-  build:
+  Build-Compile-Deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Checkout Code
         uses: actions/checkout@v2
       
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: "15" # The JDK version to make available on the path.
-          java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
-          architecture: x64 # (x64 or x86) - defaults to x64
+          java-version: "15"
+          java-package: jdk 
+          architecture: x64 
 
-      - name: Login to Heroku Registry
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
-
-      - name: Cache Maven packages
+      - name: Cache Maven Dependencies
         uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2-
 
-      - name: Build Image with Boot
-        run: mvn spring-boot:build-image && IMAGE_ID=$(docker images --filter=reference=manga-backend --format "{{.ID}}")
+      - name: Compile Native Image 
+        run: mvn spring-boot:build-image
 
-      - name: Save Image to Heroku
-        run: docker tag $IMAGE_ID registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
+      - name: Upload Docker Image
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
-      - name: Deploy to Heroku
-        run: heroku container:release web
+      - name: Deploy
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run:  heroku container:release web -a manga-spring
 
 
 

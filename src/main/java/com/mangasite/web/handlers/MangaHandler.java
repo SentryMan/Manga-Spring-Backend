@@ -29,14 +29,6 @@ public class MangaHandler {
 
   // Delete Mapping
 
-  // Deletes manga with empty chapters
-  public Mono<ServerResponse> deleteEmpty(ServerRequest request) {
-
-    service.deleteByChapter(Integer.parseInt(request.pathVariable("numberOfChapters")));
-
-    return ServerResponse.accepted().bodyValue("Deleting");
-  }
-
   // Deletes duplicates from database
   public Mono<ServerResponse> deleteDups(ServerRequest request) {
     service.deleteDups();

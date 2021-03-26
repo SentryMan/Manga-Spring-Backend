@@ -14,11 +14,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Service
-@RequiredArgsConstructor
 public class TokenService {
 
   @Value("${jwt.validity:1800}")
@@ -28,6 +26,10 @@ public class TokenService {
   private String key;
 
   private final MapReactiveUserDetailsService userService;
+
+  public TokenService(MapReactiveUserDetailsService userService) {
+    this.userService = userService;
+  }
 
   public Mono<ServerResponse> getToken(ServerRequest request) {
     return request

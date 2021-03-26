@@ -1,11 +1,10 @@
 package com.mangasite.domain;
 
 import java.util.List;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
-@NoArgsConstructor
+@Document
 public class Chapter {
 
   private String chapterIndex;
@@ -16,4 +15,28 @@ public class Chapter {
    * [3] is y resolution
    */
   private List<List<Object>> images;
+
+  @PersistenceConstructor
+  public Chapter(String chapterIndex, List<List<Object>> images) {
+    this.chapterIndex = chapterIndex;
+    this.images = images;
+  }
+
+  public Chapter() {}
+
+  public String getChapterIndex() {
+    return chapterIndex;
+  }
+
+  public void setChapterIndex(String chapterIndex) {
+    this.chapterIndex = chapterIndex;
+  }
+
+  public List<List<Object>> getImages() {
+    return images;
+  }
+
+  public void setImages(List<List<Object>> images) {
+    this.images = images;
+  }
 }

@@ -10,17 +10,19 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 @Controller
-@RequiredArgsConstructor
 public class RSocketChapterController {
 
   private final ChapterService service;
   private AtomicInteger pageIndex = new AtomicInteger();
+
+  public RSocketChapterController(ChapterService service) {
+    this.service = service;
+  }
 
   @MessageMapping("get-chapters-{id}")
   public Mono<MangaChapters> getChapter(@DestinationVariable("id") int id) {

@@ -5,15 +5,17 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import com.mangasite.domain.Manga;
 import com.mangasite.services.MangaService;
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
-@RequiredArgsConstructor
 public class RSocketMangaController {
 
   private final MangaService service;
+
+  public RSocketMangaController(MangaService service) {
+    this.service = service;
+  }
 
   @MessageMapping("get-mangas")
   public Flux<Manga> getAll() {
