@@ -40,7 +40,7 @@ jobs:
         run: mvn spring-boot:build-image
 
       - name: Save Image to Heroku
-        run: docker tag manga-backend registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
+        run: docker tag docker.io/library/manga-backend registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
       - name: Deploy to Heroku
         run: heroku container:release web
