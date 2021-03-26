@@ -13,7 +13,6 @@ public class NettyInitializer implements ApplicationContextInitializer<GenericAp
 
   @Override
   public void initialize(GenericApplicationContext context) {
-
     context.registerBean(
         ReactiveWebServerFactoryAutoConfiguration.class,
         ReactiveWebServerFactoryAutoConfiguration::new);
