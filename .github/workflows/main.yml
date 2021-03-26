@@ -34,10 +34,10 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2-
 
       - name: Build Image with Boot
-        run: mvn spring-boot:build-image && IMAGE_ID=$(docker images --filter=reference=manga-backend --format "{{.ID}}")
+        run: mvn spring-boot:build-image && export IMAGE_ID=$(docker images --filter=reference=manga-backend --format "{{.ID}}")
 
       - name: Save Image to Heroku
         run: docker tag $IMAGE_ID registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
