@@ -12,7 +12,7 @@ on:
 
 # Your workflows jobs.
 jobs:
-  build:
+  build&Deploy:
     runs-on: ubuntu-latest
     steps:
     
