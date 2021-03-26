@@ -42,7 +42,9 @@ jobs:
       - name: Save Image to Heroku
         run: docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
-      - name: Deploy to Heroku
+      - name: Deploy to Heroku 
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
 
 

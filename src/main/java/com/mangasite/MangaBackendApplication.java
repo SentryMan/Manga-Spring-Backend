@@ -37,12 +37,12 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
         @TypeHint(
             access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
             types = {
-              MangaChangeRequest.class,
+              ChangeStreamDocument.class,
               ChapterChangeRequest.class,
+              MangaChangeRequest.class,
               PageChangeRequest.class,
               ServerMessage.class,
               DeviceInfo.class,
-              ChangeStreamDocument.class,
             }))
 @SpringBootApplication(
     exclude = {
