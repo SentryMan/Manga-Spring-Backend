@@ -14,7 +14,7 @@ jobs:
   Build-Compile-Deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Checkout Code
         uses: actions/checkout@v2
       
       - name: Setup Java
@@ -24,7 +24,7 @@ jobs:
           java-package: jdk 
           architecture: x64 
 
-      - name: Cache Maven packages
+      - name: Cache Maven Dependencies
         uses: actions/cache@v2
         with:
           path: ~/.m2
@@ -35,12 +35,14 @@ jobs:
         run: mvn spring-boot:build-image
 
       - name: Upload Docker Image
-        run: docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
       - name: Deploy
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run:  heroku container:login && heroku container:release web -a manga-spring
+        run:  heroku container:release web -a manga-spring
 
 
 
