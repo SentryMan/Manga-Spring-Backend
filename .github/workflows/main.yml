@@ -43,7 +43,7 @@ jobs:
         run: docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
       - name: Deploy to Heroku
-        run: heroku container:release web
+        run: heroku container:release web -a manga-spring
 
 
 
