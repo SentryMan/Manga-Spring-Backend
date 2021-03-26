@@ -163,7 +163,7 @@ public class MangaService {
                         + " Performed on Manga: "
                         + changedManga.getT());
             })
-        .filter(e -> !e.getOperationType().equals(DELETE))
+        .filter(e -> !DELETE.equals(e.getOperationType()))
         .map(ChangeStreamEvent::getBody)
         .onErrorContinue(
             (ex, o) -> {
@@ -188,7 +188,7 @@ public class MangaService {
   // Delete Method
   public void deleteByChapter(int numberOfChapters) {
 
-    final Flux<Manga> mangaflux = repo.findAll();
+    final var mangaflux = repo.findAll();
 
     mangaflux
         .filter(
@@ -229,7 +229,7 @@ public class MangaService {
    */
   public void deleteDups() {
 
-    final Flux<Manga> mangaflux = repo.findAll();
+    final var mangaflux = repo.findAll();
 
     System.out.println("Deleting Manga Dups");
     final Set<String> mangaSet = new HashSet<>();
@@ -266,7 +266,7 @@ public class MangaService {
    */
   public void fixDuplicateIDs() {
 
-    final Flux<Manga> mangaflux = repo.findAll();
+    final var mangaflux = repo.findAll();
 
     final Set<Integer> idSet = new HashSet<>();
 
@@ -275,7 +275,7 @@ public class MangaService {
         .flatMap(
             manga -> {
               if (idSet.add(manga.getRealID())) return Mono.empty();
-              final int id = manga.getRealID();
+              final var id = manga.getRealID();
               return generateID()
                   .doOnNext(
                       newId -> {
@@ -308,9 +308,9 @@ public class MangaService {
         .collectList()
         .map(
             list -> {
-              int id = 0;
+              var id = 0;
               do {
-                final int ID = id;
+                final var ID = id;
                 final var manga = list.stream().filter(m -> m.getRealID() == ID).findAny();
 
                 if (!manga.isPresent() && iDSet.add(id)) {

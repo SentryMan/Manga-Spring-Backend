@@ -69,7 +69,7 @@ public class MangaBackendApplication {
             InfrastructureUtils.getBean(context.getBeanFactory(), ImportRegistrars.class)
                 .processDeferred(context);
 
-    JafuApplication app =
+    var app =
         reactiveWebApplication(
             dsl ->
                 dsl.enable(new AppInitializer())
