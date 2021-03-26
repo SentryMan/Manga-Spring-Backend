@@ -12,7 +12,7 @@ import org.springframework.init.func.FunctionalInstallerImportRegistrars;
 import org.springframework.init.func.ImportRegistrars;
 import org.springframework.init.func.InfrastructureProvider;
 
-public class SpringInfra implements InfrastructureProvider {
+public class MetadataInfra implements InfrastructureProvider {
 
   @Override
   public Collection<? extends ApplicationContextInitializer<GenericApplicationContext>>

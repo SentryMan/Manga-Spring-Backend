@@ -17,7 +17,6 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
-import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -169,56 +168,6 @@ public class MangaService {
             (ex, o) -> {
               System.err.println("Error processing " + o + " Exception is " + ex);
               ex.printStackTrace();
-            });
-  }
-
-  ChangeStreamDocument c = null;
-  Flux<Manga> mangaToBeDeleted = Flux.empty();
-  Flux<MangaChapters> chaptersToBeDeleted = Flux.empty();
-
-  /**
-   * This method deletes manga with less chapters than the given number <br>
-   * <br>
-   * <br>
-   * Use when database space becomes a concern.
-   *
-   * @param mangaFlux a flux that resolves into a list of new manga
-   * @param numberOfChapters the minimum amount of chapters a manga should have to prevent deletion
-   */
-  // Delete Method
-  public void deleteByChapter(int numberOfChapters) {
-
-    final var mangaflux = repo.findAll();
-
-    mangaflux
-        .filter(
-            manga ->
-                manga.getRealID() < 0 || manga.getInfo().getChapters().size() <= numberOfChapters)
-        .doOnComplete(
-            () -> {
-              mangaToBeDeleted
-                  .collectList()
-                  .subscribe(
-                      dedManga -> {
-                        System.out.println("Total deleted manga " + dedManga.size());
-                        repo.deleteAll(dedManga).subscribe();
-                      });
-              chaptersToBeDeleted
-                  .collectList()
-                  .subscribe(dedChapters -> chapterRepo.deleteAll(dedChapters).subscribe());
-            })
-        .subscribe(
-            dedManga -> {
-              if (dedManga.getA() == null)
-                mangaToBeDeleted =
-                    mangaToBeDeleted.concatWith(repo.getByRealID(dedManga.getRealID()));
-              else {
-                System.out.println("\n Deleting " + dedManga.getA());
-                chaptersToBeDeleted =
-                    chaptersToBeDeleted.concatWith(chapterRepo.getByMangaName(dedManga.getT()));
-
-                mangaToBeDeleted = mangaToBeDeleted.concatWith(repo.getBya(dedManga.getA()));
-              }
             });
   }
 

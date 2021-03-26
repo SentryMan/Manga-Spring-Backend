@@ -10,6 +10,7 @@ import org.springframework.init.func.TypeConditionService;
 
 public class AppInitializer implements ApplicationContextInitializer<GenericApplicationContext> {
 
+  @SuppressWarnings("unchecked")
   @Override
   public void initialize(GenericApplicationContext context) {
 

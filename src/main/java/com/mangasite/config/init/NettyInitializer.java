@@ -25,14 +25,15 @@ public class NettyInitializer implements ApplicationContextInitializer<GenericAp
                 .getBean(ReactiveWebServerFactoryAutoConfiguration.class)
                 .reactiveWebServerFactoryCustomizer(context.getBean(ServerProperties.class)));
     ConfigurationPropertiesBindingPostProcessor.register(context);
-    if (context.getBeanFactory().getBeanNamesForType(ServerProperties.class).length == 0)
-      context.registerBean(ServerProperties.class, ServerProperties::new);
+    context.registerBean(ServerProperties.class, ServerProperties::new);
+
     InfrastructureUtils.invokeAwareMethods(
             new ReactiveWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar(),
             context.getEnvironment(),
             context,
             context)
         .registerBeanDefinitions(null, context);
+
     new ReactiveWebServerFactoryConfiguration_EmbeddedNettyInitializer().initialize(context);
   }
 }

@@ -1,2 +1,2 @@
-com.mangasite.config.init.SpringInfra
+com.mangasite.config.init.MetadataInfra
 com.mangasite.MangaBackendApplicationInfrastructureProvider
