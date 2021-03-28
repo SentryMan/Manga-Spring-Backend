@@ -238,8 +238,6 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
-
-
 		<repository>
 			<id>spring-release</id>
 			<name>Spring release</name>

@@ -1,5 +1,6 @@
 package com.mangasite.web.routers;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
@@ -18,6 +19,6 @@ public class ChapterRouter {
     return route(GET("api/chapters/{id}"), chapterHandler::getChapter)
         .andRoute(POST("api/chapter"), chapterHandler::addChapter)
         .andRoute(PUT("api/page"), chapterHandler::updatePageLink)
-        .andRoute(PUT("api/fixId"), chapterHandler::addID);
+        .andRoute(DELETE("api/chapters/dedup"), chapterHandler::dedup);
   }
 }

@@ -52,8 +52,8 @@ public class ChapterHandler {
         .flatMap(ServerResponse.ok()::bodyValue);
   }
 
-  public Mono<ServerResponse> addID(ServerRequest request) {
-    service.addID();
-    return ServerResponse.accepted().build();
+  public Mono<ServerResponse> dedup(ServerRequest request) {
+    service.deleteDuplicateChapters();
+    return ServerResponse.accepted().bodyValue("Dedup Request Accepted");
   }
 }

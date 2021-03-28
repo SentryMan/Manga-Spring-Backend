@@ -1,8 +1,10 @@
 package com.mangasite.services;
 
+import static reactor.core.publisher.Mono.just;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -221,34 +223,47 @@ public class ChapterService {
                 .collect(Collectors.toList());
         return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
       }
-      return Mono.just(c);
+      return just(c);
     };
   }
 
   /**
-   * This method adds numerical IDs to Chapters <br>
-   * Use in the event that there are missing IDs in the database
+   * This method Deletes Duplicate Chapters for a specific Manga
+   *
+   * @return
    */
-  public void addID() {
-    System.out.println("Here We go");
+  public void deleteDuplicateChapters() {
+
+    var mangaFixFlux =
+        mangaRepo
+            .findAll()
+            .flatMap(
+                manga -> {
+                  var nameSet = new HashSet<String>();
+                  var name = manga.getT();
+                  var removedFlag =
+                      manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
+                  manga.getInfo().getChapters().removeAll(Collections.singleton(null));
+                  return removedFlag
+                      ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
+                      : just(name + " Had No Duplicate Chapters");
+                });
+
     repo.findAll()
-        .doOnComplete(() -> System.out.println("All Chapters have IDs"))
         .flatMap(
-            chapterData ->
-                mangaRepo
-                    .findAll()
-                    .filter(
-                        m ->
-                            chapterData.getMangaName().equals(m.getT())
-                                    && chapterData.getRealID() == null
-                                || chapterData.getMangaName().equals(m.getT())
-                                    && chapterData.getRealID() == 0)
-                    .flatMap(
-                        manga -> {
-                          System.out.println("Adding ID to " + chapterData.getMangaName());
-                          chapterData.setRealID(manga.getRealID());
-                          return repo.save(chapterData);
-                        }))
-        .subscribe();
+            chapter -> {
+              var nameSet = new HashSet<String>();
+              var name = chapter.getMangaName();
+              var removedFlag =
+                  chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
+              chapter.getChapters().removeAll(Collections.singleton(null));
+              return removedFlag
+                  ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
+                  : just(name + " Had No Duplicate Chapters");
+            },
+            1)
+        .mergeWith(mangaFixFlux)
+        .distinct()
+        .doOnNext(System.out::println);
   }
 }
