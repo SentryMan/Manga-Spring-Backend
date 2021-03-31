@@ -1,8 +1,8 @@
 package com.mangasite;
 
+import static org.springframework.fu.jafu.Jafu.reactiveWebApplication;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -13,11 +13,17 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.init.func.ImportRegistrars;
+import org.springframework.init.func.InfrastructureUtils;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
+import com.mangasite.config.init.AppInitializer;
+import com.mangasite.config.init.NettyInitializer;
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
@@ -50,15 +56,24 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
       UserDetailsServiceAutoConfiguration.class,
       ClientHttpConnectorAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
+      ReactiveWebServerFactoryAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
     })
 public class MangaBackendApplication {
 
   public static void main(String[] args) {
 
+    final ApplicationContextInitializer<GenericApplicationContext> delayedRegisterInit =
+        context ->
+            InfrastructureUtils.getBean(context.getBeanFactory(), ImportRegistrars.class)
+                .processDeferred(context);
+
     var app =
-        new SpringApplicationBuilder(MangaBackendApplication.class)
-            .web(WebApplicationType.REACTIVE);
+        reactiveWebApplication(
+            dsl ->
+                dsl.enable(new AppInitializer())
+                    .enable(new NettyInitializer())
+                    .enable(delayedRegisterInit));
 
     app.run(args);
   }
