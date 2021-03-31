@@ -1,6 +1,6 @@
 package com.mangasite;
 
-import static org.springframework.fu.jafu.Jafu.reactiveWebApplication;
+import static org.springframework.boot.WebApplicationType.REACTIVE;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,14 +16,9 @@ import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfigu
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.init.func.ImportRegistrars;
-import org.springframework.init.func.InfrastructureUtils;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
-import com.mangasite.config.init.AppInitializer;
-import com.mangasite.config.init.NettyInitializer;
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
@@ -63,17 +58,7 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
 
-    final ApplicationContextInitializer<GenericApplicationContext> delayedRegisterInit =
-        context ->
-            InfrastructureUtils.getBean(context.getBeanFactory(), ImportRegistrars.class)
-                .processDeferred(context);
-
-    var app =
-        reactiveWebApplication(
-            dsl ->
-                dsl.enable(new AppInitializer())
-                    .enable(new NettyInitializer())
-                    .enable(delayedRegisterInit));
+    var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
 
     app.run(args);
   }
