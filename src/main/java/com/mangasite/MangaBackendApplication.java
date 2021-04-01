@@ -1,8 +1,8 @@
 package com.mangasite;
 
+import static org.springframework.boot.WebApplicationType.REACTIVE;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -56,9 +56,7 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
 
-    var app =
-        new SpringApplicationBuilder(MangaBackendApplication.class)
-            .web(WebApplicationType.REACTIVE);
+    var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
 
     app.run(args);
   }

@@ -23,20 +23,6 @@
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 	</properties>
 
-
-	<dependencyManagement>
-		<dependencies>
-
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>2.4.4</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 
 		<!-- Boot Dependencies -->
@@ -119,12 +105,14 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
 
 		<!-- GraalVM Stuff -->
 		<dependency>
@@ -144,8 +132,13 @@
 				<version>0.9.1</version>
 				<executions>
 					<execution>
-						<id>sources</id>
-						<phase>process-sources</phase>
+						<id>test-generate</id>
+						<goals>
+							<goal>test-generate</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
