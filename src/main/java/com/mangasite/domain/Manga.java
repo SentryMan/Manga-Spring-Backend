@@ -31,7 +31,7 @@ public class Manga {
   private List<String> c;
   private Integer h;
   private String im;
-  private Integer ld;
+  private long ld;
   private Integer s;
   private String t;
   private MangaInfo info;
@@ -43,7 +43,7 @@ public class Manga {
       List<String> c,
       Integer h,
       String im,
-      Integer ld,
+      long ld,
       Integer s,
       String t,
       MangaInfo info) {
@@ -123,12 +123,12 @@ public class Manga {
     this.im = im;
   }
 
-  public Integer getLd() {
+  public long getLd() {
     return ld;
   }
 
-  public void setLd(Integer ld) {
-    this.ld = ld;
+  public void setLd(long l) {
+    this.ld = l;
   }
 
   public Integer getS() {
