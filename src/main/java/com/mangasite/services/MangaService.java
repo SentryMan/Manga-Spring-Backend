@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
@@ -49,10 +48,6 @@ public class MangaService {
     this.reactiveMongoTemplate = reactiveMongoTemplate;
   }
 
-  @PostConstruct
-  private void watchDB() {
-    this.watchDBChanges(true).subscribe();
-  }
   // Get Methods
   /**
    * Gets all Manga stored in the SavedData class
