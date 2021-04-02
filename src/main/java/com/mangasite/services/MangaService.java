@@ -2,6 +2,9 @@ package com.mangasite.services;
 
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -166,12 +169,17 @@ public class MangaService {
             });
   }
 
-  public Mono<Manga> updateLD(Integer id, Optional<Long> dateOp) {
+  public Mono<Manga> updateLD(Integer id, Optional<String> dateParam) {
 
     return repo.getByRealID(id)
         .map(
             m -> {
-              m.setLd(dateOp.orElse(Instant.now().getEpochSecond()));
+              var epochSeconds =
+                  dateParam
+                      .map(s -> LocalDate.parse(s).atStartOfDay(ZoneId.systemDefault()))
+                      .map(ChronoZonedDateTime::toEpochSecond)
+                      .orElse(Instant.now().getEpochSecond());
+              m.setLd(epochSeconds);
               return m;
             })
         .flatMap(repo::save);
