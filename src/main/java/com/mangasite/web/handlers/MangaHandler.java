@@ -22,7 +22,7 @@ public class MangaHandler {
         .bodyToMono(MangaChangeRequest.class)
         .flatMap(service::postNewManga)
         .flatMap(ServerResponse.ok()::bodyValue)
-        .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga A;ready Exists"));
+        .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga Already Exists"));
   }
 
   public Mono<ServerResponse> patchUpdateDate(ServerRequest request) {
