@@ -30,7 +30,7 @@ public class ServerConfig implements WebFluxConfigurer {
     registry
         .addMapping("/**")
         .allowedOrigins("*")
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH");
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
   }
 
   @Override

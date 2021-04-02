@@ -18,20 +18,14 @@ public class MangaHandler {
         .bodyToMono(MangaChangeRequest.class)
         .flatMap(service::postNewManga)
         .flatMap(ServerResponse.ok()::bodyValue)
-        .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga ALready Exists"));
+        .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga Already Exists"));
   }
 
-  public Mono<ServerResponse> fixID(ServerRequest request) {
-    System.out.println("Fixing Manga");
-    service.fixDuplicateIDs();
-    return ServerResponse.accepted().build();
-  }
+  public Mono<ServerResponse> patchUpdateDate(ServerRequest request) {
 
-  // Delete Mapping
-
-  // Deletes duplicates from database
-  public Mono<ServerResponse> deleteDups(ServerRequest request) {
-    service.deleteDups();
-    return ServerResponse.accepted().bodyValue("Deleting Duplicate Manga and chapters");
+    return service
+        .updateLD(Integer.parseInt(request.pathVariable("id")), request.queryParam("updateDate"))
+        .flatMap(ServerResponse.ok()::bodyValue)
+        .switchIfEmpty(ServerResponse.badRequest().bodyValue("Manga Doesn't Exist"));
   }
 }

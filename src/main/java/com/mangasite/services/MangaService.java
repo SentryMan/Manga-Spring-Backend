@@ -1,12 +1,15 @@
 package com.mangasite.services;
 
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
@@ -49,10 +52,6 @@ public class MangaService {
     this.reactiveMongoTemplate = reactiveMongoTemplate;
   }
 
-  @PostConstruct
-  private void watchDB() {
-    this.watchDBChanges(true).subscribe();
-  }
   // Get Methods
   /**
    * Gets all Manga stored in the SavedData class
@@ -125,16 +124,15 @@ public class MangaService {
         .map(
             manga ->
                 Tuples.of(
-                    manga,
-                    new MangaChapters(
-                        manga.getT(),
-                        manga.getRealID(),
-                        request.getFirstChapterIndex(),
-                        request.getFirstPageURL())))
-        .flatMap(
-            TupleUtils.function(
-                (manga, chapter) ->
-                    repo.insert(manga).zipWith(chapterRepo.insert(chapter), (m, c) -> m)))
+                        manga,
+                        new MangaChapters(
+                            manga.getT(),
+                            manga.getRealID(),
+                            request.getFirstChapterIndex(),
+                            request.getFirstPageURL()))
+                    .mapT1(repo::insert)
+                    .mapT2(chapterRepo::insert))
+        .flatMap(TupleUtils.function((manga, chapter) -> chapter.then(manga)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
   }
 
@@ -171,83 +169,20 @@ public class MangaService {
             });
   }
 
-  /**
-   * Deletes duplicate manga in the database using a hashset. <br>
-   * <br>
-   * Use when you detect too many duplicates to resolve by hand.
-   */
-  public void deleteDups() {
+  public Mono<Manga> updateLD(Integer id, Optional<String> dateParam) {
 
-    final var mangaflux = repo.findAll();
-
-    System.out.println("Deleting Manga Dups");
-    final Set<String> mangaSet = new HashSet<>();
-    final Set<String> chapterSet = new HashSet<>();
-
-    mangaflux.subscribe(
-        m -> {
-          if (!mangaSet.add(m.getA())) {
-            System.out.println("Deleted " + m.getA());
-
-            repo.delete(m).subscribe();
-          }
-        });
-
-    System.out.println("Deleting Chapter Dups");
-
-    chapterRepo
-        .findAll()
-        .subscribeOn(boundedElastic())
-        .subscribe(
-            chapter -> {
-              if (chapter.getMangaName() == null || !chapterSet.add(chapter.getMangaName())) {
-                System.out.println("Manga " + chapter.getRealID() + " Deleted ");
-                // run mongo delete c
-                chapterRepo.delete(chapter).subscribe();
-              }
-            });
-  }
-
-  /**
-   * Fixes manga ID in the case of accidental sharing of the same ID. <br>
-   * <br>
-   * Use when you detect too many to resolve by hand.
-   */
-  public void fixDuplicateIDs() {
-
-    final var mangaflux = repo.findAll();
-
-    final Set<Integer> idSet = new HashSet<>();
-
-    mangaflux
-        .filter(manga -> manga.getRealID() > 0)
-        .flatMap(
-            manga -> {
-              if (idSet.add(manga.getRealID())) return Mono.empty();
-              final var id = manga.getRealID();
-              return generateID()
-                  .doOnNext(
-                      newId -> {
-                        System.out.println("Duplicate ID " + id + " for " + manga.getA());
-
-                        System.out.println("new ID " + newId);
-                      })
-                  .flatMap(
-                      newId -> {
-                        manga.setRealID(newId);
-                        var chapterUpdateMono =
-                            chapterRepo
-                                .getDupsByRealID(id)
-                                .filter(c -> c.getMangaName().equals(manga.getT()))
-                                .flatMap(
-                                    chapters -> {
-                                      chapters.setRealID(newId);
-                                      return chapterRepo.save(chapters);
-                                    })
-                                .then();
-                        return repo.save(manga).zipWith(chapterUpdateMono);
-                      });
-            });
+    return repo.getByRealID(id)
+        .map(
+            m -> {
+              var epochSeconds =
+                  dateParam
+                      .map(s -> LocalDate.parse(s).atStartOfDay(ZoneId.systemDefault()))
+                      .map(ChronoZonedDateTime::toEpochSecond)
+                      .orElse(Instant.now().getEpochSecond());
+              m.setLd(epochSeconds);
+              return m;
+            })
+        .flatMap(repo::save);
   }
 
   public Mono<Integer> generateID() {
