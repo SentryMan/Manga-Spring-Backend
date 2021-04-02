@@ -53,7 +53,7 @@ public class ChapterHandler {
   }
 
   public Mono<ServerResponse> dedup(ServerRequest request) {
-    service.deleteDuplicateChapters();
+    service.deleteDuplicateChapters(request.queryParam("id").map(Integer::parseInt));
     return ServerResponse.accepted().bodyValue("Dedup Request Accepted");
   }
 }

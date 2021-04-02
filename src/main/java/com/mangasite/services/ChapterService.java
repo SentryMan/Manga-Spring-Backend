@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -205,12 +208,13 @@ public class ChapterService {
               !existingChapterIndice.contains(
                   Double.parseDouble(r.getChapterIndex().replace("Chapter ", "")));
 
-      final var chapterExists = request.stream().anyMatch(indexExistsTest);
-      if (chapterExists) {
+      final var chaptersDontExist = request.stream().anyMatch(indexExistsTest);
+      if (chaptersDontExist) {
         final var chapterRequests =
             request
                 .stream()
                 .filter(indexExistsTest)
+                .filter(distinctByKey(PageChangeRequest::getChapterIndex))
                 .map(
                     r ->
                         new ChapterChangeRequest(
@@ -219,12 +223,17 @@ public class ChapterService {
                             r.getChapterName(),
                             0,
                             ""))
-                .distinct()
                 .collect(Collectors.toList());
+
         return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
       }
       return just(c);
     };
+  }
+
+  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    return t -> seen.add(keyExtractor.apply(t));
   }
 
   /**
@@ -232,38 +241,45 @@ public class ChapterService {
    *
    * @return
    */
-  public void deleteDuplicateChapters() {
+  public void deleteDuplicateChapters(Optional<Integer> idParam) {
 
-    var mangaFixFlux =
-        mangaRepo
-            .findAll()
-            .flatMap(
-                manga -> {
-                  var nameSet = new HashSet<String>();
-                  var name = manga.getT();
-                  var removedFlag =
-                      manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
-                  manga.getInfo().getChapters().removeAll(Collections.singleton(null));
-                  return removedFlag
-                      ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
-                      : just(name + " Had No Duplicate Chapters");
-                });
+    idParam.ifPresentOrElse(
+        id -> {
+          repo.getByRealID(id)
+              .flatMap(this::removeChapterDups)
+              .mergeWith(mangaRepo.getByRealID(id).flatMap(this::removeMangaDups))
+              .distinct()
+              .subscribe(System.out::println);
+        },
+        () -> {
+          var mangaFixFlux = mangaRepo.findAll().flatMap(this::removeMangaDups);
 
-    repo.findAll()
-        .flatMap(
-            chapter -> {
-              var nameSet = new HashSet<String>();
-              var name = chapter.getMangaName();
-              var removedFlag =
-                  chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
-              chapter.getChapters().removeAll(Collections.singleton(null));
-              return removedFlag
-                  ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
-                  : just(name + " Had No Duplicate Chapters");
-            },
-            1)
-        .mergeWith(mangaFixFlux)
-        .distinct()
-        .doOnNext(System.out::println);
+          repo.findAll()
+              .flatMap(this::removeChapterDups)
+              .mergeWith(mangaFixFlux)
+              .distinct()
+              .subscribe(System.out::println);
+        });
+  }
+
+  Mono<String> removeMangaDups(Manga manga) {
+
+    var nameSet = new HashSet<String>();
+    var name = manga.getT();
+    var removedFlag = manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
+    manga.getInfo().getChapters().removeAll(Collections.singleton(null));
+    return removedFlag
+        ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
+        : just(name + " Had No Duplicate Chapters");
+  }
+
+  Mono<String> removeChapterDups(MangaChapters chapter) {
+    var nameSet = new HashSet<String>();
+    var name = chapter.getMangaName();
+    var removedFlag = chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
+    chapter.getChapters().removeAll(Collections.singleton(null));
+    return removedFlag
+        ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
+        : just(name + " Had No Duplicate Chapters");
   }
 }
