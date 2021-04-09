@@ -3,6 +3,8 @@ package com.mangasite.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DeviceInfo {
+
+  String userAgent;
   String os;
   String browser;
 
@@ -44,16 +46,22 @@ public class DeviceInfo {
     this.browserVersion = browserVersion;
   }
 
+  public String getUserAgent() {
+    return userAgent;
+  }
+
+  public void setUserAgent(String userAgent) {
+    this.userAgent = userAgent;
+  }
+
   @Override
   public String toString() {
-    return "DeviceInfo [os="
-        + os
-        + ", browser="
-        + browser
-        + ", osVersion="
-        + osVersion
-        + ", browserVersion="
-        + browserVersion
+    return "DeviceInfo ["
+        + (userAgent != null ? "userAgent=" + userAgent + ", " : "")
+        + (os != null ? "os=" + os + ", " : "")
+        + (browser != null ? "browser=" + browser + ", " : "")
+        + (osVersion != null ? "osVersion=" + osVersion + ", " : "")
+        + (browserVersion != null ? "browserVersion=" + browserVersion : "")
         + "]";
   }
 }
