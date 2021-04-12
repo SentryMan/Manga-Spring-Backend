@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDeta
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
@@ -51,6 +52,7 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
       ClientHttpConnectorAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
+      TransactionAutoConfiguration.class,
     })
 public class MangaBackendApplication {
 
