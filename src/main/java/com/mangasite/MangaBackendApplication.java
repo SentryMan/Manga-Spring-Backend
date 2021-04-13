@@ -8,10 +8,13 @@ import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
@@ -43,12 +46,15 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
       AopAutoConfiguration.class,
       CacheAutoConfiguration.class,
       WebClientAutoConfiguration.class,
+      TransactionAutoConfiguration.class,
       RestTemplateAutoConfiguration.class,
       MessageSourceAutoConfiguration.class,
       TaskExecutionAutoConfiguration.class,
       TaskSchedulingAutoConfiguration.class,
+      SecurityFilterAutoConfiguration.class,
       UserDetailsServiceAutoConfiguration.class,
       ClientHttpConnectorAutoConfiguration.class,
+      OAuth2ResourceServerAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
     })
@@ -57,7 +63,6 @@ public class MangaBackendApplication {
   public static void main(String[] args) {
 
     var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
-
     app.run(args);
   }
 }
