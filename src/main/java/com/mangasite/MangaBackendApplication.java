@@ -8,7 +8,9 @@ import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
@@ -44,15 +46,17 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
       AopAutoConfiguration.class,
       CacheAutoConfiguration.class,
       WebClientAutoConfiguration.class,
+      TransactionAutoConfiguration.class,
       RestTemplateAutoConfiguration.class,
       MessageSourceAutoConfiguration.class,
       TaskExecutionAutoConfiguration.class,
       TaskSchedulingAutoConfiguration.class,
+      SecurityFilterAutoConfiguration.class,
       UserDetailsServiceAutoConfiguration.class,
       ClientHttpConnectorAutoConfiguration.class,
+      OAuth2ResourceServerAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
-      TransactionAutoConfiguration.class,
     })
 public class MangaBackendApplication {
 
