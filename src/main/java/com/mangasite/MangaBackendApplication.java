@@ -63,7 +63,6 @@ public class MangaBackendApplication {
   public static void main(String[] args) {
 
     var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
-    app.setLazyInitialization(true);
     app.run(args);
   }
 }
