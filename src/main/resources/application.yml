@@ -26,6 +26,10 @@ roles:
     password: ${USER_PASSWORD}
 logging:
     level:
+        org:
+          mongodb:
+            driver:
+              cluster: OFF   
         io:
          rsocket:
 #           FrameLogger: DEBUG
