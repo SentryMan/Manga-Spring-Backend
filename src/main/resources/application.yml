@@ -15,7 +15,7 @@ jwt:
      key: ${SECRET_KEY}
 
 popular:
-  manga: fate-redline, superman-unchained, record-of-ragnarock, one-punch-man, vagabond 
+  manga: ${POPULAR:fate-redline, 20th-century-boys, record-of-ragnarock, one-punch-man, vagabond} 
 
 roles:
   admin:
