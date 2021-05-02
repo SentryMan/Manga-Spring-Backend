@@ -171,18 +171,13 @@ public class MangaService {
 
   public Mono<Manga> updateLD(Integer id, Optional<String> dateParam) {
 
-    return repo.getByRealID(id)
-        .map(
-            m -> {
-              var epochSeconds =
-                  dateParam
-                      .map(s -> LocalDate.parse(s).atStartOfDay(ZoneId.systemDefault()))
-                      .map(ChronoZonedDateTime::toEpochSecond)
-                      .orElse(Instant.now().getEpochSecond());
-              m.setLd(epochSeconds);
-              return m;
-            })
-        .flatMap(repo::save);
+    var epochSeconds =
+        dateParam
+            .map(s -> LocalDate.parse(s).atStartOfDay(ZoneId.systemDefault()))
+            .map(ChronoZonedDateTime::toEpochSecond)
+            .orElse(Instant.now().getEpochSecond());
+
+    return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
   }
 
   public Mono<Integer> generateID() {

@@ -92,11 +92,7 @@ public class ChapterService {
     return repo.getByRealID(requestList.get(0).getMangaId())
         // if Chapter Doesn't exist, create in table
         .flatMap(chapterExistsFunc(requestList))
-        .map(
-            c -> {
-              requestList.forEach(processPageRequests(c));
-              return c;
-            })
+        .doOnNext(c -> requestList.forEach(processPageRequests(c)))
         .flatMap(repo::save)
         .map(MangaChapters::getMangaName)
         .map(

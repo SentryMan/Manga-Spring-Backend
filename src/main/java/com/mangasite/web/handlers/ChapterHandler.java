@@ -37,14 +37,13 @@ public class ChapterHandler {
   public Mono<ServerResponse> updatePageLink(ServerRequest request) {
     return request
         .bodyToMono(PageChangeRequest.class)
-        .map(
+        .doOnNext(
             p -> {
               if (p.isUsingAutoIncrement()) {
                 if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
 
                 p.setPageIndex(pageIndex.getAndIncrement());
               }
-              return p;
             })
         .map(List::of)
         .flatMapMany(service::updatePageLink)

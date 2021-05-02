@@ -38,14 +38,13 @@ public class RSocketChapterController {
   public Flux<String> updatePageLink(Flux<PageChangeRequest> requestFlux) {
 
     return requestFlux
-        .map(
+        .doOnNext(
             p -> {
               if (p.isUsingAutoIncrement()) {
                 if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
 
                 p.setPageIndex(pageIndex.getAndIncrement());
               }
-              return p;
             })
         .buffer(500)
         .flatMap(service::updatePageLink, 1);
