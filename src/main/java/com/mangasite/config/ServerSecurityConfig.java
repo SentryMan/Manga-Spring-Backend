@@ -1,10 +1,9 @@
 package com.mangasite.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.rsocket.RSocketMessageHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.messaging.rsocket.RSocketStrategies;
-import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -15,6 +14,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.method.ControllerAdviceBean;
+import com.mangasite.domain.ControllerAdviceWrapper;
+import com.mangasite.rsocket.RSocketAdvice;
 import com.mangasite.services.TokenService;
 
 @EnableRSocketSecurity
@@ -54,13 +56,15 @@ public class ServerSecurityConfig {
 
   // RSocket Security configuration
   @Bean
-  public RSocketMessageHandler messageHandler(RSocketStrategies strategies) {
-    final var handler = new RSocketMessageHandler();
-    handler
-        .getArgumentResolverConfigurer()
-        .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
-    handler.setRSocketStrategies(strategies);
-    return handler;
+  public RSocketMessageHandlerCustomizer messageHandlerCustomizer() {
+    return handler -> {
+      handler
+          .getArgumentResolverConfigurer()
+          .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
+
+      handler.registerMessagingAdvice(
+          new ControllerAdviceWrapper(new ControllerAdviceBean(new RSocketAdvice())));
+    };
   }
 
   // RSocket JWT Security Config

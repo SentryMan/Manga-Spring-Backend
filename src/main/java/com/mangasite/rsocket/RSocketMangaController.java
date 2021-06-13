@@ -5,6 +5,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import com.mangasite.domain.Manga;
 import com.mangasite.services.MangaService;
+import io.rsocket.exceptions.CustomRSocketException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -24,8 +25,9 @@ public class RSocketMangaController {
 
   @MessageMapping("get-manga-{id}")
   public Mono<Manga> getMangaByID(@DestinationVariable("id") int id) {
-
-    return service.findManga(id);
+    return service
+        .findManga(id)
+        .switchIfEmpty(Mono.error(new CustomRSocketException(0x404, "Could Not Find Manga in DB")));
   }
 
   // Gets a set list of popular manga

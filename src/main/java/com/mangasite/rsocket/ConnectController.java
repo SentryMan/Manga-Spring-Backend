@@ -1,9 +1,7 @@
 package com.mangasite.rsocket;
 
 import java.util.Collection;
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.invocation.MethodArgumentResolutionException;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,8 +9,6 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import com.mangasite.services.ConnectService;
-import io.rsocket.exceptions.RejectedException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
 import reactor.util.function.Tuples;
@@ -49,11 +45,5 @@ public class ConnectController {
         .doOnNext(TupleUtils.consumer(service::watchUserStream))
         .doOnNext(TupleUtils.consumer(service::requestDeviceInfo))
         .then();
-  }
-
-  @MessageExceptionHandler
-  public Flux<RejectedException> invalidPayload(MethodArgumentResolutionException marex) {
-
-    return Flux.error(new RejectedException("Invalid Payload", marex));
   }
 }

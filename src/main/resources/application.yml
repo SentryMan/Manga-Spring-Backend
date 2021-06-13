@@ -19,11 +19,11 @@ popular:
 
 roles:
   admin:
-    username: ${ADMIN_USERNAME}
-    password: ${ADMIN_PASSWORD}
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:password}
   user:
-    username: ${USER_USERNAME}
-    password: ${USER_PASSWORD}
+    username: ${USER_USERNAME:user}
+    password: ${USER_PASSWORD:password}
 logging:
     level:
         org:

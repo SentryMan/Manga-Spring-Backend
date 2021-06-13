@@ -10,6 +10,7 @@ import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
+import io.rsocket.exceptions.CustomRSocketException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
@@ -26,7 +27,11 @@ public class RSocketChapterController {
 
   @MessageMapping("get-chapters-{id}")
   public Mono<MangaChapters> getChapter(@DestinationVariable("id") int id) {
-    return service.getByID(id);
+
+    return service
+        .getByID(id)
+        .switchIfEmpty(
+            Mono.error(new CustomRSocketException(0x404, "Could Not Find Chapter in DB")));
   }
 
   @MessageMapping("new-chapter")
