@@ -27,6 +27,7 @@ import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.domain.requests.ServerMessage;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import reactor.core.publisher.Hooks;
 
 // set native image reflective access
 @NativeHint(
@@ -61,7 +62,7 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
 public class MangaBackendApplication {
 
   public static void main(String[] args) {
-
+    Hooks.onErrorDropped(t -> {});
     var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
     app.run(args);
   }

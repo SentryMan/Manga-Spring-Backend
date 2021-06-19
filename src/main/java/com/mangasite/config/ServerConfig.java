@@ -30,6 +30,11 @@ public class ServerConfig implements WebFluxConfigurer {
     return new HashMap<>();
   }
 
+  @Bean
+  public Map<String, String> clientMangaMap() {
+    return new HashMap<>();
+  }
+
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
