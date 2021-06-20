@@ -87,7 +87,9 @@ public class ConnectService {
         .flatMap(
             requester ->
                 requester
-                    .metadata(new ServerMessage("Chapter Modified"), MediaType.APPLICATION_JSON)
+                    .metadata(
+                        new ServerMessage("Chapters Modified for " + updatedChapter.getMangaName()),
+                        MediaType.APPLICATION_JSON)
                     .data(updatedChapter)
                     .send())
         .then();
