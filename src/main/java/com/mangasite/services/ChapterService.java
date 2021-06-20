@@ -87,7 +87,7 @@ public class ChapterService {
    *
    * @param requestList list of page requests to execute
    */
-  public Flux<String> updatePageLink(List<PageChangeRequest> requestList) {
+  public Flux<PageChangeRequest> updatePageLink(List<PageChangeRequest> requestList) {
 
     return repo.getByRealID(requestList.get(0).getMangaId())
         // if Chapter Doesn't exist, create in table
@@ -95,22 +95,16 @@ public class ChapterService {
         .doOnNext(c -> requestList.forEach(processPageRequests(c)))
         .flatMap(repo::save)
         .map(MangaChapters::getMangaName)
-        .map(
+        .flatMapIterable(
             n ->
                 requestList
                     .stream()
                     .map(
-                        r ->
-                            "Updated/Added "
-                                + r.getChapterIndex()
-                                + " Page "
-                                + (r.getPageIndex() + 1)
-                                + " of manga: "
-                                + n
-                                + " With Image URL: "
-                                + r.getPageURL()))
-        .flatMapMany(Flux::fromStream)
-        .doOnNext(System.out::println);
+                        r -> {
+                          r.setMangaName(n);
+                          return r;
+                        })
+                    .collect(Collectors.toList()));
   }
 
   /**

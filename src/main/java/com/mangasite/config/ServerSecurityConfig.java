@@ -80,7 +80,7 @@ public class ServerSecurityConfig {
                     .route("new-chapter")
                     .hasRole(ADMIN)
                     .route("update-page-channel")
-                    .hasRole(USER)
+                    .hasRole(ADMIN)
                     .anyRequest()
                     .authenticated()
                     .anyExchange()

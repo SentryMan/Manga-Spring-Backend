@@ -2,6 +2,7 @@ package com.mangasite.domain.requests;
 
 public class PageChangeRequest {
   private Integer mangaId;
+  private String mangaName;
   private String chapterIndex;
   private String chapterName = "";
   private Integer pageIndex = 0;
@@ -56,5 +57,13 @@ public class PageChangeRequest {
 
   public void setPageIndex(int pageindex) {
     this.pageIndex = pageindex;
+  }
+
+  public String getMangaName() {
+    return mangaName;
+  }
+
+  public void setMangaName(String mangaName) {
+    this.mangaName = mangaName;
   }
 }
