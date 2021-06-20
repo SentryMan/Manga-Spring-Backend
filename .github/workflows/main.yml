@@ -32,7 +32,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2-
 
       - name: Compile Native Image 
-        run: mvn spring-boot:build-image
+        run: mvn spring-init:generate spring-boot:build-image
 
       - name: Upload Docker Image
         env:
