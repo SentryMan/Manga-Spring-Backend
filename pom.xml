@@ -14,7 +14,6 @@
 	<version>3.0.0</version>
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring</description>
-
 	<properties>
 		<java.version>11</java.version>
 		<maven.compiler.target>11</maven.compiler.target>
