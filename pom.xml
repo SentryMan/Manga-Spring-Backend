@@ -60,10 +60,6 @@
 			<groupId>org.springframework.experimental</groupId>
 			<artifactId>spring-init-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.experimental</groupId>
-			<artifactId>spring-init-library</artifactId>
-		</dependency>
 
 		<!-- Boot Dependencies -->
 
@@ -181,7 +177,6 @@
 						<goals>
 							<goal>generate</goal>
 						</goals>
-						<inherited>false</inherited>
 					</execution>
 				</executions>
 			</plugin>
@@ -192,13 +187,8 @@
 				<version>${spring.native.version}</version>
 				<executions>
 					<execution>
-						<id>test-generate</id>
-						<goals>
-							<goal>test-generate</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate</id>
+						<id>sources</id>
+						<phase>process-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
