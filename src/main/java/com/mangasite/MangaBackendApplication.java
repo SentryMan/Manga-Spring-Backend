@@ -12,15 +12,18 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.O
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
+import com.mangasite.config.init.ConditionServiceInitializer;
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
@@ -53,9 +56,11 @@ import reactor.core.publisher.Hooks;
       TaskExecutionAutoConfiguration.class,
       TaskSchedulingAutoConfiguration.class,
       SecurityFilterAutoConfiguration.class,
+      SqlInitializationAutoConfiguration.class,
       UserDetailsServiceAutoConfiguration.class,
       ClientHttpConnectorAutoConfiguration.class,
       OAuth2ResourceServerAutoConfiguration.class,
+      ServletWebServerFactoryAutoConfiguration.class,
       ApplicationAvailabilityAutoConfiguration.class,
       ReactiveUserDetailsServiceAutoConfiguration.class,
     })
@@ -64,6 +69,7 @@ public class MangaBackendApplication {
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
     var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
+    app.addInitializers(new ConditionServiceInitializer());
     app.run(args);
   }
 }

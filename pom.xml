@@ -24,7 +24,46 @@
 		<spring.native.version>0.9.2</spring.native.version>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.5.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-init-dependencies</artifactId>
+				<version>0.3.0</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
+
+
+		<!-- Spring Init Dependencies -->
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-boot-autoconfigure-func</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-boot-test-autoconfigure-func</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-init-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.experimental</groupId>
+			<artifactId>spring-init-library</artifactId>
+		</dependency>
 
 		<!-- Boot Dependencies -->
 
@@ -127,6 +166,26 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.springframework.experimental</groupId>
+				<artifactId>spring-init-maven-plugin</artifactId>
+				<configuration>
+					<closedWorld>true</closedWorld>
+					<customBinders>true</customBinders>
+				</configuration>
+				<executions>
+					<execution>
+						<id>sources</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<inherited>false</inherited>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.experimental</groupId>
 				<artifactId>spring-aot-maven-plugin</artifactId>
@@ -165,6 +224,26 @@
 
 	<repositories>
 		<repository>
+			<id>spring-libs-snapshot</id>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>spring-libs-milestone</id>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
 			<id>spring-release</id>
 			<name>Spring release</name>
 			<url>https://repo.spring.io/release</url>
@@ -172,6 +251,26 @@
 	</repositories>
 
 	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-libs-snapshot</id>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-libs-milestone</id>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
 		<pluginRepository>
 			<id>spring-release</id>
 			<name>Spring release</name>

@@ -1,6 +1,8 @@
 server:
    port: ${PORT:8080}
 spring:
+  native:
+    mode: functional
   data:
     mongodb:
       uri: ${MONGO_URI}
