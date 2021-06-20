@@ -23,7 +23,6 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
-import com.mangasite.config.init.ConditionServiceInitializer;
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
@@ -69,7 +68,6 @@ public class MangaBackendApplication {
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
     var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
-    app.addInitializers(new ConditionServiceInitializer());
     app.run(args);
   }
 }
