@@ -90,7 +90,6 @@ public class ConnectService {
                     .metadata(new ServerMessage("Chapter Modified"), MediaType.APPLICATION_JSON)
                     .data(updatedChapter)
                     .send())
-        .log()
         .then();
   }
   /**
