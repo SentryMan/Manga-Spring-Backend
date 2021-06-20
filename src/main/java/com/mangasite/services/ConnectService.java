@@ -83,7 +83,7 @@ public class ConnectService {
         .filter(es -> es.getValue().contains(updatedChapter.getMangaName()))
         .map(Entry::getKey)
         .doOnNext(client -> System.out.println("Sending Updated Chapter to Client: " + client))
-        .map(responderMap::get)
+        .mapNotNull(responderMap::get)
         .flatMap(
             requester ->
                 requester
