@@ -1,7 +1,6 @@
 package com.mangasite.rsocket;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,6 @@ public class RSocketChapterController {
 
   private final ChapterService service;
   private final ConnectService connectService;
-  private AtomicInteger pageIndex = new AtomicInteger();
 
   public RSocketChapterController(ChapterService service, ConnectService connectService) {
     this.service = service;
@@ -47,14 +45,6 @@ public class RSocketChapterController {
       @DestinationVariable("id") int id, Flux<PageChangeRequest> requestFlux) {
 
     return requestFlux
-        .doOnNext(
-            p -> {
-              if (p.isUsingAutoIncrement()) {
-                if (p.getPageIndex() != -1) this.pageIndex = new AtomicInteger(p.getPageIndex());
-
-                p.setPageIndex(pageIndex.getAndIncrement());
-              }
-            })
         .buffer(500)
         .concatMap(service::updatePageLink)
         .map(

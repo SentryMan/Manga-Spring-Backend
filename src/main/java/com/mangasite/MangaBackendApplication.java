@@ -63,7 +63,8 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
-    var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
+    final var app =
+        new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
     app.run(args);
   }
 }

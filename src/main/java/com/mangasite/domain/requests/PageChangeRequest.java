@@ -40,7 +40,7 @@ public class PageChangeRequest {
   }
 
   public void setChapterName(String name) {
-    this.chapterName = name;
+    chapterName = name;
   }
 
   public void setMangaId(Integer mangaId) {
@@ -56,7 +56,7 @@ public class PageChangeRequest {
   }
 
   public void setPageIndex(int pageindex) {
-    this.pageIndex = pageindex;
+    pageIndex = pageindex;
   }
 
   public String getMangaName() {

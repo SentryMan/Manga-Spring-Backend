@@ -128,7 +128,7 @@ public class Manga {
   }
 
   public void setLd(long l) {
-    this.ld = l;
+    ld = l;
   }
 
   public Integer getS() {

@@ -215,14 +215,14 @@ public class ChapterService {
                             ""))
                 .collect(Collectors.toList());
 
-        return this.addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
+        return addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
       }
       return just(c);
     };
   }
 
   public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    final Set<Object> seen = ConcurrentHashMap.newKeySet();
     return t -> seen.add(keyExtractor.apply(t));
   }
 
@@ -242,7 +242,7 @@ public class ChapterService {
               .subscribe(System.out::println);
         },
         () -> {
-          var mangaFixFlux = mangaRepo.findAll().flatMap(this::removeMangaDups);
+          final var mangaFixFlux = mangaRepo.findAll().flatMap(this::removeMangaDups);
 
           repo.findAll()
               .flatMap(this::removeChapterDups)
@@ -254,9 +254,9 @@ public class ChapterService {
 
   Mono<String> removeMangaDups(Manga manga) {
 
-    var nameSet = new HashSet<String>();
-    var name = manga.getT();
-    var removedFlag = manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
+    final var nameSet = new HashSet<String>();
+    final var name = manga.getT();
+    final var removedFlag = manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
     manga.getInfo().getChapters().removeAll(Collections.singleton(null));
     return removedFlag
         ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
@@ -264,9 +264,9 @@ public class ChapterService {
   }
 
   Mono<String> removeChapterDups(MangaChapters chapter) {
-    var nameSet = new HashSet<String>();
-    var name = chapter.getMangaName();
-    var removedFlag = chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
+    final var nameSet = new HashSet<String>();
+    final var name = chapter.getMangaName();
+    final var removedFlag = chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
     chapter.getChapters().removeAll(Collections.singleton(null));
     return removedFlag
         ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
