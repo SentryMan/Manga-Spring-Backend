@@ -22,7 +22,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.domain.DeviceInfo;
-import com.mangasite.domain.RsocketAdviceInititializer;
+import com.mangasite.domain.init.RsocketAdviceInititializer;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;

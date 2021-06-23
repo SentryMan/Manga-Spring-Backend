@@ -1,4 +1,4 @@
-package com.mangasite.domain;
+package com.mangasite.domain.init;
 
 import org.springframework.messaging.handler.MessagingAdviceBean;
 import org.springframework.web.method.ControllerAdviceBean;
