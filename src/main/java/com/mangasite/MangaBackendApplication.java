@@ -22,6 +22,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.domain.DeviceInfo;
+import com.mangasite.domain.RsocketAdviceInititializer;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
@@ -65,6 +66,8 @@ public class MangaBackendApplication {
     Hooks.onErrorDropped(t -> {});
     final var app =
         new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
+
+    app.addInitializers(new RsocketAdviceInititializer());
     app.run(args);
   }
 }
