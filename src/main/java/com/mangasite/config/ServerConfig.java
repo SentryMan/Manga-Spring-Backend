@@ -26,13 +26,13 @@ import com.netflix.concurrency.limits.limit.VegasLimit;
 public class ServerConfig implements WebFluxConfigurer {
 
   private static final int CONCURRENT_WORKERS_COUNT = 6;
-  private static final int QUEUE_CAPACITY = 1000;
-  private static final int ttl = 10_000;
+  private static final int QUEUE_CAPACITY = 50;
+  private static final int TTL = 10_000;
 
   @Bean
   RSocketServerCustomizer leaseCustomizer() {
 
-    LeaseManager leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, ttl);
+    LeaseManager leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, TTL);
     return rsocketServer -> {
       rsocketServer.lease(
           config ->
