@@ -62,7 +62,7 @@ public class LeaseManager implements Runnable {
 
       final var activeConnections = activeConnectionsCount;
       final var nextDelay = activeConnections == 0 ? ttl : ttl / activeConnections;
-
+      //     System.out.println("Next check happens in " + nextDelay + "ms");
       worker.schedule(this, nextDelay, TimeUnit.MILLISECONDS);
     } catch (final Throwable e) {
       System.err.println("LeaseSender failed to send lease" + e);

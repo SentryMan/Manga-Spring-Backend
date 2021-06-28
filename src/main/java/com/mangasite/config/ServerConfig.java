@@ -28,9 +28,9 @@ import reactor.util.retry.Retry;
 @Configuration
 public class ServerConfig implements WebFluxConfigurer {
 
-  private static final int CONCURRENT_WORKERS_COUNT = 10;
-  private static final int QUEUE_CAPACITY = 50;
-  private static final int TTL = 10_000;
+  private static final int CONCURRENT_WORKERS_COUNT = 5;
+  private static final int QUEUE_CAPACITY = 10;
+  private static final int TTL = 5_000;
 
   @Bean
   RSocketServerCustomizer serverCustomizer() {
@@ -38,7 +38,7 @@ public class ServerConfig implements WebFluxConfigurer {
     final var leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, TTL);
     final var resume =
         new Resume()
-            .sessionDuration(Duration.ofSeconds(60))
+            .cleanupStoreOnKeepAlive()
             .retry(
                 Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1))
                     .doBeforeRetry(s -> System.out.println("Disconnected. Trying to resume...")));

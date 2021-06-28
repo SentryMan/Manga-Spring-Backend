@@ -1,5 +1,6 @@
 package com.mangasite.rsocket;
 
+import java.time.Duration;
 import java.util.List;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -45,7 +46,7 @@ public class RSocketChapterController {
       @DestinationVariable("id") int id, Flux<PageChangeRequest> requestFlux) {
 
     return requestFlux
-        .buffer(500)
+        .buffer(Duration.ofSeconds(10))
         .concatMap(service::updatePageLink)
         .map(
             r ->
