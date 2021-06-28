@@ -171,7 +171,7 @@ public class MangaService {
 
   public Mono<Manga> updateLD(Integer id, Optional<String> dateParam) {
 
-    var epochSeconds =
+    final var epochSeconds =
         dateParam
             .map(s -> LocalDate.parse(s).atStartOfDay(ZoneId.systemDefault()))
             .map(ChronoZonedDateTime::toEpochSecond)
@@ -181,7 +181,7 @@ public class MangaService {
   }
 
   public Mono<Integer> generateID() {
-    Set<Integer> iDSet = new HashSet<>();
+    final Set<Integer> iDSet = new HashSet<>();
 
     return repo.findAll()
         .collectList()

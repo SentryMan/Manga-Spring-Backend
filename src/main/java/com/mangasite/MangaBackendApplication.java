@@ -22,6 +22,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.domain.DeviceInfo;
+import com.mangasite.domain.init.RsocketAdviceInititializer;
+import com.mangasite.domain.lease.LeaseManager;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
@@ -35,6 +37,7 @@ import reactor.core.publisher.Hooks;
         @TypeHint(
             access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
             types = {
+              LeaseManager.class,
               ChangeStreamDocument.class,
               ChapterChangeRequest.class,
               MangaChangeRequest.class,
@@ -63,7 +66,10 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
-    var app = new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
+    final var app =
+        new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
+
+    app.addInitializers(new RsocketAdviceInititializer());
     app.run(args);
   }
 }

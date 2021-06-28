@@ -2,10 +2,12 @@ package com.mangasite.rsocket;
 
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.invocation.MethodArgumentResolutionException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import io.rsocket.exceptions.CustomRSocketException;
 import io.rsocket.exceptions.RejectedException;
 import reactor.core.publisher.Mono;
 
+@ControllerAdvice
 public class RSocketAdvice {
 
   @MessageExceptionHandler

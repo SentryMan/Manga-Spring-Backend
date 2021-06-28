@@ -14,9 +14,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.method.ControllerAdviceBean;
-import com.mangasite.domain.ControllerAdviceWrapper;
-import com.mangasite.rsocket.RSocketAdvice;
 import com.mangasite.services.TokenService;
 
 @EnableRSocketSecurity
@@ -57,14 +54,10 @@ public class ServerSecurityConfig {
   // RSocket Security configuration
   @Bean
   public RSocketMessageHandlerCustomizer messageHandlerCustomizer() {
-    return handler -> {
-      handler
-          .getArgumentResolverConfigurer()
-          .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
-
-      handler.registerMessagingAdvice(
-          new ControllerAdviceWrapper(new ControllerAdviceBean(new RSocketAdvice())));
-    };
+    return handler ->
+        handler
+            .getArgumentResolverConfigurer()
+            .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
   }
 
   // RSocket JWT Security Config
