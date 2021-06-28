@@ -28,19 +28,17 @@ public class LimitBasedLeaseSender extends LimitBasedStatsCollector implements T
   }
 
   public void sendLease(int ttl, int amount) {
-    final Lease nextLease = Lease.create(Duration.ofMillis(ttl), amount);
-    sink.tryEmitNext(nextLease);
+    final var nextLease = Lease.create(Duration.ofMillis(ttl), amount);
+    var result = sink.tryEmitNext(nextLease);
 
-    //    if (result.isFailure()) {
-    //      logger.warn(
-    //          "Connection["
-    //              + connectionId
-    //              + "]. Issued Lease: ["
-    //              + nextLease
-    //              + "] was not sent due to "
-    //              + result);
-    //    } else if (logger.isDebugEnabled()) {
-    //      logger.debug("To Connection[" + connectionId + "]: Issued Lease: [" + nextLease + "]");
-    //    }
+    if (result.isFailure()) {
+      System.out.println(
+          "Connection["
+              + connectionId
+              + "]. Issued Lease: ["
+              + nextLease
+              + "] was not sent due to "
+              + result);
+    }
   }
 }
