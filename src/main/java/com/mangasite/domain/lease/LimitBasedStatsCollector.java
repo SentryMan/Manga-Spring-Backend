@@ -27,9 +27,9 @@ public class LimitBasedStatsCollector extends AtomicBoolean implements RequestIn
 
   @Override
   public void onStart(int streamId, FrameType requestType, @Nullable ByteBuf metadata) {
-    long startTime = clock.getAsLong();
+    final var startTime = clock.getAsLong();
 
-    int currentInFlight = leaseManager.incrementInFlightAndGet();
+    final var currentInFlight = leaseManager.incrementInFlightAndGet();
 
     inFlightMap.put(streamId, currentInFlight);
     timeMap.put(streamId, startTime);
@@ -43,8 +43,8 @@ public class LimitBasedStatsCollector extends AtomicBoolean implements RequestIn
   public void onTerminate(int streamId, FrameType requestType, @Nullable Throwable t) {
     leaseManager.decrementInFlight();
 
-    Long startTime = timeMap.remove(streamId);
-    Integer currentInflight = inFlightMap.remove(streamId);
+    final var startTime = timeMap.remove(streamId);
+    final var currentInflight = inFlightMap.remove(streamId);
 
     limitAlgorithm.onSample(startTime, clock.getAsLong() - startTime, currentInflight, t != null);
   }
@@ -53,8 +53,8 @@ public class LimitBasedStatsCollector extends AtomicBoolean implements RequestIn
   public void onCancel(int streamId, FrameType requestType) {
     leaseManager.decrementInFlight();
 
-    Long startTime = timeMap.remove(streamId);
-    Integer currentInflight = inFlightMap.remove(streamId);
+    final var startTime = timeMap.remove(streamId);
+    final var currentInflight = inFlightMap.remove(streamId);
 
     limitAlgorithm.onSample(startTime, clock.getAsLong() - startTime, currentInflight, true);
   }

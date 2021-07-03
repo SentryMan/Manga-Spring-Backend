@@ -34,7 +34,7 @@ public class LeaseManager implements Runnable {
   @Override
   public void run() {
     try {
-      LimitBasedLeaseSender leaseSender = sendersQueue.poll();
+      final var leaseSender = sendersQueue.poll();
 
       if (leaseSender == null) {
         return;
@@ -45,7 +45,7 @@ public class LeaseManager implements Runnable {
         return;
       }
 
-      int limit = leaseSender.limitAlgorithm.getLimit();
+      final var limit = leaseSender.limitAlgorithm.getLimit();
 
       if (limit == 0) {
         throw new IllegalStateException("Limit is 0");
@@ -60,23 +60,23 @@ public class LeaseManager implements Runnable {
       leaseSender.sendLease(ttl, limit);
       sendersQueue.offer(leaseSender);
 
-      int activeConnections = activeConnectionsCount;
-      int nextDelay = activeConnections == 0 ? ttl : (ttl / activeConnections);
-
+      final var activeConnections = activeConnectionsCount;
+      final var nextDelay = activeConnections == 0 ? ttl : ttl / activeConnections;
+      //     System.out.println("Next check happens in " + nextDelay + "ms");
       worker.schedule(this, nextDelay, TimeUnit.MILLISECONDS);
-    } catch (Throwable e) {
+    } catch (final Throwable e) {
       System.err.println("LeaseSender failed to send lease" + e);
     }
   }
 
   int incrementInFlightAndGet() {
     for (; ; ) {
-      int state = stateAndInFlight;
-      int paused = state & MASK_PAUSED;
-      int inFlight = stateAndInFlight & MASK_IN_FLIGHT;
+      final var state = stateAndInFlight;
+      final var paused = state & MASK_PAUSED;
+      final var inFlight = stateAndInFlight & MASK_IN_FLIGHT;
 
       // assume overflow is impossible due to max concurrency in RSocket it self
-      int nextInFlight = inFlight + 1;
+      final var nextInFlight = inFlight + 1;
 
       if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight | paused)) {
         return nextInFlight;
@@ -86,12 +86,12 @@ public class LeaseManager implements Runnable {
 
   void decrementInFlight() {
     for (; ; ) {
-      int state = stateAndInFlight;
-      int paused = state & MASK_PAUSED;
-      int inFlight = stateAndInFlight & MASK_IN_FLIGHT;
+      final var state = stateAndInFlight;
+      final var paused = state & MASK_PAUSED;
+      final var inFlight = stateAndInFlight & MASK_IN_FLIGHT;
 
       // assume overflow is impossible due to max concurrency in RSocket it self
-      int nextInFlight = inFlight - 1;
+      final var nextInFlight = inFlight - 1;
 
       if (inFlight == capacity && paused == MASK_PAUSED) {
         if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight)) {
@@ -106,9 +106,9 @@ public class LeaseManager implements Runnable {
   }
 
   boolean pauseIfNoCapacity() {
-    int capacity = this.capacity;
+    final var capacity = this.capacity;
     for (; ; ) {
-      int inFlight = stateAndInFlight;
+      final var inFlight = stateAndInFlight;
 
       if (inFlight < capacity) {
         return false;
@@ -126,7 +126,7 @@ public class LeaseManager implements Runnable {
 
   void register(LimitBasedLeaseSender sender) {
     sendersQueue.offer(sender);
-    final int activeCount = ACTIVE_CONNECTIONS_COUNT.getAndIncrement(this);
+    final var activeCount = ACTIVE_CONNECTIONS_COUNT.getAndIncrement(this);
 
     if (activeCount == 0) {
       worker.schedule(this);
