@@ -20,7 +20,7 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
-		<spring.native.version>0.10.1-SNAPSHOT</spring.native.version>
+		<spring.native.version>0.10.1</spring.native.version>
 	</properties>
 
 	<dependencies>
@@ -167,16 +167,6 @@
 
 	<repositories>
 		<repository>
-			<id>spring-libs-snapshot</id>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
 			<id>spring-libs-milestone</id>
 			<url>https://repo.spring.io/milestone</url>
 			<snapshots>
@@ -194,16 +184,6 @@
 	</repositories>
 
 	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-libs-snapshot</id>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
 		<pluginRepository>
 			<id>spring-libs-milestone</id>
 			<url>https://repo.spring.io/milestone</url>
