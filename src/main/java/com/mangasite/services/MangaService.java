@@ -1,6 +1,7 @@
 package com.mangasite.services;
 
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -9,17 +10,19 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
+
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -36,17 +39,12 @@ public class MangaService {
   @Value("${popular.manga}")
   String[] popularMangaAlias;
 
-  private final AtomicInteger activeConnections;
   private final MangaRepo repo;
   private final ChapterRepo chapterRepo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
 
   public MangaService(
-      AtomicInteger activeConnections,
-      MangaRepo repo,
-      ChapterRepo chapterRepo,
-      ReactiveMongoTemplate reactiveMongoTemplate) {
-    this.activeConnections = activeConnections;
+      MangaRepo repo, ChapterRepo chapterRepo, ReactiveMongoTemplate reactiveMongoTemplate) {
     this.repo = repo;
     this.chapterRepo = chapterRepo;
     this.reactiveMongoTemplate = reactiveMongoTemplate;
@@ -141,12 +139,11 @@ public class MangaService {
    *
    * @return Mongo ChangeStream Flux
    */
-  public Flux<Manga> watchDBChanges(boolean isServer) {
+  public Flux<Manga> watchDBChanges() {
     final var fulldocOption = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
 
     return reactiveMongoTemplate
         .changeStream("Manga", fulldocOption, Manga.class)
-        .filter(e -> !isServer || activeConnections.intValue() < 1)
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .doOnNext(
             event -> {
@@ -181,7 +178,7 @@ public class MangaService {
   }
 
   public Mono<Integer> generateID() {
-    final Set<Integer> iDSet = new HashSet<>();
+    final Set<Integer> idSet = new HashSet<>();
 
     return repo.findAll()
         .collectList()
@@ -190,13 +187,10 @@ public class MangaService {
               var id = 0;
               do {
                 final var ID = id;
-                final var manga = list.stream().filter(m -> m.getRealID() == ID).findAny();
+                final var idNotTaken = list.stream().noneMatch(m -> m.getRealID() == ID);
 
-                if (!manga.isPresent() && iDSet.add(id)) {
-                  iDSet.add(id);
-                  break;
-                }
-                iDSet.add(id);
+                if (idNotTaken && idSet.add(id)) break;
+
                 id++;
 
               } while (true);

@@ -3,8 +3,10 @@ package com.mangasite.rsocket;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+
 import com.mangasite.domain.Manga;
 import com.mangasite.services.MangaService;
+
 import io.rsocket.exceptions.CustomRSocketException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,6 +47,6 @@ public class RSocketMangaController {
 
   @MessageMapping("mongo-change-stream")
   public Flux<Manga> watchForDBChanges() {
-    return service.watchDBChanges(false);
+    return service.watchDBChanges();
   }
 }
