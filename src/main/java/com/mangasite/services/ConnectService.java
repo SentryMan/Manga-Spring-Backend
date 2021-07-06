@@ -1,16 +1,21 @@
 package com.mangasite.services;
 
+import static com.mangasite.domain.Constants.ACTIVE_CONNECTIONS;
+import static com.mangasite.domain.Constants.CLIENT_MANGA_MAP;
+import static com.mangasite.domain.Constants.CLIENT_REQUESTER_MAP;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
+
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.domain.requests.ServerMessage;
+
 import io.rsocket.RSocket;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,18 +29,6 @@ import reactor.core.publisher.Mono;
 public class ConnectService {
 
   private static final String CLIENT = "Client: ";
-  private final AtomicInteger activeConnections;
-  private final Map<String, RSocketRequester> responderMap;
-  private final Map<String, String> clientMangaMap;
-
-  public ConnectService(
-      AtomicInteger activeConnections,
-      Map<String, RSocketRequester> responderMap,
-      Map<String, String> clientMangaMap) {
-    this.activeConnections = activeConnections;
-    this.responderMap = responderMap;
-    this.clientMangaMap = clientMangaMap;
-  }
 
   /**
    * Logs Rsocket Connect/Disconnect events
@@ -52,9 +45,9 @@ public class ConnectService {
         .doFirst(
             () -> {
               System.out.println(CLIENT + clientName + " CONNECTED");
-              responderMap.put(clientName, rSocketRequester);
+              CLIENT_REQUESTER_MAP.put(clientName, rSocketRequester);
               System.out.println(
-                  "Total Active Connections: " + activeConnections.incrementAndGet());
+                  "Total Active Connections: " + ACTIVE_CONNECTIONS.incrementAndGet());
             })
         .doFinally(
             f -> {
@@ -64,9 +57,9 @@ public class ConnectService {
               System.out.println(
                   CLIENT + clientName + " DISCONNECTED after " + connectionLifetime + " Seconds");
               System.out.println(
-                  "Total Remaining Connections: " + activeConnections.decrementAndGet());
-              responderMap.remove(clientName);
-              clientMangaMap.remove(clientName);
+                  "Total Remaining Connections: " + ACTIVE_CONNECTIONS.decrementAndGet());
+              CLIENT_REQUESTER_MAP.remove(clientName);
+              CLIENT_MANGA_MAP.remove(clientName);
             })
         .subscribe(
             null,
@@ -79,11 +72,11 @@ public class ConnectService {
   /** Fires off chapter updates to relevant clients */
   public Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
 
-    return Flux.fromIterable(clientMangaMap.entrySet())
+    return Flux.fromIterable(CLIENT_MANGA_MAP.entrySet())
         .filter(es -> es.getValue().contains(updatedChapter.getMangaName()))
         .map(Entry::getKey)
         .doOnNext(client -> System.out.println("Sending Updated Chapter to Client: " + client))
-        .mapNotNull(responderMap::get)
+        .mapNotNull(CLIENT_REQUESTER_MAP::get)
         .flatMap(
             requester ->
                 requester
@@ -94,6 +87,7 @@ public class ConnectService {
                     .send())
         .then();
   }
+
   /**
    * Request User chapter information from client
    *
@@ -107,7 +101,7 @@ public class ConnectService {
             new ServerMessage("Yo Client, tell me what you're reading"), MediaType.APPLICATION_JSON)
         .retrieveFlux(String.class)
         .doOnNext(n -> System.out.println(CLIENT + clientName + " Is Currently Viewing: " + n))
-        .subscribe(n -> clientMangaMap.put(clientName, n), ex -> {});
+        .subscribe(n -> CLIENT_MANGA_MAP.put(clientName, n), ex -> {});
   }
 
   /**

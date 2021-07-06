@@ -1,5 +1,8 @@
 package com.mangasite.config;
 
+import static com.mangasite.domain.Constants.ADMIN;
+import static com.mangasite.domain.Constants.USER;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessageHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +17,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
 import com.mangasite.services.TokenService;
 
 @EnableRSocketSecurity
 @EnableWebFluxSecurity
 public class ServerSecurityConfig {
-
-  public static final String ADMIN = "ADMIN";
-  public static final String USER = "USER";
 
   @Value("${roles.admin.username}")
   String adminUsername;
