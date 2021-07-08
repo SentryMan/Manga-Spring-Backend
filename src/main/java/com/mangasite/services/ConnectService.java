@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
-import org.springframework.stereotype.Service;
 
 import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.MangaChapters;
@@ -25,7 +24,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Josiah
  */
-@Service
+// @Service
 public class ConnectService {
 
   private static final String CLIENT = "Client: ";

@@ -4,13 +4,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.LongSupplier;
+
 import com.netflix.concurrency.limits.Limit;
+
 import io.netty.buffer.ByteBuf;
 import io.rsocket.frame.FrameType;
 import io.rsocket.plugins.RequestInterceptor;
 import reactor.util.annotation.Nullable;
 
 public class LimitBasedStatsCollector extends AtomicBoolean implements RequestInterceptor {
+
+  private static final long serialVersionUID = 1L;
 
   final LeaseManager leaseManager;
   final Limit limitAlgorithm;
@@ -66,8 +70,6 @@ public class LimitBasedStatsCollector extends AtomicBoolean implements RequestIn
 
   @Override
   public void dispose() {
-    if (!getAndSet(true)) {
-      leaseManager.unregister();
-    }
+    if (!getAndSet(true)) leaseManager.unregister();
   }
 }

@@ -3,7 +3,6 @@ package com.mangasite.web.handlers;
 import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -16,7 +15,11 @@ import reactor.core.publisher.Mono;
 @Component
 public class MangaHandler {
 
-  @Autowired private MangaService service;
+  private final MangaService service;
+
+  public MangaHandler(MangaService service) {
+    this.service = service;
+  }
 
   public Mono<ServerResponse> post(ServerRequest request) {
     return request

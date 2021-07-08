@@ -12,17 +12,21 @@ on:
 # Your workflows jobs.
 jobs:
   Build-Compile-Deploy:
+    environment: manga-spring.com
+    concurrency:
+      group: concurrency-group-1
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: "15"
-          java-package: jdk 
-          architecture: x64 
+          java-package: jdk
+          architecture: x64
 
       - name: Cache Maven Dependencies
         uses: actions/cache@v2
@@ -31,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Compile Native Image 
+      - name: Compile Native Image
         run: mvn spring-boot:build-image
 
       - name: Upload Docker Image
@@ -42,11 +46,4 @@ jobs:
       - name: Deploy
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run:  heroku container:release web -a manga-spring
-
-
-
-
-
-
-
+        run: heroku container:release web -a manga-spring

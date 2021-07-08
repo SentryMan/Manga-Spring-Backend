@@ -1,7 +1,9 @@
 package com.mangasite.domain.lease;
 
 import java.time.Duration;
+
 import com.netflix.concurrency.limits.Limit;
+
 import io.rsocket.lease.Lease;
 import io.rsocket.lease.TrackingLeaseSender;
 import reactor.core.publisher.Flux;
@@ -9,6 +11,8 @@ import reactor.core.publisher.Sinks;
 import reactor.util.concurrent.Queues;
 
 public class LimitBasedLeaseSender extends LimitBasedStatsCollector implements TrackingLeaseSender {
+
+  private static final long serialVersionUID = 1L;
 
   final String connectionId;
   final Sinks.Many<Lease> sink =
@@ -29,9 +33,9 @@ public class LimitBasedLeaseSender extends LimitBasedStatsCollector implements T
 
   public void sendLease(int ttl, int amount) {
     final var nextLease = Lease.create(Duration.ofMillis(ttl), amount);
-    var result = sink.tryEmitNext(nextLease);
+    final var result = sink.tryEmitNext(nextLease);
 
-    if (result.isFailure()) {
+    if (result.isFailure())
       System.out.println(
           "Connection["
               + connectionId
@@ -39,7 +43,6 @@ public class LimitBasedLeaseSender extends LimitBasedStatsCollector implements T
               + nextLease
               + "] was not sent due to "
               + result);
-    }
 
     // elseSystem.out.println("To Connection[" + connectionId + "]: Issued Lease: [" + nextLease +
     // "]");

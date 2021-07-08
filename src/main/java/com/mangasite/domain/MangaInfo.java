@@ -1,6 +1,7 @@
 package com.mangasite.domain;
 
 import java.util.List;
+
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 

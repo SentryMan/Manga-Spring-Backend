@@ -3,6 +3,7 @@ package com.mangasite;
 import static org.springframework.boot.WebApplicationType.REACTIVE;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -21,14 +22,17 @@ import org.springframework.boot.autoconfigure.web.reactive.function.client.WebCl
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
+
 import com.mangasite.domain.DeviceInfo;
-import com.mangasite.domain.init.RsocketAdviceInititializer;
+import com.mangasite.domain.init.AppInitializer;
+import com.mangasite.domain.init.RSocketServerInitializer;
 import com.mangasite.domain.lease.LeaseManager;
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.MangaChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.domain.requests.ServerMessage;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
+
 import reactor.core.publisher.Hooks;
 
 // set native image reflective access
@@ -69,7 +73,7 @@ public class MangaBackendApplication {
     final var app =
         new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
 
-    app.addInitializers(new RsocketAdviceInititializer());
+    app.addInitializers(new AppInitializer(), new RSocketServerInitializer());
     app.run(args);
   }
 }

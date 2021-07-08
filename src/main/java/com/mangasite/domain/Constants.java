@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.messaging.rsocket.RSocketRequester;
 
 public class Constants {
@@ -11,6 +12,8 @@ public class Constants {
 
   public static final String ADMIN = "ADMIN";
   public static final String USER = "USER";
+  public static final ChangeStreamOptions FULL_DOC =
+      ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
 
   public static final AtomicInteger ACTIVE_CONNECTIONS = new AtomicInteger();
   public static final Map<String, RSocketRequester> CLIENT_REQUESTER_MAP = new HashMap<>();

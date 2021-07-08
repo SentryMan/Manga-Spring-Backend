@@ -1,5 +1,6 @@
 package com.mangasite.services;
 
+import static com.mangasite.domain.Constants.FULL_DOC;
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
 
 import java.time.Instant;
@@ -13,7 +14,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
-import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 
@@ -130,7 +130,7 @@ public class MangaService {
                             request.getFirstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
-        .flatMap(TupleUtils.function((manga, chapter) -> chapter.then(manga)))
+        .flatMap(TupleUtils.function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
   }
 
@@ -140,10 +140,9 @@ public class MangaService {
    * @return Mongo ChangeStream Flux
    */
   public Flux<Manga> watchDBChanges() {
-    final var fulldocOption = ChangeStreamOptions.builder().returnFullDocumentOnUpdate().build();
 
     return reactiveMongoTemplate
-        .changeStream("Manga", fulldocOption, Manga.class)
+        .changeStream("Manga", FULL_DOC, Manga.class)
         .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .doOnNext(
             event -> {

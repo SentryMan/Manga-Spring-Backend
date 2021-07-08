@@ -1,9 +1,11 @@
 package com.mangasite.services;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
+
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;

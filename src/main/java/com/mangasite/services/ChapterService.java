@@ -1,6 +1,7 @@
 package com.mangasite.services;
 
 import static reactor.core.publisher.Mono.just;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +14,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import com.mangasite.domain.Chapter;
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
@@ -21,6 +24,7 @@ import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -95,7 +99,7 @@ public class ChapterService {
         .doOnNext(c -> requestList.forEach(processPageRequests(c)))
         .flatMap(repo::save)
         .map(MangaChapters::getMangaName)
-        .flatMapIterable(
+        .map(
             n ->
                 requestList
                     .stream()
@@ -103,8 +107,8 @@ public class ChapterService {
                         r -> {
                           r.setMangaName(n);
                           return r;
-                        })
-                    .collect(Collectors.toList()));
+                        }))
+        .flatMapMany(Flux::fromStream);
   }
 
   /**
@@ -150,29 +154,28 @@ public class ChapterService {
   private Consumer<PageChangeRequest> processPageRequests(MangaChapters chapters) {
 
     return r -> {
-      final var pageOp =
-          chapters
-              .getChapters()
-              .stream()
-              .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
-              .map(Chapter::getImages)
-              .flatMap(List::stream)
-              .filter(i -> i.get(0) == r.getPageIndex())
-              .findFirst();
-
-      if (pageOp.isEmpty())
-        chapters
-            .getChapters()
-            .stream()
-            .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
-            .map(Chapter::getImages)
-            .forEach(
-                pages -> {
-                  pages.add(List.of(r.getPageIndex(), r.getPageURL(), "", ""));
-                  pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
-                  Collections.reverse(pages);
-                });
-      else pageOp.get().set(1, r.getPageURL());
+      chapters
+          .getChapters()
+          .stream()
+          .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
+          .map(Chapter::getImages)
+          .flatMap(List::stream)
+          .filter(i -> i.get(0) == r.getPageIndex())
+          .findFirst()
+          .ifPresentOrElse(
+              page -> page.set(1, r.getPageURL()),
+              () ->
+                  chapters
+                      .getChapters()
+                      .stream()
+                      .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
+                      .map(Chapter::getImages)
+                      .forEach(
+                          pages -> {
+                            pages.add(List.of(r.getPageIndex(), r.getPageURL(), "", ""));
+                            pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
+                            Collections.reverse(pages);
+                          }));
     };
   }
 
