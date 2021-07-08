@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
@@ -36,9 +37,7 @@ public class LeaseManager implements Runnable {
     try {
       final var leaseSender = sendersQueue.poll();
 
-      if (leaseSender == null) {
-        return;
-      }
+      if (leaseSender == null) return;
 
       if (leaseSender.isDisposed()) {
         worker.schedule(this);
@@ -47,9 +46,7 @@ public class LeaseManager implements Runnable {
 
       final var limit = leaseSender.limitAlgorithm.getLimit();
 
-      if (limit == 0) {
-        throw new IllegalStateException("Limit is 0");
-      }
+      if (limit == 0) throw new IllegalStateException("Limit is 0");
 
       if (pauseIfNoCapacity()) {
         sendersQueue.addFirst(leaseSender);
@@ -78,9 +75,8 @@ public class LeaseManager implements Runnable {
       // assume overflow is impossible due to max concurrency in RSocket it self
       final var nextInFlight = inFlight + 1;
 
-      if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight | paused)) {
+      if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight | paused))
         return nextInFlight;
-      }
     }
   }
 
@@ -99,9 +95,7 @@ public class LeaseManager implements Runnable {
           worker.schedule(this);
           return;
         }
-      } else if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight | paused)) {
-        return;
-      }
+      } else if (STATE_AND_IN_FLIGHT.compareAndSet(this, state, nextInFlight | paused)) return;
     }
   }
 
@@ -110,13 +104,9 @@ public class LeaseManager implements Runnable {
     for (; ; ) {
       final var inFlight = stateAndInFlight;
 
-      if (inFlight < capacity) {
-        return false;
-      }
+      if (inFlight < capacity) return false;
 
-      if (STATE_AND_IN_FLIGHT.compareAndSet(this, inFlight, inFlight | MASK_PAUSED)) {
-        return true;
-      }
+      if (STATE_AND_IN_FLIGHT.compareAndSet(this, inFlight, inFlight | MASK_PAUSED)) return true;
     }
   }
 
@@ -128,8 +118,6 @@ public class LeaseManager implements Runnable {
     sendersQueue.offer(sender);
     final var activeCount = ACTIVE_CONNECTIONS_COUNT.getAndIncrement(this);
 
-    if (activeCount == 0) {
-      worker.schedule(this);
-    }
+    if (activeCount == 0) worker.schedule(this);
   }
 }

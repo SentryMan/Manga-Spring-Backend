@@ -1,14 +1,20 @@
 package com.mangasite.web.handlers;
 
+import static org.springframework.web.reactive.function.server.ServerResponse.accepted;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
 import com.mangasite.domain.requests.ChapterChangeRequest;
 import com.mangasite.domain.requests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
+
 import reactor.core.publisher.Mono;
 
 @Component
@@ -24,9 +30,7 @@ public class ChapterHandler {
   }
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {
-    return service
-        .getByID(Integer.parseInt(request.pathVariable("id")))
-        .flatMap(ServerResponse.ok()::bodyValue);
+    return service.getByID(Integer.parseInt(request.pathVariable("id"))).flatMap(ok()::bodyValue);
   }
 
   public Mono<ServerResponse> addChapter(ServerRequest request) {
@@ -35,7 +39,7 @@ public class ChapterHandler {
         .map(List::of)
         .flatMap(service::addChapter)
         .doOnNext(mc -> connectService.fireAndForgetChapterUpdate(mc.getT2()).subscribe())
-        .flatMap(ServerResponse.ok()::bodyValue);
+        .flatMap(ok()::bodyValue);
   }
 
   public Mono<ServerResponse> updatePageLink(ServerRequest request) {
@@ -52,11 +56,11 @@ public class ChapterHandler {
         .map(List::of)
         .flatMapMany(service::updatePageLink)
         .next()
-        .flatMap(ServerResponse.ok()::bodyValue);
+        .flatMap(ok()::bodyValue);
   }
 
   public Mono<ServerResponse> dedup(ServerRequest request) {
     service.deleteDuplicateChapters(request.queryParam("id").map(Integer::parseInt));
-    return ServerResponse.accepted().bodyValue("Dedup Request Accepted");
+    return accepted().bodyValue("Dedup Request Accepted");
   }
 }

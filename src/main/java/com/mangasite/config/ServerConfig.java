@@ -32,8 +32,7 @@ public class ServerConfig implements WebFluxConfigurer {
   private static final int QUEUE_CAPACITY = 10;
   private static final int LEASE_TTL_MILLI = 5_000;
 
-  @Bean
-  RSocketServerCustomizer serverCustomizer() {
+  public static final RSocketServerCustomizer serverCustomizer() {
 
     final var leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, LEASE_TTL_MILLI);
     final var resume =
