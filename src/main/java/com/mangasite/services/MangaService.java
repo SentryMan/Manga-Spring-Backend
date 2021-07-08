@@ -26,7 +26,6 @@ import com.mangasite.repo.MangaRepo;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
-import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 /**
@@ -131,8 +130,7 @@ public class MangaService {
                             request.getFirstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
-        .flatMap(
-            TupleUtils.function((manga, chapter) -> Mono.zip(manga, chapter).map(Tuple2::getT1)))
+        .flatMap(TupleUtils.function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
   }
 
