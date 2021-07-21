@@ -194,6 +194,7 @@ public class MangaService {
                   });
               info.setChapters(chapters);
               m.setInfo(info);
+
               return m;
             })
         .flatMap(repo::save)
