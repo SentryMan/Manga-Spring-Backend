@@ -180,7 +180,7 @@ public class MangaService {
   public void updateChapterNames(int id, Map<String, String> nameMap) {
 
     repo.getByRealID(id)
-        .doOnNext(
+        .map(
             m -> {
               final var info = m.getInfo();
               final var chapters = info.getChapters();
@@ -194,6 +194,7 @@ public class MangaService {
                   });
               info.setChapters(chapters);
               m.setInfo(info);
+              return m;
             })
         .flatMap(repo::save)
         .subscribe(m -> System.out.println("Updated Chapter Names for Manga: " + m.getT()));
