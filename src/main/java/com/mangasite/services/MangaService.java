@@ -193,6 +193,7 @@ public class MangaService {
                         .forEach(l -> l.set(2, v));
                   });
               info.setChapters(chapters);
+              m.setInfo(info);
             })
         .flatMap(repo::save)
         .subscribe(m -> System.out.println("Updated Chapter Names for Manga: " + m.getT()));
