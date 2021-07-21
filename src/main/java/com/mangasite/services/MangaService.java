@@ -182,8 +182,8 @@ public class MangaService {
     repo.getByRealID(id)
         .doOnNext(
             m -> {
-              final var chapters = m.getInfo().getChapters();
-
+              final var info = m.getInfo();
+              final var chapters = info.getChapters();
               nameMap.forEach(
                   (k, v) -> {
                     chapters
@@ -192,6 +192,7 @@ public class MangaService {
                         .filter(l -> l.get(2) == null || l.get(2).isBlank())
                         .forEach(l -> l.set(2, v));
                   });
+              info.setChapters(chapters);
             })
         .flatMap(repo::save)
         .subscribe(m -> System.out.println("Updated Chapter Names for Manga: " + m.getT()));
