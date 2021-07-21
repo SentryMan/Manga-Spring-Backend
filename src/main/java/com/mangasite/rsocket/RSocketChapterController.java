@@ -23,11 +23,9 @@ import reactor.util.function.Tuple2;
 public class RSocketChapterController {
 
   private final ChapterService service;
-  private final ConnectService connectService;
 
-  public RSocketChapterController(ChapterService service, ConnectService connectService) {
+  public RSocketChapterController(ChapterService service) {
     this.service = service;
-    this.connectService = connectService;
   }
 
   @MessageMapping("get-chapters-{id}")
@@ -64,7 +62,7 @@ public class RSocketChapterController {
         .doOnNext(System.out::println)
         .doOnComplete(
             () -> {
-              getChapter(id).flatMap(connectService::fireAndForgetChapterUpdate).subscribe();
+              getChapter(id).flatMap(ConnectService::fireAndForgetChapterUpdate).subscribe();
             });
   }
 }

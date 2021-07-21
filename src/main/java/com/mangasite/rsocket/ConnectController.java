@@ -21,11 +21,9 @@ import reactor.util.function.Tuples;
 @Controller
 public class ConnectController {
 
-  private final ConnectService service;
   private final MapReactiveUserDetailsService userService;
 
-  public ConnectController(ConnectService service, MapReactiveUserDetailsService userService) {
-    this.service = service;
+  public ConnectController(MapReactiveUserDetailsService userService) {
     this.userService = userService;
   }
 
@@ -35,7 +33,7 @@ public class ConnectController {
       RSocketRequester rSocketRequester,
       @AuthenticationPrincipal String authName) {
 
-    service.startConnectionLog(rSocketRequester, clientName);
+    ConnectService.startConnectionLog(rSocketRequester, clientName);
 
     // If Client isn't an Admin, Query Client for Chapters being read
     return userService
@@ -47,8 +45,8 @@ public class ConnectController {
         .map(Collection::stream)
         .filter(s -> s.noneMatch(a -> a.getAuthority().contains(ADMIN)))
         .map(s -> Tuples.of(rSocketRequester, clientName))
-        .doOnNext(TupleUtils.consumer(service::watchUserStream))
-        .doOnNext(TupleUtils.consumer(service::requestDeviceInfo))
+        .doOnNext(TupleUtils.consumer(ConnectService::watchUserStream))
+        .doOnNext(TupleUtils.consumer(ConnectService::requestDeviceInfo))
         .then();
   }
 }

@@ -24,6 +24,7 @@ public class MangaChangeRequest {
   private Integer hits;
   private String coverImageURL;
   private Integer updateDateint;
+  private String updateDateStr;
   private Integer completeStatus;
   private String title;
   private String artist;
@@ -146,5 +147,13 @@ public class MangaChangeRequest {
 
   public void setFirstPageURL(String firstPageURL) {
     this.firstPageURL = firstPageURL;
+  }
+
+  public String getUpdateDateStr() {
+    return updateDateStr;
+  }
+
+  public void setUpdateDateStr(String updateDateStr) {
+    this.updateDateStr = updateDateStr;
   }
 }

@@ -20,14 +20,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Service Class That Handles RSocket Connections
+ * Service Interface That Handles RSocket Connections
  *
  * @author Josiah
  */
-// @Service
-public class ConnectService {
+public interface ConnectService {
 
-  private static final String CLIENT = "Client: ";
+  String CLIENT = "Client: ";
 
   /**
    * Logs Rsocket Connect/Disconnect events
@@ -35,7 +34,7 @@ public class ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  public void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
+  static void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
     final var startTime = Instant.now();
     rSocketRequester
         .rsocketClient()
@@ -69,7 +68,7 @@ public class ConnectService {
   }
 
   /** Fires off chapter updates to relevant clients */
-  public Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
+  static Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
 
     return Flux.fromIterable(CLIENT_MANGA_MAP.entrySet())
         .filter(es -> es.getValue().contains(updatedChapter.getMangaName()))
@@ -93,7 +92,7 @@ public class ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  public void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
+  static void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
         .metadata(
@@ -109,7 +108,7 @@ public class ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  public void requestDeviceInfo(RSocketRequester rSocketRequester, String clientName) {
+  static void requestDeviceInfo(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
         .metadata(new ServerMessage("What device is this?"), MediaType.APPLICATION_JSON)

@@ -22,11 +22,9 @@ public class ChapterHandler {
 
   private final ChapterService service;
   private AtomicInteger pageIndex = new AtomicInteger();
-  private final ConnectService connectService;
 
-  public ChapterHandler(ChapterService service, ConnectService connectService) {
+  public ChapterHandler(ChapterService service) {
     this.service = service;
-    this.connectService = connectService;
   }
 
   public Mono<ServerResponse> getChapter(ServerRequest request) {
@@ -38,7 +36,7 @@ public class ChapterHandler {
         .bodyToMono(ChapterChangeRequest.class)
         .map(List::of)
         .flatMap(service::addChapter)
-        .doOnNext(mc -> connectService.fireAndForgetChapterUpdate(mc.getT2()).subscribe())
+        .doOnNext(mc -> ConnectService.fireAndForgetChapterUpdate(mc.getT2()).subscribe())
         .flatMap(ok()::bodyValue);
   }
 

@@ -1,6 +1,8 @@
 package com.mangasite.domain;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -65,12 +67,18 @@ public class Manga {
     c = request.getGenre();
     h = request.getHits();
     im = request.getCoverImageURL();
-    ld = request.getUpdateDateint();
     s = request.getCompleteStatus();
     t = request.getTitle();
     info = new MangaInfo();
     info.setArtist(request.getArtist());
     info.setAuthor(request.getAuthor());
+
+    ld =
+        request.getUpdateDateStr() != null
+            ? LocalDate.parse(request.getUpdateDateStr())
+                .atStartOfDay(ZoneId.systemDefault())
+                .toEpochSecond()
+            : request.getUpdateDateint();
 
     final List<List<String>> list =
         List.of(

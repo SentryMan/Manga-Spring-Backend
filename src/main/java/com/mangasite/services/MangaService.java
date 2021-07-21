@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.chrono.ChronoZonedDateTime;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -174,6 +175,30 @@ public class MangaService {
             .orElse(Instant.now().getEpochSecond());
 
     return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
+  }
+
+  public void updateChapterNames(int id, Map<String, String> nameMap) {
+
+    repo.getByRealID(id)
+        .map(
+            m -> {
+              final var info = m.getInfo();
+              final var chapters = info.getChapters();
+              nameMap.forEach(
+                  (k, v) -> {
+                    chapters
+                        .stream()
+                        .filter(l -> k.equals(l.get(0)))
+                        .filter(l -> l.get(2) == null || l.get(2).isBlank())
+                        .forEach(l -> l.set(2, v));
+                  });
+              info.setChapters(chapters);
+              m.setInfo(info);
+
+              return m;
+            })
+        .flatMap(repo::save)
+        .subscribe(m -> System.out.println("Updated Chapter Names for Manga: " + m.getT()));
   }
 
   public Mono<Integer> generateID() {
