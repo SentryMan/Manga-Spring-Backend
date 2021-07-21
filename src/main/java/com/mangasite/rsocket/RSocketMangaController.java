@@ -1,5 +1,7 @@
 package com.mangasite.rsocket;
 
+import java.util.Map;
+
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -48,5 +50,10 @@ public class RSocketMangaController {
   @MessageMapping("mongo-change-stream")
   public Flux<Manga> watchForDBChanges() {
     return service.watchDBChanges();
+  }
+
+  @MessageMapping("update-chapter-names-{id}")
+  public void watchForDBChanges(@DestinationVariable("id") int id, Map<String, String> nameMap) {
+    service.updateChapterNames(id, nameMap);
   }
 }
