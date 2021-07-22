@@ -1,23 +1,23 @@
 # Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-FROM oraclelinux:7 AS Compile-Native-Image
+FROM oraclelinux:8 AS Compile-Native-Image
 
 ENV HOME=/build
 # Dependencies
 RUN mkdir -p $HOME/jdk
 ADD ./pom.xml $HOME
 WORKDIR $HOME
-RUN yum install -y wget
+RUN microdnf install wget maven
 
 RUN cd jdk && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" 
 
 RUN cd jdk \
     && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz \
-    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-darwin-amd64-dev/bin\
-    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-darwin-amd64-dev\
+    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin\
+    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev\
     && export PATH=$PATH:$JAVA_HOME
 
-RUN yum install -y maven && gu install native-image && mvn --version
+RUN gu install native-image
 RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
