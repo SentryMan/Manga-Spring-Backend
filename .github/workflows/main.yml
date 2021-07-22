@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2-
 
       - name: Compile Native Image
-        run: docker build -t manga-backend .
+        run: mvn clean package && docker build -t manga-backend .
 
       - name: Upload Docker Image
         env:
