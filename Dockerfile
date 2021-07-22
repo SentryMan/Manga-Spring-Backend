@@ -1,6 +1,6 @@
 # Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-FROM oraclelinux:8 AS Compile-Native-Image
+FROM oraclelinux:8-slim AS Compile-Native-Image
 
 ENV HOME=/build
 # Dependencies
