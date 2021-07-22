@@ -5,7 +5,7 @@ FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
 ADD . /build
 WORKDIR /build
 
-RUN microdnf install maven
+RUN yum install maven
 
 RUN gu install native-image;
 
