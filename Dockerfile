@@ -15,7 +15,6 @@ RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 #Compile Image
 ADD . /build
 RUN native-image --version
-USER 1001
 RUN mvn clean package -P native
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
