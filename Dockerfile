@@ -5,7 +5,6 @@ FROM oraclelinux:8-slim AS Compile-Native-Image
 ENV HOME=/build
 # Dependencies
 RUN mkdir -p /build/jdk
-ADD ./pom.xml $HOME
 WORKDIR $HOME
 RUN microdnf install wget maven tar gzip
 
@@ -16,7 +15,8 @@ RUN cd jdk\
     && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home\
     && export PATH=$PATH:$JAVA_HOME
 
-RUN cd $JAVA_HOME/bin && gu install native-image
+RUN cd $JAVA_HOME/bin && ./gu install native-image
+ADD ./pom.xml $HOME
 RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
