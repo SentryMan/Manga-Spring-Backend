@@ -9,8 +9,7 @@ on:
 
 # Your workflows jobs.
 jobs:
-  Build-IMage:
-    environment: manga-spring.com
+  Build-Image:
     concurrency:
       group: concurrency-group-1
       cancel-in-progress: true
@@ -20,14 +19,24 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create Multistage Container
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+           continue-on-error: true
         run: docker build -t manga-backend .
-
+        
       - name: Upload Docker Image
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
-      - name: Deploy
+  Prod-Release:
+    environment: manga-spring.com
+    concurrency:
+      group: concurrency-group-2
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Image
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
