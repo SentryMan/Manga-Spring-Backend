@@ -9,7 +9,7 @@ on:
 
 # Your workflows jobs.
 jobs:
-  Build-Compile-Deploy:
+  Build-IMage:
     environment: manga-spring.com
     concurrency:
       group: concurrency-group-1
@@ -18,23 +18,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: "16"
-          java-package: jdk
-          architecture: x64
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
-
-      - name: Build Artifact
-        run: mvn clean package && docker build -t manga-backend .
 
       - name: Create Multistage Container
         run: docker build -t manga-backend .

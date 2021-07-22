@@ -226,6 +226,14 @@
 								<phase>package</phase>
 							</execution>
 						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.graalvm.sdk</groupId>
+								<artifactId>graal-sdk</artifactId>
+								<version>${graalvm.version}</version>
+								<scope>provided</scope>
+							</dependency>
+						</dependencies>
 					</plugin>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
