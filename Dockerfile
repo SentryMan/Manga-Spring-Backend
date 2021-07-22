@@ -7,7 +7,7 @@ ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
 ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin:$JAVA_HOME
 RUN mkdir -p /build/jdk
 WORKDIR $HOME
-RUN microdnf install wget maven tar gzip
+RUN microdnf install wget maven tar gzip gcc
 
 RUN cd jdk\
     && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-linux-amd64-dev.tar.gz" \
