@@ -21,14 +21,14 @@ jobs:
       - name: Create Multistage Container
         run: docker build -t manga-backend .
 
-  Prod-Release:
-    environment: manga-spring.com
-    concurrency:
-      group: concurrency-group-2
-      cancel-in-progress: true
-    runs-on: ubuntu-latest
-    steps:
-      - name: Release Image
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release web -a manga-spring
+  # Prod-Release:
+  #   environment: manga-spring.com
+  #   concurrency:
+  #     group: concurrency-group-2
+  #     cancel-in-progress: true
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Release Image
+  #       env:
+  #         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  #       run: heroku container:release web -a manga-spring
