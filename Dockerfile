@@ -5,16 +5,13 @@ FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
 
 ENV HOME=/build
 
-RUN mkdir -p $HOME
+ADD pom.xml $HOME
 
 WORKDIR $HOME
 
-ADD pom.xml $HOME
-
 RUN mvn clean dependency:resolve-plugins dependency:resolve
 
-ADD . /build
-WORKDIR /build
+ADD . $HOME
 
 
 USER root
