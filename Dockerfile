@@ -3,8 +3,8 @@
 FROM oraclelinux:8-slim AS Compile-Native-Image
 
 ENV HOME=/build
-ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home
-ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home/bin:$JAVA_HOME
+ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents
+ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/bin:$JAVA_HOME
 RUN mkdir -p /build/jdk
 WORKDIR $HOME
 RUN microdnf install wget maven tar gzip
