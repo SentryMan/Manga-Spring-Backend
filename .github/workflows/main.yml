@@ -22,7 +22,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: "15"
+          java-version: "16"
           java-package: jdk
           architecture: x64
 
@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2-
 
       - name: Compile Native Image
-        run: mvn spring-boot:build-image
+        run: docker build -t manga-backend .
 
       - name: Upload Docker Image
         env:
