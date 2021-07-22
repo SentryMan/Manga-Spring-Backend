@@ -3,19 +3,18 @@
 FROM oraclelinux:8-slim AS Compile-Native-Image
 
 ENV HOME=/build
-# Dependencies
+ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home
+ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home/bin:$JAVA_HOME
 RUN mkdir -p /build/jdk
 WORKDIR $HOME
 RUN microdnf install wget maven tar gzip
 
 RUN cd jdk\
     && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" \
-    && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz \
-    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home/bin\
-    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home\
-    && export PATH=$PATH:$JAVA_HOME
+    && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz 
 
-RUN cd $JAVA_HOME/bin && ./gu install native-image
+
+RUN gu install native-image
 ADD ./pom.xml $HOME
 RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
