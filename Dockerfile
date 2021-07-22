@@ -7,11 +7,10 @@ ENV HOME=/build
 RUN mkdir -p $HOME/jdk
 ADD ./pom.xml $HOME
 WORKDIR $HOME
-RUN microdnf install wget maven
+RUN microdnf install wget maven tar
 
-RUN cd jdk && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" 
-
-RUN cd jdk \
+RUN cd jdk\
+    && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" \
     && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz \
     && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin\
     && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev\
