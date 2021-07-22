@@ -33,8 +33,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Compile Native Image
+      - name: Build Artifact
         run: mvn clean package && docker build -t manga-backend .
+
+      - name: Create Multistage Container
+        run: docker build -t manga-backend .
 
       - name: Upload Docker Image
         env:
