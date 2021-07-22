@@ -4,16 +4,16 @@ FROM oraclelinux:8-slim AS Compile-Native-Image
 
 ENV HOME=/build
 # Dependencies
-RUN mkdir -p $HOME/jdk
+RUN mkdir -p /build/jdk
 ADD ./pom.xml $HOME
 WORKDIR $HOME
-RUN microdnf install wget maven tar
+RUN microdnf install wget maven tar gzip
 
 RUN cd jdk\
     && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" \
     && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz \
-    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin\
-    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev\
+    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home/bin\
+    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home\
     && export PATH=$PATH:$JAVA_HOME
 
 RUN gu install native-image
