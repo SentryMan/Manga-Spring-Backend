@@ -2,17 +2,27 @@
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
 
 FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
-ADD . /build
-WORKDIR /build
 
-USER root
+ENV HOME=/build
 
-RUN native-image --version
+RUN mkdir -p $HOME
 
-RUN microdnf install maven
+WORKDIR $HOME
+
+ADD pom.xml $HOME
 
 RUN mvn clean dependency:resolve-plugins dependency:resolve
 
+ADD . /build
+WORKDIR /build
+
+
+USER root
+RUN microdnf install maven
+
+RUN native-image --version
+
+USER 1001
 RUN mvn clean package -P native
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
