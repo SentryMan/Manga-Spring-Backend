@@ -17,11 +17,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      
+
       - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-          continue-on-error: true
-          
+
       - name: Create Multistage Container
         run: docker build -t manga-backend .
 
