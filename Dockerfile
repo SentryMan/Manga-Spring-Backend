@@ -10,8 +10,8 @@ WORKDIR $HOME
 RUN microdnf install wget maven tar gzip
 
 RUN cd jdk\
-    && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" \
-    && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz 
+    && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-linux-amd64-dev.tar.gz" \
+    && tar -xzf graalvm-ce-java16-linux-amd64-dev.tar.gz 
 
 
 RUN gu install native-image
