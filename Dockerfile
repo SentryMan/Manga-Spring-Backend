@@ -14,9 +14,7 @@ RUN mvn clean dependency:resolve-plugins dependency:resolve
 
 #Compile Image
 ADD . /build
-
 RUN native-image --version
-
 USER 1001
 RUN mvn clean package -P native
 
