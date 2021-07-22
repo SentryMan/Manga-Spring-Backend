@@ -5,11 +5,13 @@ FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
 ADD . /build
 WORKDIR /build
 
+USER root
+
 RUN native-image --version
 
-RUN apt-get maven
+RUN microdnf install maven
 
-RUN mvn clean package
+RUN mvn clean dependency:resolve-plugins dependency:resolve
 
 RUN mvn clean package -P native
 
@@ -18,10 +20,7 @@ FROM scratch
 
 MAINTAINER Josiah Noel
 
-RUN groupadd -g 69 appuser && \
-    useradd -r -u 69 -g appuser appuser
 
-USER appuser
 # Add Spring Boot Native app spring-boot-graal to Container
 COPY --from=0 "/build/target/manga-backend" manga-backend
 
