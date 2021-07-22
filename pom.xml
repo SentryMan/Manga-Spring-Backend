@@ -21,7 +21,7 @@
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 		<spring.native.version>0.10.1</spring.native.version>
-		<native-image-maven-plugin.version>20.3.2</native-image-maven-plugin.version>
+		<graalvm.version>21.2.0</graalvm.version>
 	</properties>
 
 	<dependencies>
@@ -211,7 +211,7 @@
 					<plugin>
 						<groupId>org.graalvm.nativeimage</groupId>
 						<artifactId>native-image-maven-plugin</artifactId>
-						<version>${native-image-maven-plugin.version}</version>
+						<version>${graalvm.version}</version>
 						<configuration>
 							<buildArgs>-J-Xmx4G -H:+ReportExceptionStackTraces
 								-Dspring.native.remove-unused-autoconfig=true
