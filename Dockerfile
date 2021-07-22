@@ -16,7 +16,7 @@ RUN cd jdk\
     && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev/Contents/Home\
     && export PATH=$PATH:$JAVA_HOME
 
-RUN gu install native-image
+RUN cd $JAVA_HOME/bin && gu install native-image
 RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
