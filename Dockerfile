@@ -1,16 +1,23 @@
 # Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-
-FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
+FROM oraclelinux:7 AS Compile-Native-Image
 
 ENV HOME=/build
 # Dependencies
-USER root
-RUN mkdir -p $HOME
+RUN mkdir -p $HOME/jdk
 ADD ./pom.xml $HOME
 WORKDIR $HOME
-RUN microdnf install maven
-RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
+RUN yum install -y wget
+
+RUN cd jdk && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-darwin-amd64-dev.tar.gz" 
+
+RUN cd jdk \
+    && tar -xzf graalvm-ce-java16-darwin-amd64-dev.tar.gz \
+    && export PATH=$PATH:$HOME/jdk/graalvm-ce-java16-darwin-amd64-dev/bin\
+    && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-darwin-amd64-dev\
+    && export PATH=$PATH:$JAVA_HOME
+
+RUN ECHO $JAVA_HOME && yum install -y maven && mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
 ADD . /build
@@ -24,7 +31,7 @@ MAINTAINER Josiah Noel
 
 
 # Add Spring Boot Native app spring-boot-graal to Container
-COPY --from=0 "/build/target/manga-backend" manga-backend
+COPY --from=Compile-Native-Image "/build/target/manga-backend" manga-backend
 
 # Fire up our Spring Boot Native app by default
 CMD [ "sh", "-c", "./manga-backend" ]
