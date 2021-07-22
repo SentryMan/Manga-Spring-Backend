@@ -15,18 +15,11 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - uses: satackey/action-docker-layer-caching@v0.0.11
 
       - name: Create Multistage Container
         run: docker build -t manga-backend .
-
-      - name: Upload Docker Image
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
 
   Prod-Release:
     environment: manga-spring.com
