@@ -10,7 +10,7 @@ RUN mkdir -p $HOME
 ADD ./pom.xml $HOME
 WORKDIR $HOME
 RUN microdnf install maven
-RUN mvn clean dependency:resolve-plugins dependency:resolve
+RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
 ADD . /build
