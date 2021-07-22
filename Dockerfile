@@ -17,7 +17,8 @@ RUN cd jdk \
     && export JAVA_HOME=$HOME/jdk/graalvm-ce-java16-darwin-amd64-dev\
     && export PATH=$PATH:$JAVA_HOME
 
-RUN ECHO $JAVA_HOME && yum install -y maven && mvn clean dependency:resolve-plugins dependency:resolve -P native
+RUN yum install -y maven && gu install native-image && mvn --version
+RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
 ADD . /build
