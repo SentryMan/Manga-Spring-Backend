@@ -4,18 +4,16 @@
 FROM quay.io/quarkus/ubi-quarkus-native-image:21.1.0-java16
 
 ENV HOME=/build
-
+# Dependencies
+USER root
+RUN mkdir -p $HOME
 ADD pom.xml $HOME
-
 WORKDIR $HOME
-
+RUN microdnf install maven
 RUN mvn clean dependency:resolve-plugins dependency:resolve
 
-ADD . $HOME
-
-
-USER root
-RUN microdnf install maven
+#Compile Image
+ADD . /build
 
 RUN native-image --version
 
