@@ -7,6 +7,8 @@ WORKDIR /build
 
 RUN native-image --version
 
+RUN apt-get maven
+
 RUN mvn clean package
 
 RUN mvn clean package -P native
