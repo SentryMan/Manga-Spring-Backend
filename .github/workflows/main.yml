@@ -20,10 +20,9 @@ jobs:
 
       - name: Create Multistage Container
       - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
            continue-on-error: true
         run: docker build -t manga-backend .
-        
+
       - name: Upload Docker Image
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
