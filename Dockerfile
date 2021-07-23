@@ -25,7 +25,7 @@ RUN native-image --version
 RUN mvn clean package -P native
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
-FROM alpine
+FROM scratch
 
 MAINTAINER Josiah Noel
 
