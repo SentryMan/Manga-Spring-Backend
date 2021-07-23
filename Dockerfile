@@ -30,8 +30,9 @@ FROM scratch
 MAINTAINER Josiah Noel
 
 
+ENV PATH=$PATH:manga-backend
 # Add Spring Boot Native app spring-boot-graal to Container
 COPY --from=Compile-Native-Image "/build/target/manga-backend" manga-backend
 
 # Fire up our Spring Boot Native app by default
-CMD ["./manga-backend" ]
+CMD ["/manga-backend" ]
