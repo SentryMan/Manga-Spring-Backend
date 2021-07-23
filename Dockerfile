@@ -1,6 +1,7 @@
 # Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-FROM oraclelinux:8 AS Compile-Native-Image
+FROM oraclelinux:8 AS Native-Image-Compiler
+ARG BUILDPLATFORM
 
 ENV HOME=/build
 ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
@@ -18,17 +19,16 @@ RUN gu install native-image
 ADD ./target $HOME/target
 #Compile Image
 RUN native-image --version
-RUN cd target && jar -xvf manga-backend-3.*jar && cp -R META-INF BOOT-INF/classes\
+RUN cd target && jar -xvf manga-backend-*jar && cp -R META-INF BOOT-INF/classes\
     && native-image -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
 FROM oraclelinux:8-slim
 
-MAINTAINER Josiah Noel
-
+LABEL Author="The Man Himself, Josiah"
 
 ENV PATH=$PATH:manga-backend
 # Add Spring Boot Native app spring-boot-graal to Container
-COPY --from=Compile-Native-Image "/build/target/manga-backend" manga-backend
+COPY --from=Native-Image-Compiler "/build/target/manga-backend" manga-backend
 # Fire up our Spring Boot Native app by default
 ENTRYPOINT ["/manga-backend" ]
