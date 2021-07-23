@@ -215,7 +215,9 @@
 						<configuration>
 							<buildArgs>-J-Xmx4G -H:+ReportExceptionStackTraces
 								-Dspring.native.remove-unused-autoconfig=true
-								-Dspring.native.remove-yaml-support=true</buildArgs>
+								-Dspring.native.remove-yaml-support=true
+								--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator
+							</buildArgs>
 							<imageName>${project.artifactId}</imageName>
 						</configuration>
 						<executions>
