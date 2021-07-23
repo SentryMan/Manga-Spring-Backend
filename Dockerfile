@@ -5,7 +5,8 @@ FROM oraclelinux:8-slim AS Compile-Native-Image
 ENV HOME=/build
 ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
 ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin:$JAVA_HOME
-RUN mkdir -p /build/jdk
+RUN mkdir -p $HOME/jdk
+RUN mkdir -p $HOME/src
 WORKDIR $HOME
 RUN microdnf install wget tar maven gzip gcc zlib-devel
 
@@ -19,7 +20,7 @@ ADD ./pom.xml $HOME
 RUN mvn clean dependency:resolve-plugins dependency:resolve -P native
 
 #Compile Image
-ADD . /build
+ADD ./src /build/src
 RUN native-image --version
 RUN mvn clean package -P native
 
@@ -33,4 +34,4 @@ MAINTAINER Josiah Noel
 COPY --from=Compile-Native-Image "/build/target/manga-backend" manga-backend
 
 # Fire up our Spring Boot Native app by default
-CMD [ "sh", "-c", "./manga-backend" ]
+CMD ["./manga-backend" ]
