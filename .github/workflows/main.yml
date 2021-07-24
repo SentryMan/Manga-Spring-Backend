@@ -41,11 +41,10 @@ jobs:
 
       - name: Cache Docker Layers
         uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
         with:
-          key: ${{ github.workflow }}-${{ env.MONTH }}-{hash}
+          key: ${{ github.workflow }}-${{ env.MONTH }}--{hash}
           restore-keys: |
-            ${{ github.workflow }}-${{ env.MONTH }}-
+            ${{ github.workflow }}-${{ env.MONTH }}--
 
       - name: Multi-Stage Docker Build
         run: docker build -t registry.heroku.com/manga-spring/web .
