@@ -177,7 +177,7 @@ public class MangaService {
     return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
   }
 
-  public void updateChapterNames(int id, Map<String, String> nameMap) {
+  public void patchChapterNames(int id, Map<String, String> nameMap) {
 
     repo.getByRealID(id)
         .map(

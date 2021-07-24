@@ -54,6 +54,6 @@ public class RSocketMangaController {
 
   @MessageMapping("patch-chapter-names-{id}")
   public void patchChapterNames(@DestinationVariable("id") int id, Map<String, String> nameMap) {
-    service.updateChapterNames(id, nameMap);
+    service.patchChapterNames(id, nameMap);
   }
 }

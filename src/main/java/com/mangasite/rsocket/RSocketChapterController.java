@@ -1,5 +1,7 @@
 package com.mangasite.rsocket;
 
+import static reactor.function.TupleUtils.function;
+
 import java.time.Duration;
 import java.util.List;
 
@@ -17,7 +19,6 @@ import com.mangasite.services.ConnectService;
 import io.rsocket.exceptions.CustomRSocketException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.function.TupleUtils;
 import reactor.util.function.Tuple2;
 
 @Controller
@@ -51,7 +52,7 @@ public class RSocketChapterController {
         .buffer(Duration.ofSeconds(10))
         .concatMap(requestBuffer -> service.updatePageLink(id, requestBuffer))
         .map(
-            TupleUtils.function(
+            function(
                 (r, name) ->
                     "Updated/Added "
                         + r.chapterIndex()
