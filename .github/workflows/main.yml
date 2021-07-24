@@ -59,7 +59,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: manga-backend:latest,registry.heroku.com/manga-spring/web
+          tags: registry.heroku.com/manga-spring/web
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
