@@ -4,19 +4,25 @@ FROM oraclelinux:8 AS Native-Image-Compiler
 ARG BUILDPLATFORM
 
 ENV HOME=/build
-ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
-ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin:$JAVA_HOME
 RUN mkdir -p $HOME/jdk
 RUN mkdir -p $HOME/src
 WORKDIR $HOME
-RUN dnf config-manager --set-enabled ol8_codeready_builder && dnf install -y wget tar gcc glibc-devel zlib-devel libstdc++-static
+# Install native image dependencies
+RUN dnf config-manager --set-enabled ol8_codeready_builder \
+    && dnf install -y wget tar gcc glibc-devel zlib-devel libstdc++-static
 
+# Install GraalVM JDK 16 and add to PATH
 RUN cd jdk \
     && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-linux-amd64-dev.tar.gz" \
     && tar -xzf graalvm-ce-java16-linux-amd64-dev.tar.gz 
 
+ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
+ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin:$JAVA_HOME
+
+# Install native image utility
 RUN gu install native-image
 COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
+
 #Compile Image
 RUN native-image --version
 RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
@@ -27,7 +33,8 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 LABEL Author="The Man Himself, Josiah"
 
-# Add Spring Boot Native app spring-boot-graal to Container
+# Copy native app to Container
 COPY --from=Native-Image-Compiler "/build/manga-backend" manga-backend
-# Fire up our Spring Boot Native app by default
+
+# Fire up our native app by default
 ENTRYPOINT ["/manga-backend" ]
