@@ -16,10 +16,10 @@ RUN cd jdk \
     && tar -xzf graalvm-ce-java16-linux-amd64-dev.tar.gz 
 
 RUN gu install native-image
-ADD ./target $HOME/target
+COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
 #Compile Image
 RUN native-image --version
-RUN cd target && jar -xvf manga-backend-*jar && cp -R META-INF BOOT-INF/classes\
+RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
     && native-image -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
@@ -29,6 +29,6 @@ LABEL Author="The Man Himself, Josiah"
 
 ENV PATH=$PATH:manga-backend
 # Add Spring Boot Native app spring-boot-graal to Container
-COPY --from=Native-Image-Compiler "/build/target/manga-backend" manga-backend
+COPY --from=Native-Image-Compiler "/build/manga-backend" manga-backend
 # Fire up our Spring Boot Native app by default
 ENTRYPOINT ["/manga-backend" ]
