@@ -10,9 +10,9 @@ on:
 # Your workflows jobs.
 jobs:
   Build-Compile-Deploy:
-    # concurrency:
-    #   group: concurrency-group-1
-    #   cancel-in-progress: true
+    concurrency:
+      group: concurrency-group-1
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -42,26 +42,18 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
-      - name: Log into Heroku Container
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
 
       - name: Build Artifact
         run: mvn clean package
 
-      - name: Multi-Stage Image Build
-        run: docker buildx build --build-arg BUILDPLATFORM=linux/amd64 --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new -t manga-backend:3.0.0 .
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          registry: registry.heroku.com/manga-spring/web
+          username: _
+          password: ${{ secrets.HEROKU_API_KEY }}
 
-      - name: Upload Docker Image
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend* --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
-
-      - name: Build and push
+      - name: Multi-Stage Image Build And Push
         uses: docker/build-push-action@v2
         with:
           context: .
