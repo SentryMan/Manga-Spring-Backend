@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.mangasite.domain.requests.MangaChangeRequest;
+import com.mangasite.record.MangaChangeRequest;
 import com.mangasite.services.MangaService;
 
 import reactor.core.publisher.Mono;

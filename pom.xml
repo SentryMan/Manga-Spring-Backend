@@ -15,9 +15,9 @@
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
-		<java.version>11</java.version>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.source>11</maven.compiler.source>
+		<java.version>16</java.version>
+		<maven.compiler.target>16</maven.compiler.target>
+		<maven.compiler.source>16</maven.compiler.source>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 		<spring.native.version>0.10.1</spring.native.version>

@@ -23,13 +23,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 
-import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.init.AppInitializer;
 import com.mangasite.domain.lease.LeaseManager;
-import com.mangasite.domain.requests.ChapterChangeRequest;
-import com.mangasite.domain.requests.MangaChangeRequest;
-import com.mangasite.domain.requests.PageChangeRequest;
-import com.mangasite.domain.requests.ServerMessage;
+import com.mangasite.record.ChapterChangeRequest;
+import com.mangasite.record.DeviceInfo;
+import com.mangasite.record.MangaChangeRequest;
+import com.mangasite.record.PageChangeRequest;
+import com.mangasite.record.ServerMessage;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 import reactor.core.publisher.Hooks;

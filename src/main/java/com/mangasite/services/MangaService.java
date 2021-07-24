@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.domain.requests.MangaChangeRequest;
+import com.mangasite.record.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
 
@@ -109,7 +109,7 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getBya(request.getAlias())
+    return repo.getBya(request.alias())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
@@ -127,8 +127,8 @@ public class MangaService {
                         new MangaChapters(
                             manga.getT(),
                             manga.getRealID(),
-                            request.getFirstChapterIndex(),
-                            request.getFirstPageURL()))
+                            request.firstChapterIndex(),
+                            request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
         .flatMap(TupleUtils.function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
