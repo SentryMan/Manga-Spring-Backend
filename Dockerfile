@@ -7,7 +7,8 @@ ENV HOME=/build
 RUN mkdir -p $HOME/jdk
 RUN mkdir -p $HOME/src
 WORKDIR $HOME
-# Install native image dependencies
+
+# Install native image compiler dependencies
 RUN dnf config-manager --set-enabled ol8_codeready_builder \
     && dnf install -y wget tar gcc glibc-devel zlib-devel libstdc++-static
 
