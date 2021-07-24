@@ -146,7 +146,7 @@ public class ChapterService {
       chapters
           .getChapters()
           .stream()
-          .filter(p -> p.getChapterIndex().equals(r.chapterIndex()))
+          .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
           .map(Chapter::getImages)
           .flatMap(List::stream)
           .filter(i -> i.get(0) == r.pageIndex())
@@ -157,7 +157,7 @@ public class ChapterService {
                   chapters
                       .getChapters()
                       .stream()
-                      .filter(p -> p.getChapterIndex().equals(r.chapterIndex()))
+                      .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
                       .map(Chapter::getImages)
                       .forEach(
                           pages -> {
@@ -188,7 +188,7 @@ public class ChapterService {
       final Predicate<PageChangeRequest> indexExistsTest =
           r ->
               !existingChapterIndice.contains(
-                  Double.parseDouble(r.chapterIndex().replace("Chapter ", "")));
+                  Double.parseDouble(r.getChapterIndex().replace("Chapter ", "")));
 
       final var chaptersDontExist = request.stream().anyMatch(indexExistsTest);
       if (chaptersDontExist) {
@@ -200,11 +200,7 @@ public class ChapterService {
                 .map(
                     r ->
                         new ChapterChangeRequest(
-                            r.mangaId(),
-                            r.chapterIndex().replace("Chapter ", ""),
-                            r.chapterName(),
-                            0,
-                            ""))
+                            r.mangaId(), r.chapterIndex(), r.chapterName(), 0, ""))
                 .toList();
 
         return addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));

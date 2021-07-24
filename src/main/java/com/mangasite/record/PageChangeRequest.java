@@ -6,5 +6,9 @@ public record PageChangeRequest (
       String chapterIndex,
       String chapterName,
       Integer pageIndex,
-      String pageURL,
-      boolean usingAutoIncrement){}
+      String pageURL){
+	
+	  public String getChapterIndex() {
+		    return "Chapter " + chapterIndex;
+		  }
+}
