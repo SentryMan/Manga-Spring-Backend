@@ -37,7 +37,7 @@ jobs:
         run: mvn clean package
 
       - name: Set Month ENY for Docker Cache
-      - run: echo "MONTH=$(date +%m)" >> $GITHUB_ENV
+        run: echo "MONTH=$(date +%m)" >> $GITHUB_ENV
 
       - name: Cache Docker Layers
         uses: satackey/action-docker-layer-caching@v0.0.11
