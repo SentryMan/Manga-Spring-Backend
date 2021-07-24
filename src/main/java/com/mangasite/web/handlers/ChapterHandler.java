@@ -42,7 +42,7 @@ public class ChapterHandler {
     return request
         .bodyToMono(PageChangeRequest.class)
         .map(List::of)
-        .flatMapMany(service::updatePageLink)
+        .flatMapMany(l -> service.updatePageLink(l.get(0).mangaId(), l))
         .next()
         .flatMap(ok()::bodyValue);
   }
