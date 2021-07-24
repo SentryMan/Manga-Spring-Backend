@@ -2,6 +2,7 @@ package com.mangasite.services;
 
 import static com.mangasite.domain.Constants.FULL_DOC;
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
+import static reactor.function.TupleUtils.function;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,7 +27,6 @@ import com.mangasite.repo.MangaRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.function.TupleUtils;
 import reactor.util.function.Tuples;
 
 /**
@@ -115,7 +115,7 @@ public class MangaService {
         .map(Manga::new)
         .zipWith(generateID())
         .map(
-            TupleUtils.function(
+            function(
                 (m, id) -> {
                   m.setRealID(id);
                   return m;
@@ -131,7 +131,7 @@ public class MangaService {
                             request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
-        .flatMap(TupleUtils.function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
+        .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
   }
 

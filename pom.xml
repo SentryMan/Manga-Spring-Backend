@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -201,48 +199,4 @@
 			<url>https://repo.spring.io/release</url>
 		</pluginRepository>
 	</pluginRepositories>
-
-
-	<profiles>
-		<profile>
-			<id>native</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.graalvm.nativeimage</groupId>
-						<artifactId>native-image-maven-plugin</artifactId>
-						<version>${graalvm.version}</version>
-						<configuration>
-							<buildArgs>-J-Xmx4G -H:+ReportExceptionStackTraces
-								-Dspring.native.remove-unused-autoconfig=true
-								-Dspring.native.remove-yaml-support=true
-								--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator,org.bouncycastle.jsse.BCSSLEngine
-							</buildArgs>
-							<imageName>${project.artifactId}</imageName>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>native-image</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.graalvm.sdk</groupId>
-								<artifactId>graal-sdk</artifactId>
-								<version>${graalvm.version}</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 </project>

@@ -27,7 +27,6 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 LABEL Author="The Man Himself, Josiah"
 
-ENV PATH=$PATH:manga-backend
 # Add Spring Boot Native app spring-boot-graal to Container
 COPY --from=Native-Image-Compiler "/build/manga-backend" manga-backend
 # Fire up our Spring Boot Native app by default

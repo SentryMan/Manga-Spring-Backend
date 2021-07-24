@@ -1,10 +1,13 @@
 package com.mangasite.services;
 
+import static java.util.Collections.reverse;
+import static java.util.Collections.singleton;
+import static java.util.Comparator.comparingDouble;
+import static java.util.Comparator.comparingInt;
 import static reactor.core.publisher.Mono.just;
+import static reactor.function.TupleUtils.function;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +29,6 @@ import com.mangasite.repo.MangaRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.function.TupleUtils;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
@@ -82,7 +84,7 @@ public class ChapterService {
                   "After change : " + m.getInfo().getChapters().size() + " chapters");
               return Tuples.of(m, c);
             })
-        .flatMap(TupleUtils.function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
+        .flatMap(function((m, c) -> mangaRepo.save(m).zipWith(repo.save(c))));
   }
 
   /**
@@ -125,12 +127,10 @@ public class ChapterService {
       mangaInfoChapters.add(
           List.of(request.chapterIndex(), "" + request.updateDate(), request.chapterName(), ""));
 
-      images.sort(
-          Comparator.comparingDouble(
-              chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
-      mangaInfoChapters.sort(Comparator.comparingDouble(l -> Double.parseDouble(l.get(0))));
-      Collections.reverse(images);
-      Collections.reverse(mangaInfoChapters);
+      images.sort(comparingDouble(chap -> Double.parseDouble(chap.getChapterIndex().substring(8))));
+      mangaInfoChapters.sort(comparingDouble(l -> Double.parseDouble(l.get(0))));
+      reverse(images);
+      reverse(mangaInfoChapters);
       System.out.println(chapter.getChapterIndex() + " Added");
     };
   }
@@ -162,8 +162,8 @@ public class ChapterService {
                       .forEach(
                           pages -> {
                             pages.add(List.of(r.pageIndex(), r.pageURL(), "", ""));
-                            pages.sort(Comparator.comparingInt(l -> (int) l.get(0)));
-                            Collections.reverse(pages);
+                            pages.sort(comparingInt(l -> (int) l.get(0)));
+                            reverse(pages);
                           }));
     };
   }
@@ -249,7 +249,7 @@ public class ChapterService {
     final var nameSet = new HashSet<String>();
     final var name = manga.getT();
     final var removedFlag = manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
-    manga.getInfo().getChapters().removeAll(Collections.singleton(null));
+    manga.getInfo().getChapters().removeAll(singleton(null));
     return removedFlag
         ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
         : just(name + " Had No Duplicate Chapters");
@@ -259,7 +259,7 @@ public class ChapterService {
     final var nameSet = new HashSet<String>();
     final var name = chapter.getMangaName();
     final var removedFlag = chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
-    chapter.getChapters().removeAll(Collections.singleton(null));
+    chapter.getChapters().removeAll(singleton(null));
     return removedFlag
         ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
         : just(name + " Had No Duplicate Chapters");
