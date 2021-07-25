@@ -36,22 +36,15 @@ jobs:
       - name: Build Artifact
         run: mvn clean package
 
-      # - name: Set Month ENV for Docker Cache
-      #   run: echo "MONTH=$(date +%m)" >> $GITHUB_ENV
-
-      - name: Set Docker Cache Hash
-        run: |
-          DOCKERFILE=$(md5sum Dockerfile | awk '{ print $1 }')
-          SRC=$(md5deep -r src | awk '{ print $1 }')
-          echo "HASH=${DOCKERFILE}_${SRC}" >> $GITHUB_ENV
+      - name: Set Month ENY for Docker Cache
+        run: echo "MONTH=$(date +%m)" >> $GITHUB_ENV
 
       - name: Cache Docker Layers
         uses: satackey/action-docker-layer-caching@v0.0.11
-        # continue-on-error: true
         with:
-          key: ${{ github.workflow }}-${{ env.HASH }}-{hash}
+          key: ${{ github.workflow }}-${{ env.MONTH }}--{hash}
           restore-keys: |
-            ${{ github.workflow }}-${{ env.HASH }}-
+            ${{ github.workflow }}-${{ env.MONTH }}--
 
       - name: Multi-Stage Docker Build
         run: docker build -t registry.heroku.com/manga-spring/web .
@@ -65,7 +58,3 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
-
-      - name: Prune Uneeded Images
-        run: |
-          docker image prune -a --force --filter "label=tag!=${{ github.sha }}"
