@@ -22,9 +22,20 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: "15"
+          java-version: "16"
           java-package: jdk
           architecture: x64
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker Layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Cache Maven Dependencies
         uses: actions/cache@v2
@@ -33,15 +44,34 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Compile Native Image
-        run: mvn spring-boot:build-image
+      - name: Build Artifact
+        run: mvn clean package
 
-      - name: Upload Docker Image
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login && docker tag $(docker images --filter=reference=manga-backend --format "{{.ID}}") registry.heroku.com/manga-spring/web && docker push registry.heroku.com/manga-spring/web
+      - name: Login to Heroku Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.heroku.com/manga-spring/web
+          username: _
+          password: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Multi-Stage Docker Build And Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: registry.heroku.com/manga-spring/web
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Deploy
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move Docker Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

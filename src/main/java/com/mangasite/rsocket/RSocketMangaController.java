@@ -52,8 +52,8 @@ public class RSocketMangaController {
     return service.watchDBChanges();
   }
 
-  @MessageMapping("update-chapter-names-{id}")
-  public void watchForDBChanges(@DestinationVariable("id") int id, Map<String, String> nameMap) {
-    service.updateChapterNames(id, nameMap);
+  @MessageMapping("patch-chapter-names-{id}")
+  public void patchChapterNames(@DestinationVariable("id") int id, Map<String, String> nameMap) {
+    service.patchChapterNames(id, nameMap);
   }
 }

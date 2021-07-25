@@ -65,7 +65,7 @@ public class ServerSecurityConfig {
                     .hasRole(ADMIN)
                     .route("update-page-channel-{id}")
                     .hasRole(ADMIN)
-                    .route("update-chapter-names-{id}")
+                    .route("patch-chapter-names-{id}")
                     .hasRole(ADMIN)
                     .anyRequest()
                     .authenticated()

@@ -11,9 +11,9 @@ import java.util.Map.Entry;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
 
-import com.mangasite.domain.DeviceInfo;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.domain.requests.ServerMessage;
+import com.mangasite.record.DeviceInfo;
+import com.mangasite.record.ServerMessage;
 
 import io.rsocket.RSocket;
 import reactor.core.publisher.Flux;

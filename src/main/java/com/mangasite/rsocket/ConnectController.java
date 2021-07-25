@@ -1,6 +1,7 @@
 package com.mangasite.rsocket;
 
 import static com.mangasite.domain.Constants.ADMIN;
+import static reactor.function.TupleUtils.consumer;
 
 import java.util.Collection;
 
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import com.mangasite.services.ConnectService;
 
 import reactor.core.publisher.Mono;
-import reactor.function.TupleUtils;
 import reactor.util.function.Tuples;
 
 @Controller
@@ -45,8 +45,8 @@ public class ConnectController {
         .map(Collection::stream)
         .filter(s -> s.noneMatch(a -> a.getAuthority().contains(ADMIN)))
         .map(s -> Tuples.of(rSocketRequester, clientName))
-        .doOnNext(TupleUtils.consumer(ConnectService::watchUserStream))
-        .doOnNext(TupleUtils.consumer(ConnectService::requestDeviceInfo))
+        .doOnNext(consumer(ConnectService::watchUserStream))
+        .doOnNext(consumer(ConnectService::requestDeviceInfo))
         .then();
   }
 }

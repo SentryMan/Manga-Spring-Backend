@@ -1,5 +1,7 @@
 package com.mangasite.rsocket;
 
+import static reactor.function.TupleUtils.function;
+
 import java.time.Duration;
 import java.util.List;
 
@@ -9,8 +11,8 @@ import org.springframework.stereotype.Controller;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.domain.requests.ChapterChangeRequest;
-import com.mangasite.domain.requests.PageChangeRequest;
+import com.mangasite.record.ChapterChangeRequest;
+import com.mangasite.record.PageChangeRequest;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
 
@@ -48,17 +50,18 @@ public class RSocketChapterController {
 
     return requestFlux
         .buffer(Duration.ofSeconds(10))
-        .concatMap(service::updatePageLink)
+        .concatMap(requestBuffer -> service.updatePageLink(id, requestBuffer))
         .map(
-            r ->
-                "Updated/Added "
-                    + r.getChapterIndex()
-                    + " Page "
-                    + (r.getPageIndex() + 1)
-                    + " of manga: "
-                    + r.getMangaName()
-                    + " With Image URL: "
-                    + r.getPageURL())
+            function(
+                (r, name) ->
+                    "Updated/Added "
+                        + r.chapterIndex()
+                        + " Page "
+                        + (r.pageIndex() + 1)
+                        + " of manga: "
+                        + name
+                        + " With Image URL: "
+                        + r.pageURL()))
         .doOnNext(System.out::println)
         .doOnComplete(
             () -> {

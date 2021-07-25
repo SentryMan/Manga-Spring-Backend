@@ -2,6 +2,7 @@ package com.mangasite.services;
 
 import static com.mangasite.domain.Constants.FULL_DOC;
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
+import static reactor.function.TupleUtils.function;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -20,13 +21,12 @@ import org.springframework.stereotype.Service;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.domain.requests.MangaChangeRequest;
+import com.mangasite.record.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.function.TupleUtils;
 import reactor.util.function.Tuples;
 
 /**
@@ -109,13 +109,13 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getBya(request.getAlias())
+    return repo.getBya(request.alias())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
         .zipWith(generateID())
         .map(
-            TupleUtils.function(
+            function(
                 (m, id) -> {
                   m.setRealID(id);
                   return m;
@@ -127,11 +127,11 @@ public class MangaService {
                         new MangaChapters(
                             manga.getT(),
                             manga.getRealID(),
-                            request.getFirstChapterIndex(),
-                            request.getFirstPageURL()))
+                            request.firstChapterIndex(),
+                            request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
-        .flatMap(TupleUtils.function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
+        .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
   }
 
@@ -177,7 +177,7 @@ public class MangaService {
     return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
   }
 
-  public void updateChapterNames(int id, Map<String, String> nameMap) {
+  public void patchChapterNames(int id, Map<String, String> nameMap) {
 
     repo.getByRealID(id)
         .map(

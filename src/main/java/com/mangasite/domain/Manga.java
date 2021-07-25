@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mangasite.domain.requests.MangaChangeRequest;
+import com.mangasite.record.MangaChangeRequest;
 
 /**
  * A class that represents a single manga <br>
@@ -63,34 +63,34 @@ public class Manga {
   }
 
   public Manga(MangaChangeRequest request) {
-    a = request.getAlias();
-    c = request.getGenre();
-    h = request.getHits();
-    im = request.getCoverImageURL();
-    s = request.getCompleteStatus();
-    t = request.getTitle();
+    a = request.alias();
+    c = request.genre();
+    h = request.hits();
+    im = request.coverImageURL();
+    s = request.completeStatus();
+    t = request.title();
     info = new MangaInfo();
-    info.setArtist(request.getArtist());
-    info.setAuthor(request.getAuthor());
+    info.setArtist(request.artist());
+    info.setAuthor(request.author());
 
     ld =
-        request.getUpdateDateStr() != null
-            ? LocalDate.parse(request.getUpdateDateStr())
+        request.updateDateStr() != null
+            ? LocalDate.parse(request.updateDateStr())
                 .atStartOfDay(ZoneId.systemDefault())
                 .toEpochSecond()
-            : request.getUpdateDateint();
+            : request.updateDateint();
 
     final List<List<String>> list =
         List.of(
             List.of(
-                request.getFirstChapterIndex(),
-                "" + request.getUpdateDateint(),
-                request.getFirstChapterName(),
+                request.firstChapterIndex(),
+                "" + request.updateDateint(),
+                request.firstChapterName(),
                 ""));
 
     info.setChapters(list);
-    info.setDescription(request.getDescription());
-    info.setReleased(request.getReleaseDate());
+    info.setDescription(request.description());
+    info.setReleased(request.releaseDate());
   }
 
   public int getRealID() {
