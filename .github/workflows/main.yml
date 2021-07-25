@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Multi-Stage Docker Build And Push
-        run: buildx build -t registry.heroku.com/manga-spring/web --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,dest=/tmp/.buildx-cache-new --push .
+        run: docker buildx build -t registry.heroku.com/manga-spring/web --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,dest=/tmp/.buildx-cache-new --push .
 
       - name: Deploy
         env:
