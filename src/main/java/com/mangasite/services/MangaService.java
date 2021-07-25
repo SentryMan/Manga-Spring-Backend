@@ -186,11 +186,7 @@ public class MangaService {
               final var chapters = info.getChapters();
               nameMap.forEach(
                   (k, v) -> {
-                    chapters
-                        .stream()
-                        .filter(l -> k.equals(l.get(0)))
-                        .filter(l -> l.get(2) == null || l.get(2).isBlank())
-                        .forEach(l -> l.set(2, v));
+                    chapters.stream().filter(l -> k.equals(l.get(0))).forEach(l -> l.set(2, v));
                   });
               info.setChapters(chapters);
               m.setInfo(info);
