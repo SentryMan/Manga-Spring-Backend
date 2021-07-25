@@ -55,7 +55,13 @@ jobs:
           password: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Multi-Stage Docker Build And Push
-        run: docker buildx build -t registry.heroku.com/manga-spring/web --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,dest=/tmp/.buildx-cache-new --push .
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: registry.heroku.com/manga-spring/web
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Deploy
         env:
@@ -66,7 +72,6 @@ jobs:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: Move Docker Cache
-        if: always()
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
