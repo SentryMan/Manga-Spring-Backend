@@ -74,4 +74,4 @@ jobs:
       - name: Remove all Images
         if: cancelled()
         run: |
-          docker image prune -a --force"
+          docker image prune -a --force
