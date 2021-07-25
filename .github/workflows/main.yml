@@ -67,6 +67,6 @@ jobs:
         run: heroku container:release web -a manga-spring
 
       - name: Prune Uneeded Images Before Caching
-        continue-on-error: true
+        if: always()
         run: |
           docker image prune -a --force --filter "label=tag!=${{github.sha }}"
