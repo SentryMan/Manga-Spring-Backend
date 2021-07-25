@@ -42,7 +42,7 @@ jobs:
       - name: Set Docker Cache Hash
         run: |
           DOCKERFILE=$(md5sum Dockerfile | awk '{ print $1 }')
-          SRC=$(tar -cf - src | md5sum | awk '{ print $1 }')
+          SRC=$(find somedir -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{ print $1 }')
           echo "HASH=${DOCKERFILE}_${SRC}" >> $GITHUB_ENV
 
       - name: Cache Docker Layers
@@ -72,6 +72,6 @@ jobs:
           docker image prune -a --force --filter "label=tag!=${{github.sha }}"
 
       - name: Remove all Images
-        if: cancelled() || failure()
+        if: cancelled()
         run: |
           docker image prune -a --force"
