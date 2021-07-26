@@ -4,7 +4,6 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 import java.time.Duration;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
@@ -18,23 +17,19 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.mangasite.domain.lease.LeaseManager;
-import com.mangasite.domain.lease.LimitBasedLeaseSender;
-import com.netflix.concurrency.limits.limit.VegasLimit;
-
 import io.rsocket.core.Resume;
 import reactor.util.retry.Retry;
 
 @Configuration
 public class ServerConfig implements WebFluxConfigurer {
 
-  private static final int CONCURRENT_WORKERS_COUNT = 5;
-  private static final int QUEUE_CAPACITY = 10;
-  private static final int LEASE_TTL_MILLI = 5_000;
+  //  private static final int CONCURRENT_WORKERS_COUNT = 5;
+  //  private static final int QUEUE_CAPACITY = 10;
+  //  private static final int LEASE_TTL_MILLI = 5_000;
 
   public static final RSocketServerCustomizer serverCustomizer() {
 
-    final var leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, LEASE_TTL_MILLI);
+    // final var leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, LEASE_TTL_MILLI);
     final var resume =
         new Resume()
             .cleanupStoreOnKeepAlive()
@@ -42,18 +37,17 @@ public class ServerConfig implements WebFluxConfigurer {
                 Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1))
                     .doBeforeRetry(s -> System.out.println("Disconnected. Trying to resume...")));
     return rsocketServer -> {
-      rsocketServer
-          .resume(resume)
-          .lease(
-              config ->
-                  config.sender(
-                      new LimitBasedLeaseSender(
-                          UUID.randomUUID().toString(),
-                          leaseManager,
-                          VegasLimit.newBuilder()
-                              .initialLimit(CONCURRENT_WORKERS_COUNT)
-                              .maxConcurrency(QUEUE_CAPACITY)
-                              .build())));
+      rsocketServer.resume(resume);
+      //          .lease(
+      //              config ->
+      //                  config.sender(
+      //                      new LimitBasedLeaseSender(
+      //                          UUID.randomUUID().toString(),
+      //                          leaseManager,
+      //                          VegasLimit.newBuilder()
+      //                              .initialLimit(CONCURRENT_WORKERS_COUNT)
+      //                              .maxConcurrency(QUEUE_CAPACITY)
+      //                              .build())))
     };
   }
 
