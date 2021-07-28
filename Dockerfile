@@ -16,6 +16,9 @@ RUN cd jdk \
     && wget "https://github.com/graalvm/graalvm-ce-dev-builds/releases/download/21.3.0-dev-20210721_1948/graalvm-ce-java16-linux-amd64-dev.tar.gz" \
     && tar -xzf graalvm-ce-java16-linux-amd64-dev.tar.gz 
 
+# RUN curl -L -o musl.tar.gz https://musl.libc.org/releases/musl-1.2.2.tar.gz && \
+#     tar -xvzf musl.tar.gz
+
 ENV JAVA_HOME=$HOME/jdk/graalvm-ce-java16-21.3.0-dev
 ENV PATH=$PATH:$HOME/jdk/graalvm-ce-java16-21.3.0-dev/bin:$JAVA_HOME
 
@@ -26,7 +29,9 @@ COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
 #Compile Image
 RUN native-image --version
 RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
-    && native-image -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
+    && native-image --static --libc=musl \ 
+    # --static --libc=musl \
+    -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
