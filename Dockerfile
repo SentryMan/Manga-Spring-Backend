@@ -29,7 +29,7 @@ COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
 #Compile Image
 RUN native-image --version
 RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
-    && native-image --static --libc=musl \ 
+    && native-image \ 
     # --static --libc=musl \
     -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
