@@ -4,6 +4,7 @@ import static reactor.function.TupleUtils.function;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -42,6 +43,11 @@ public class RSocketChapterController {
   @MessageMapping("new-chapter")
   public Mono<Tuple2<Manga, MangaChapters>> addChapter(ChapterChangeRequest request) {
     return service.addChapter(List.of(request));
+  }
+
+  @MessageMapping("dedup-chapter-{id}")
+  public void dedupChapter(@DestinationVariable("id") int id) {
+    service.deleteDuplicateChapters(Optional.of(id));
   }
 
   @MessageMapping("update-page-channel-{id}")
