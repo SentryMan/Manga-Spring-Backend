@@ -57,7 +57,7 @@ public class RSocketChapterController {
                     "Updated/Added "
                         + r.chapterIndex()
                         + " Page "
-                        + (r.pageIndex() + 1)
+                        + r.pageIndex()
                         + " of manga: "
                         + name
                         + " With Image URL: "
