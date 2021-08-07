@@ -1,7 +1,6 @@
 package com.mangasite.services;
 
 import static java.util.Collections.reverse;
-import static java.util.Collections.singleton;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Comparator.comparingInt;
 import static reactor.core.publisher.Mono.just;
@@ -245,7 +244,7 @@ public class ChapterService {
     final var nameSet = new HashSet<String>();
     final var name = manga.getT();
     final var removedFlag = manga.getInfo().getChapters().removeIf(c -> !nameSet.add(c.get(0)));
-    manga.getInfo().getChapters().removeAll(singleton(null));
+
     return removedFlag
         ? mangaRepo.save(manga).map(c -> "Removed duplicates from " + name)
         : just(name + " Had No Duplicate Chapters");
@@ -255,9 +254,27 @@ public class ChapterService {
     final var nameSet = new HashSet<String>();
     final var name = chapter.getMangaName();
     final var removedFlag = chapter.getChapters().removeIf(c -> !nameSet.add(c.getChapterIndex()));
-    chapter.getChapters().removeAll(singleton(null));
+
     return removedFlag
         ? repo.save(chapter).map(c -> "Removed duplicates from " + name)
         : just(name + " Had No Duplicate Chapters");
+  }
+
+  public Mono<Tuple2<Manga, MangaChapters>> clearChapters(int id) {
+
+    final var mangaClearMono =
+        mangaRepo
+            .getByRealID(id)
+            .doOnNext(m -> m.getInfo().getChapters().removeIf(c -> !c.get(0).equals("1")))
+            .flatMap(mangaRepo::save);
+
+    final var chapterClearMono =
+        repo.getByRealID(id)
+            .doOnNext(
+                mc -> mc.getChapters().removeIf(c -> !c.getChapterIndex().equals("Chapter 1")))
+            .doOnNext(mc -> mc.getChapters().get(0).setImages(List.of(List.of(0, ""))))
+            .flatMap(repo::save);
+
+    return mangaClearMono.zipWith(chapterClearMono);
   }
 }
