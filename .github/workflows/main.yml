@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Compile/Deploy Native Image To Heroku.
 # Controls when the action will run.
 on:
@@ -75,9 +73,18 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+---
+name: Create Release
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [main]
 
+# Your workflows jobs.
+jobs:
   # Release Job
-  re-release:
+  pre-release:
     name: "Pre-Release"
     runs-on: "ubuntu-latest"
 
