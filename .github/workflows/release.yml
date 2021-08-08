@@ -1,7 +1,5 @@
-name: Bump Release version
-on: # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request:
-    branches: [main]
+name: bump and tag branch
+on:
   push:
     branches:
       - master
@@ -9,11 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "0"
+      - uses: actions/checkout@master
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.26.0
+        uses: Instrument/github-tag-action@v1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
+          BRANCH: master
+          BUMP: minor
