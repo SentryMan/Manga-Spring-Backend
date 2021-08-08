@@ -21,6 +21,7 @@ public class ChapterRouter {
     return route(GET("api/chapters/{id}"), chapterHandler::getChapter)
         .andRoute(POST("api/chapter"), chapterHandler::addChapter)
         .andRoute(PUT("api/page"), chapterHandler::updatePageLink)
+        .andRoute(DELETE("api/chapters/clear/{id}"), chapterHandler::clearChapters)
         .andRoute(DELETE("api/chapters/dedup"), chapterHandler::dedup);
   }
 }

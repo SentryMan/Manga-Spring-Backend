@@ -47,6 +47,12 @@ public class ChapterHandler {
         .flatMap(ok()::bodyValue);
   }
 
+  public Mono<ServerResponse> clearChapters(ServerRequest request) {
+    return service
+        .clearChapters(Integer.parseInt(request.pathVariable("id")))
+        .flatMap(ok()::bodyValue);
+  }
+
   public Mono<ServerResponse> dedup(ServerRequest request) {
     service.deleteDuplicateChapters(request.queryParam("id").map(Integer::parseInt));
     return accepted().bodyValue("Dedup Request Accepted");

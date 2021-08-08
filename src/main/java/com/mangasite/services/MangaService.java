@@ -144,7 +144,6 @@ public class MangaService {
 
     return reactiveMongoTemplate
         .changeStream("Manga", FULL_DOC, Manga.class)
-        .doOnSubscribe(s -> System.out.println("Watching Mongo Change Stream"))
         .doOnNext(
             event -> {
               final var changedManga = event.getBody();
