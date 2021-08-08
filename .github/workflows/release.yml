@@ -1,42 +1,17 @@
-name: Create Release
+name: Bump Release version
 on:
   push:
-    branches: [main]
-
-# Your workflows jobs.
+    branches:
+      - master
 jobs:
-  # Release Job
-  pre-release:
-    name: "Pre-Release"
-    runs-on: "ubuntu-latest"
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v2
         with:
-          java-version: "16"
-          java-package: jdk
-          architecture: x64
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
-
-      - name: Build Artifact
-        run: mvn clean package
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Manga-Spring"
-          files: |
-            LICENSE.txt
-            *.jar
+          fetch-depth: "0"
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
