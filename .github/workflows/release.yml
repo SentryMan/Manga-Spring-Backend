@@ -1,5 +1,7 @@
 name: Bump Release version
-on:
+on: # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
+    branches: [main]
   push:
     branches:
       - master
