@@ -2,6 +2,7 @@ package com.mangasite.repo;
 
 import java.math.BigInteger;
 
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,9 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface MangaRepo extends ReactiveMongoRepository<Manga, BigInteger> {
+
+  @Aggregation("{$sample: {size: ?0}}")
+  Flux<Manga> sample(int size);
 
   Mono<Manga> getBya(String a);
 

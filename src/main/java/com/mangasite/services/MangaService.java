@@ -8,11 +8,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
@@ -25,8 +28,10 @@ import com.mangasite.record.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
 
+import reactor.cache.CacheFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Signal;
 import reactor.util.function.Tuples;
 
 /**
@@ -43,6 +48,7 @@ public class MangaService {
   private final MangaRepo repo;
   private final ChapterRepo chapterRepo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
+  private final List<Manga> popularCache = new ArrayList<>();
 
   public MangaService(
       MangaRepo repo, ChapterRepo chapterRepo, ReactiveMongoTemplate reactiveMongoTemplate) {
@@ -75,17 +81,33 @@ public class MangaService {
   }
 
   /**
-   * Gets all popular manga from the SavedData class
+   * Gets all popular manga from cache. or else sample from DB
    *
    * @return A Flux that resolves into the list of popular manga
    */
   public Flux<Manga> findPopular() {
 
-    Flux<Manga> popularMangaFlux = Flux.empty();
-    for (final String alias : popularMangaAlias)
-      popularMangaFlux = popularMangaFlux.concatWith(repo.getBya(alias));
+    return CacheFlux.lookup(
+            k ->
+                Flux.fromIterable(popularCache)
+                    .map(Signal::next)
+                    .collectList()
+                    .filter(Predicate.not(List::isEmpty)),
+            "")
+        .onCacheMissResume(
+            repo.sample(6).filter(m -> m.getRealID() != 3 && m.getRealID() != 4).take(5))
+        .andWriteWith(
+            (k, signals) ->
+                Mono.fromRunnable(
+                    () -> {
+                      popularCache.clear();
 
-    return popularMangaFlux;
+                      signals
+                          .stream()
+                          .filter(Signal::hasValue)
+                          .map(Signal::get)
+                          .forEach(popularCache::add);
+                    }));
   }
 
   /**
