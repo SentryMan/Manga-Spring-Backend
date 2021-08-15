@@ -92,7 +92,10 @@ public class MangaService {
                     .filter(Predicate.not(List::isEmpty)),
             "")
         .onCacheMissResume(
-            repo.sample(6).filter(m -> m.getRealID() != 3 && m.getRealID() != 4).take(5))
+            repo.sample(7)
+                .filter(m -> m.getRealID() != 3 && m.getRealID() != 4)
+                .take(5)
+                .sort(Comparator.comparingInt(Manga::getH)))
         .andWriteWith(
             (k, signals) ->
                 Mono.fromRunnable(
@@ -104,7 +107,8 @@ public class MangaService {
                           .filter(Signal::hasValue)
                           .map(Signal::get)
                           .forEach(popularCache::add);
-                    }));
+                    }))
+        .take(5);
   }
 
   /**
