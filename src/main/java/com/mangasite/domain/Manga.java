@@ -172,4 +172,9 @@ public class Manga {
   public void setId(BigInteger id) {
     this.id = id;
   }
+
+  @Override
+  public String toString() {
+    return "Manga [realID=" + realID + ", h=" + h + ", t=" + t + "]";
+  }
 }

@@ -55,7 +55,7 @@ public class RSocketChapterController {
       @DestinationVariable("id") int id, Flux<PageChangeRequest> requestFlux) {
 
     return requestFlux
-        .buffer(Duration.ofSeconds(10))
+        .bufferTimeout(500, Duration.ofSeconds(10))
         .concatMap(requestBuffer -> service.updatePageLink(id, requestBuffer))
         .map(
             function(

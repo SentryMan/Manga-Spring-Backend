@@ -25,7 +25,7 @@ The other scenraio requests a stream from the mongo change streams, which will m
 
 ## Request Channel
 
-Rsocket has Bi-Directional communication. I have an update batch project that'll update the db every now and then it'll connect to the server and send the records to update and recieve reponses as each is replaced in the collection. After the batch is finished, a Fire-And-Forget request will go out to all connected clients.
+Rsocket has Bi-Directional communication. I have an update batch project that'll update the db every now and then it'll connect to the server and send the records to update and recieve reponses as each is replaced in the collection. After the batch is finished, server will send Fire-And-Forget request to all clients that are currently reading the chapter.
 
 ![alt text](/diagrams/channel.png)
 

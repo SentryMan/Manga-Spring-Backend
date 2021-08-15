@@ -8,13 +8,16 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,10 @@ import com.mangasite.record.MangaChangeRequest;
 import com.mangasite.repo.ChapterRepo;
 import com.mangasite.repo.MangaRepo;
 
+import reactor.cache.CacheFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Signal;
 import reactor.util.function.Tuples;
 
 /**
@@ -37,12 +42,10 @@ import reactor.util.function.Tuples;
 @Service
 public class MangaService {
 
-  @Value("${popular.manga}")
-  String[] popularMangaAlias;
-
   private final MangaRepo repo;
   private final ChapterRepo chapterRepo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
+  private final List<Manga> popularCache = new ArrayList<>();
 
   public MangaService(
       MangaRepo repo, ChapterRepo chapterRepo, ReactiveMongoTemplate reactiveMongoTemplate) {
@@ -75,17 +78,37 @@ public class MangaService {
   }
 
   /**
-   * Gets all popular manga from the SavedData class
+   * Gets all popular manga from cache. or else sample from DB
    *
    * @return A Flux that resolves into the list of popular manga
    */
   public Flux<Manga> findPopular() {
 
-    Flux<Manga> popularMangaFlux = Flux.empty();
-    for (final String alias : popularMangaAlias)
-      popularMangaFlux = popularMangaFlux.concatWith(repo.getBya(alias));
+    return CacheFlux.lookup(
+            k ->
+                Flux.fromIterable(popularCache)
+                    .map(Signal::next)
+                    .collectList()
+                    .filter(Predicate.not(List::isEmpty)),
+            "")
+        .onCacheMissResume(
+            repo.sample(7)
+                .filter(m -> m.getRealID() != 3 && m.getRealID() != 4)
+                .take(5)
+                .sort(Comparator.comparingInt(Manga::getH)))
+        .andWriteWith(
+            (k, signals) ->
+                Mono.fromRunnable(
+                    () -> {
+                      popularCache.clear();
 
-    return popularMangaFlux;
+                      signals
+                          .stream()
+                          .filter(Signal::hasValue)
+                          .map(Signal::get)
+                          .forEach(popularCache::add);
+                    }))
+        .take(5);
   }
 
   /**
@@ -174,6 +197,34 @@ public class MangaService {
             .orElse(Instant.now().getEpochSecond());
 
     return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
+  }
+
+  public void patchRank(int id, int newRank) {
+
+    repo.findAll()
+        .doOnNext(
+            m -> {
+              if (m.getRealID() == id) m.setH(newRank);
+            })
+        .sort(Comparator.comparingInt(Manga::getH))
+        .collectList()
+        .flatMapIterable(
+            l -> {
+              Manga previous = l.stream().filter(m -> m.getRealID() == id).findFirst().get();
+              for (int i = 0; i < l.size(); i++) {
+                final var curr = l.get(i);
+                if (curr.getRealID() == id || curr.getH() < newRank) continue;
+                if (previous != null && previous.getH() >= curr.getH())
+                  curr.setH(previous.getH() + 1);
+
+                previous = curr;
+              }
+
+              return l;
+            })
+        .transform(repo::saveAll)
+        .doOnError(Throwable::printStackTrace)
+        .subscribe();
   }
 
   public void patchChapterNames(int id, Map<String, String> nameMap) {

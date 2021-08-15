@@ -1,5 +1,6 @@
 package com.mangasite.web.handlers;
 
+import static org.springframework.web.reactive.function.server.ServerResponse.accepted;
 import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -35,5 +36,13 @@ public class MangaHandler {
         .updateLD(Integer.parseInt(request.pathVariable("id")), request.queryParam("updateDate"))
         .flatMap(ok()::bodyValue)
         .switchIfEmpty(badRequest().bodyValue("Manga Doesn't Exist"));
+  }
+
+  public Mono<ServerResponse> patchRank(ServerRequest request) {
+    service.patchRank(
+        Integer.parseInt(request.pathVariable("id")),
+        request.queryParam("rank").map(Integer::parseInt).get());
+
+    return accepted().bodyValue("Patching Rank");
   }
 }
