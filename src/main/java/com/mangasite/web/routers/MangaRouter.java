@@ -17,6 +17,7 @@ public class MangaRouter {
   @Bean
   RouterFunction<ServerResponse> mangaRoutes(MangaHandler mangaListHandler) {
     return route(POST("api/manga"), mangaListHandler::post)
-        .andRoute(PATCH("api/manga/{id}/patchdate"), mangaListHandler::patchUpdateDate);
+        .andRoute(PATCH("api/manga/{id}/patchdate"), mangaListHandler::patchUpdateDate)
+        .andRoute(PATCH("api/manga/{id}/patchrank"), mangaListHandler::patchRank);
   }
 }
