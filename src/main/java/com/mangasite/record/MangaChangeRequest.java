@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * A class that represents a single manga <br>
  * <br>
- * a = alias <br>
  * c = categories(genre) <br>
  * h = hits <br>
  * i = infoSourceUrl <br>
@@ -18,7 +17,6 @@ import java.util.List;
  * @author Josiah
  */
 public record MangaChangeRequest(
-	      String alias,
 	      List<String> genre,
 	      Integer hits,
 	      String coverImageURL,

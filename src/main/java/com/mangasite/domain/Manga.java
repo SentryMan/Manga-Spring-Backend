@@ -81,8 +81,8 @@ public class Manga {
     return id;
   }
 
-  public void setId(int realID) {
-    id = realID;
+  public void setId(int id) {
+    this.id = id;
   }
 
   public List<String> getC() {
@@ -143,6 +143,6 @@ public class Manga {
 
   @Override
   public String toString() {
-    return "Manga [realID=" + id + ", h=" + h + ", t=" + t + "]";
+    return "Manga [id=" + id + ", h=" + h + ", t=" + t + "]";
   }
 }

@@ -14,6 +14,6 @@ public interface ChapterRepo extends ReactiveMongoRepository<MangaChapters, Inte
 
   Mono<MangaChapters> getByMangaName(String Name);
 
-  @Query("{'realID' : ?0}")
-  Flux<MangaChapters> getDupsByRealID(int realID);
+  @Query("{'id' : ?0}")
+  Flux<MangaChapters> getDupsById(int id);
 }

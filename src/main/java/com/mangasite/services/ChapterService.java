@@ -75,7 +75,7 @@ public class ChapterService {
         .zipWith(
             repo.findById(requestList.get(0).mangaId()),
             (m, c) -> {
-              System.out.println("Updating " + m.getT() + "\nRealID: " + m.getId());
+              System.out.println("Updating " + m.getT() + "\nID: " + m.getId());
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               requestList.forEach(processChapterRequests(m, c));

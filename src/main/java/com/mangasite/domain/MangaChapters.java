@@ -20,25 +20,23 @@ public class MangaChapters {
     this.chapters = chapters;
   }
 
-  public MangaChapters() {}
+  public MangaChapters(int id, String mangaName, String index, String firstPageURL) {
 
-  public MangaChapters(String mangaName, int realID, String index, String firstPageURL) {
-
+    this.id = id;
     final var chapter = new Chapter();
     chapter.setChapterIndex("Chapter " + index);
     final List<List<Object>> imageList = List.of(List.of(0, firstPageURL));
     chapter.setImages(imageList);
     this.mangaName = mangaName;
     chapters = List.of(chapter);
-    id = realID;
   }
 
   public Integer getId() {
     return id;
   }
 
-  public void setId(Integer realID) {
-    id = realID;
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   public String getMangaName() {
@@ -59,6 +57,6 @@ public class MangaChapters {
 
   @Override
   public String toString() {
-    return "MangaChapters [realID=" + id + ", mangaName=" + mangaName + "]";
+    return "MangaChapters [id=" + id + ", mangaName=" + mangaName + "]";
   }
 }

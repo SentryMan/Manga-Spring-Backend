@@ -69,7 +69,7 @@ public class MangaService {
   /**
    * Gets all Manga stored in the SavedData class
    *
-   * @param id the RealID of the desired manga
+   * @param id the id of the desired manga
    * @return A Mono that resolves into the requested Manga
    */
   public Mono<Manga> findManga(int id) {
@@ -132,7 +132,7 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getByt(request.title())
+    repo.getByt(request.title())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
@@ -148,14 +148,16 @@ public class MangaService {
                 Tuples.of(
                         manga,
                         new MangaChapters(
-                            manga.getT(),
                             manga.getId(),
+                            manga.getT(),
                             request.firstChapterIndex(),
                             request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
         .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
-        .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getId()));
+        .doOnNext(s -> System.out.println("Saved " + s.getT() + " ID: " + s.getId()));
+
+    return null;
   }
 
   /**
