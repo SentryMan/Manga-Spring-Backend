@@ -27,7 +27,7 @@ import com.mangasite.record.MangaChangeRequest;
 @Document(collection = "Manga")
 public class Manga {
 
-  @Id private int realID;
+  @Id private Integer id;
   private String t;
   private List<String> c;
   private Integer h;
@@ -77,12 +77,12 @@ public class Manga {
     info.setReleased(request.releaseDate());
   }
 
-  public int getRealID() {
-    return realID;
+  public int getId() {
+    return id;
   }
 
-  public void setRealID(int realID) {
-    this.realID = realID;
+  public void setId(int realID) {
+    id = realID;
   }
 
   public List<String> getC() {
@@ -143,6 +143,6 @@ public class Manga {
 
   @Override
   public String toString() {
-    return "Manga [realID=" + realID + ", h=" + h + ", t=" + t + "]";
+    return "Manga [realID=" + id + ", h=" + h + ", t=" + t + "]";
   }
 }

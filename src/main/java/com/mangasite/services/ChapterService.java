@@ -52,9 +52,9 @@ public class ChapterService {
    *
    * @param ChapterID the numerical ID of the chapter
    */
-  public Mono<MangaChapters> getByID(int ChapterID) {
+  public Mono<MangaChapters> getByID(int chapterID) {
 
-    return repo.findById(ChapterID);
+    return repo.findById(chapterID);
   }
 
   /** Returns a single Mono<Chapter> that contains the Chapter with the given name */
@@ -75,7 +75,7 @@ public class ChapterService {
         .zipWith(
             repo.findById(requestList.get(0).mangaId()),
             (m, c) -> {
-              System.out.println("Updating " + m.getT() + "\nRealID: " + m.getRealID());
+              System.out.println("Updating " + m.getT() + "\nRealID: " + m.getId());
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               requestList.forEach(processChapterRequests(m, c));
@@ -202,7 +202,7 @@ public class ChapterService {
                             r.mangaId(), r.chapterIndex(), r.chapterName(), 0, ""))
                 .toList();
 
-        return addChapter(chapterRequests).then(repo.findById(c.getRealID()));
+        return addChapter(chapterRequests).then(repo.findById(c.getId()));
       }
       return just(c);
     };

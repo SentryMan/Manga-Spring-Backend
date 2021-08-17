@@ -93,7 +93,7 @@ public class MangaService {
             "")
         .onCacheMissResume(
             repo.sample(7)
-                .filter(m -> m.getRealID() != 3 && m.getRealID() != 4)
+                .filter(m -> m.getId() != 3 && m.getId() != 4)
                 .take(5)
                 .sort(Comparator.comparingInt(Manga::getH)))
         .andWriteWith(
@@ -140,7 +140,7 @@ public class MangaService {
         .map(
             function(
                 (m, id) -> {
-                  m.setRealID(id);
+                  m.setId(id);
                   return m;
                 }))
         .map(
@@ -149,13 +149,13 @@ public class MangaService {
                         manga,
                         new MangaChapters(
                             manga.getT(),
-                            manga.getRealID(),
+                            manga.getId(),
                             request.firstChapterIndex(),
                             request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
         .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
-        .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
+        .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getId()));
   }
 
   /**
@@ -204,16 +204,16 @@ public class MangaService {
     repo.findAll()
         .doOnNext(
             m -> {
-              if (m.getRealID() == id) m.setH(newRank);
+              if (m.getId() == id) m.setH(newRank);
             })
         .sort(Comparator.comparingInt(Manga::getH))
         .collectList()
         .flatMapIterable(
             l -> {
-              Manga previous = l.stream().filter(m -> m.getRealID() == id).findFirst().get();
+              Manga previous = l.stream().filter(m -> m.getId() == id).findFirst().get();
               for (int i = 0; i < l.size(); i++) {
                 final var curr = l.get(i);
-                if (curr.getRealID() == id || curr.getH() < newRank) continue;
+                if (curr.getId() == id || curr.getH() < newRank) continue;
                 if (previous != null && previous.getH() >= curr.getH())
                   curr.setH(previous.getH() + 1);
 
@@ -257,7 +257,7 @@ public class MangaService {
               var id = 0;
               do {
                 final var ID = id;
-                final var idNotTaken = list.stream().noneMatch(m -> m.getRealID() == ID);
+                final var idNotTaken = list.stream().noneMatch(m -> m.getId() == ID);
 
                 if (idNotTaken && idSet.add(id)) break;
 

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "Chapters")
 public class MangaChapters {
 
-  @Id Integer realID;
+  @Id private Integer id;
   private String mangaName;
   private List<Chapter> chapters;
 
@@ -30,15 +30,15 @@ public class MangaChapters {
     chapter.setImages(imageList);
     this.mangaName = mangaName;
     chapters = List.of(chapter);
-    this.realID = realID;
+    id = realID;
   }
 
-  public Integer getRealID() {
-    return realID;
+  public Integer getId() {
+    return id;
   }
 
-  public void setRealID(Integer realID) {
-    this.realID = realID;
+  public void setId(Integer realID) {
+    id = realID;
   }
 
   public String getMangaName() {
@@ -59,6 +59,6 @@ public class MangaChapters {
 
   @Override
   public String toString() {
-    return "MangaChapters [realID=" + realID + ", mangaName=" + mangaName + "]";
+    return "MangaChapters [realID=" + id + ", mangaName=" + mangaName + "]";
   }
 }
