@@ -1,6 +1,5 @@
 package com.mangasite.domain;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -10,15 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "Chapters")
 public class MangaChapters {
 
-  @Id private BigInteger id;
-  private Integer realID;
+  @Id Integer realID;
   private String mangaName;
   private List<Chapter> chapters;
 
   @PersistenceConstructor
-  public MangaChapters(int realID, String mangaName, List<Chapter> chapters) {
+  public MangaChapters(String mangaName, List<Chapter> chapters) {
 
-    this.realID = realID;
     this.mangaName = mangaName;
     this.chapters = chapters;
   }
@@ -34,14 +31,6 @@ public class MangaChapters {
     this.mangaName = mangaName;
     chapters = List.of(chapter);
     this.realID = realID;
-  }
-
-  public BigInteger getId() {
-    return id;
-  }
-
-  public void setId(BigInteger id) {
-    this.id = id;
   }
 
   public Integer getRealID() {
@@ -66,5 +55,10 @@ public class MangaChapters {
 
   public void setChapters(List<Chapter> chapters) {
     this.chapters = chapters;
+  }
+
+  @Override
+  public String toString() {
+    return "MangaChapters [realID=" + realID + ", mangaName=" + mangaName + "]";
   }
 }

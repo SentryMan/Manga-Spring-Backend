@@ -74,7 +74,7 @@ public class MangaService {
    */
   public Mono<Manga> findManga(int id) {
 
-    return repo.getByRealID(id);
+    return repo.findById(id);
   }
 
   /**
@@ -132,7 +132,7 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getBya(request.alias())
+    return repo.getByt(request.title())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
@@ -196,7 +196,7 @@ public class MangaService {
             .map(ChronoZonedDateTime::toEpochSecond)
             .orElse(Instant.now().getEpochSecond());
 
-    return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
+    return repo.findById(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
   }
 
   public void patchRank(int id, int newRank) {
@@ -229,7 +229,7 @@ public class MangaService {
 
   public void patchChapterNames(int id, Map<String, String> nameMap) {
 
-    repo.getByRealID(id)
+    repo.findById(id)
         .map(
             m -> {
               final var info = m.getInfo();

@@ -1,6 +1,5 @@
 package com.mangasite.domain;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -14,7 +13,6 @@ import com.mangasite.record.MangaChangeRequest;
 /**
  * A class that represents a single manga <br>
  * <br>
- * a = alias <br>
  * c = categories(genre) <br>
  * h = hits <br>
  * i = infoSourceUrl <br>
@@ -29,30 +27,17 @@ import com.mangasite.record.MangaChangeRequest;
 @Document(collection = "Manga")
 public class Manga {
 
-  @Id private BigInteger id;
-  private int realID;
-  private String a;
+  @Id private int realID;
+  private String t;
   private List<String> c;
   private Integer h;
   private String im;
   private long ld;
   private Integer s;
-  private String t;
   private MangaInfo info;
 
   @PersistenceConstructor
-  public Manga(
-      int realID,
-      String a,
-      List<String> c,
-      Integer h,
-      String im,
-      long ld,
-      Integer s,
-      String t,
-      MangaInfo info) {
-    this.realID = realID;
-    this.a = a;
+  public Manga(List<String> c, Integer h, String im, long ld, Integer s, String t, MangaInfo info) {
     this.c = c;
     this.h = h;
     this.im = im;
@@ -63,7 +48,6 @@ public class Manga {
   }
 
   public Manga(MangaChangeRequest request) {
-    a = request.alias();
     c = request.genre();
     h = request.hits();
     im = request.coverImageURL();
@@ -99,14 +83,6 @@ public class Manga {
 
   public void setRealID(int realID) {
     this.realID = realID;
-  }
-
-  public String getA() {
-    return a;
-  }
-
-  public void setA(String a) {
-    this.a = a;
   }
 
   public List<String> getC() {
@@ -163,14 +139,6 @@ public class Manga {
 
   public void setInfo(MangaInfo info) {
     this.info = info;
-  }
-
-  public BigInteger getId() {
-    return id;
-  }
-
-  public void setId(BigInteger id) {
-    this.id = id;
   }
 
   @Override
