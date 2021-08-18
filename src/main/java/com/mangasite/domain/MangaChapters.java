@@ -1,6 +1,5 @@
 package com.mangasite.domain;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -10,46 +9,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "Chapters")
 public class MangaChapters {
 
-  @Id private BigInteger id;
-  private Integer realID;
+  @Id private Integer id;
   private String mangaName;
   private List<Chapter> chapters;
 
   @PersistenceConstructor
-  public MangaChapters(int realID, String mangaName, List<Chapter> chapters) {
+  public MangaChapters(String mangaName, List<Chapter> chapters) {
 
-    this.realID = realID;
     this.mangaName = mangaName;
     this.chapters = chapters;
   }
 
-  public MangaChapters() {}
+  public MangaChapters(int id, String mangaName, String index, String firstPageURL) {
 
-  public MangaChapters(String mangaName, int realID, String index, String firstPageURL) {
-
+    this.id = id;
     final var chapter = new Chapter();
     chapter.setChapterIndex("Chapter " + index);
     final List<List<Object>> imageList = List.of(List.of(0, firstPageURL));
     chapter.setImages(imageList);
     this.mangaName = mangaName;
     chapters = List.of(chapter);
-    this.realID = realID;
   }
 
-  public BigInteger getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(BigInteger id) {
+  public void setId(Integer id) {
     this.id = id;
-  }
-
-  public Integer getRealID() {
-    return realID;
-  }
-
-  public void setRealID(Integer realID) {
-    this.realID = realID;
   }
 
   public String getMangaName() {
@@ -66,5 +53,10 @@ public class MangaChapters {
 
   public void setChapters(List<Chapter> chapters) {
     this.chapters = chapters;
+  }
+
+  @Override
+  public String toString() {
+    return "MangaChapters [id=" + id + ", mangaName=" + mangaName + "]";
   }
 }

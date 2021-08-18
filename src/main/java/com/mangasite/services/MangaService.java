@@ -69,12 +69,12 @@ public class MangaService {
   /**
    * Gets all Manga stored in the SavedData class
    *
-   * @param id the RealID of the desired manga
+   * @param id the id of the desired manga
    * @return A Mono that resolves into the requested Manga
    */
   public Mono<Manga> findManga(int id) {
 
-    return repo.getByRealID(id);
+    return repo.findById(id);
   }
 
   /**
@@ -93,7 +93,7 @@ public class MangaService {
             "")
         .onCacheMissResume(
             repo.sample(7)
-                .filter(m -> m.getRealID() != 3 && m.getRealID() != 4)
+                .filter(m -> m.getId() != 3 && m.getId() != 4)
                 .take(5)
                 .sort(Comparator.comparingInt(Manga::getH)))
         .andWriteWith(
@@ -132,7 +132,7 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getBya(request.alias())
+    repo.getByt(request.title())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
@@ -140,7 +140,7 @@ public class MangaService {
         .map(
             function(
                 (m, id) -> {
-                  m.setRealID(id);
+                  m.setId(id);
                   return m;
                 }))
         .map(
@@ -148,14 +148,16 @@ public class MangaService {
                 Tuples.of(
                         manga,
                         new MangaChapters(
+                            manga.getId(),
                             manga.getT(),
-                            manga.getRealID(),
                             request.firstChapterIndex(),
                             request.firstPageURL()))
                     .mapT1(repo::insert)
                     .mapT2(chapterRepo::insert))
         .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
-        .doOnNext(s -> System.out.println("Saved " + s.getT() + " RealID: " + s.getRealID()));
+        .doOnNext(s -> System.out.println("Saved " + s.getT() + " ID: " + s.getId()));
+
+    return null;
   }
 
   /**
@@ -196,7 +198,7 @@ public class MangaService {
             .map(ChronoZonedDateTime::toEpochSecond)
             .orElse(Instant.now().getEpochSecond());
 
-    return repo.getByRealID(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
+    return repo.findById(id).doOnNext(m -> m.setLd(epochSeconds)).flatMap(repo::save);
   }
 
   public void patchRank(int id, int newRank) {
@@ -204,16 +206,16 @@ public class MangaService {
     repo.findAll()
         .doOnNext(
             m -> {
-              if (m.getRealID() == id) m.setH(newRank);
+              if (m.getId() == id) m.setH(newRank);
             })
         .sort(Comparator.comparingInt(Manga::getH))
         .collectList()
         .flatMapIterable(
             l -> {
-              Manga previous = l.stream().filter(m -> m.getRealID() == id).findFirst().get();
+              Manga previous = l.stream().filter(m -> m.getId() == id).findFirst().get();
               for (int i = 0; i < l.size(); i++) {
                 final var curr = l.get(i);
-                if (curr.getRealID() == id || curr.getH() < newRank) continue;
+                if (curr.getId() == id || curr.getH() < newRank) continue;
                 if (previous != null && previous.getH() >= curr.getH())
                   curr.setH(previous.getH() + 1);
 
@@ -229,7 +231,7 @@ public class MangaService {
 
   public void patchChapterNames(int id, Map<String, String> nameMap) {
 
-    repo.getByRealID(id)
+    repo.findById(id)
         .map(
             m -> {
               final var info = m.getInfo();
@@ -257,7 +259,7 @@ public class MangaService {
               var id = 0;
               do {
                 final var ID = id;
-                final var idNotTaken = list.stream().noneMatch(m -> m.getRealID() == ID);
+                final var idNotTaken = list.stream().noneMatch(m -> m.getId() == ID);
 
                 if (idNotTaken && idSet.add(id)) break;
 

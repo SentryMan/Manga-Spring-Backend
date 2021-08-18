@@ -52,9 +52,9 @@ public class ChapterService {
    *
    * @param ChapterID the numerical ID of the chapter
    */
-  public Mono<MangaChapters> getByID(int ChapterID) {
+  public Mono<MangaChapters> getByID(int chapterID) {
 
-    return repo.getByRealID(ChapterID);
+    return repo.findById(chapterID);
   }
 
   /** Returns a single Mono<Chapter> that contains the Chapter with the given name */
@@ -71,11 +71,11 @@ public class ChapterService {
   public Mono<Tuple2<Manga, MangaChapters>> addChapter(List<ChapterChangeRequest> requestList) {
 
     return mangaRepo
-        .getByRealID(requestList.get(0).mangaId())
+        .findById(requestList.get(0).mangaId())
         .zipWith(
-            repo.getByRealID(requestList.get(0).mangaId()),
+            repo.findById(requestList.get(0).mangaId()),
             (m, c) -> {
-              System.out.println("Updating " + m.getT() + "\nRealID: " + m.getRealID());
+              System.out.println("Updating " + m.getT() + "\nID: " + m.getId());
               System.out.println(
                   "Before change : " + m.getInfo().getChapters().size() + " chapters");
               requestList.forEach(processChapterRequests(m, c));
@@ -94,7 +94,7 @@ public class ChapterService {
   public Flux<Tuple2<PageChangeRequest, String>> updatePageLink(
       int id, List<PageChangeRequest> requestList) {
 
-    return repo.getByRealID(id)
+    return repo.findById(id)
         // if Chapter Doesn't exist, create in table
         .flatMap(chapterExistsFunc(requestList))
         .doOnNext(c -> requestList.forEach(processPageRequests(c)))
@@ -202,7 +202,7 @@ public class ChapterService {
                             r.mangaId(), r.chapterIndex(), r.chapterName(), 0, ""))
                 .toList();
 
-        return addChapter(chapterRequests).then(repo.getByRealID(c.getRealID()));
+        return addChapter(chapterRequests).then(repo.findById(c.getId()));
       }
       return just(c);
     };
@@ -222,9 +222,9 @@ public class ChapterService {
 
     idParam.ifPresentOrElse(
         id -> {
-          repo.getByRealID(id)
+          repo.findById(id)
               .flatMap(this::removeChapterDups)
-              .mergeWith(mangaRepo.getByRealID(id).flatMap(this::removeMangaDups))
+              .mergeWith(mangaRepo.findById(id).flatMap(this::removeMangaDups))
               .distinct()
               .subscribe(System.out::println);
         },
@@ -264,12 +264,12 @@ public class ChapterService {
 
     final var mangaClearMono =
         mangaRepo
-            .getByRealID(id)
+            .findById(id)
             .doOnNext(m -> m.getInfo().getChapters().removeIf(c -> !c.get(0).equals("1")))
             .flatMap(mangaRepo::save);
 
     final var chapterClearMono =
-        repo.getByRealID(id)
+        repo.findById(id)
             .doOnNext(
                 mc -> mc.getChapters().removeIf(c -> !c.getChapterIndex().equals("Chapter 1")))
             .doOnNext(mc -> mc.getChapters().get(0).setImages(List.of(List.of(0, ""))))
