@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.mangasite.record.ChapterChangeRequest;
-import com.mangasite.record.PageChangeRequest;
+import com.mangasite.record.changerequests.ChapterChangeRequest;
+import com.mangasite.record.changerequests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
 

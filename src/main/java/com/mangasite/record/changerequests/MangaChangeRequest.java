@@ -1,4 +1,4 @@
-package com.mangasite.record;
+package com.mangasite.record.changerequests;
 
 import java.util.List;
 

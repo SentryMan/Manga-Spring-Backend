@@ -12,8 +12,8 @@ import org.springframework.stereotype.Controller;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.record.ChapterChangeRequest;
-import com.mangasite.record.PageChangeRequest;
+import com.mangasite.record.changerequests.ChapterChangeRequest;
+import com.mangasite.record.changerequests.PageChangeRequest;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
 

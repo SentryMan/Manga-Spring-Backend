@@ -23,13 +23,8 @@ import reactor.util.retry.Retry;
 @Configuration
 public class ServerConfig implements WebFluxConfigurer {
 
-  //  private static final int CONCURRENT_WORKERS_COUNT = 5;
-  //  private static final int QUEUE_CAPACITY = 10;
-  //  private static final int LEASE_TTL_MILLI = 5_000;
-
   public static final RSocketServerCustomizer serverCustomizer() {
 
-    // final var leaseManager = new LeaseManager(CONCURRENT_WORKERS_COUNT, LEASE_TTL_MILLI);
     final var resume =
         new Resume()
             .cleanupStoreOnKeepAlive()
@@ -38,16 +33,6 @@ public class ServerConfig implements WebFluxConfigurer {
                     .doBeforeRetry(s -> System.out.println("Disconnected. Trying to resume...")));
     return rsocketServer -> {
       rsocketServer.resume(resume);
-      //          .lease(
-      //              config ->
-      //                  config.sender(
-      //                      new LimitBasedLeaseSender(
-      //                          UUID.randomUUID().toString(),
-      //                          leaseManager,
-      //                          VegasLimit.newBuilder()
-      //                              .initialLimit(CONCURRENT_WORKERS_COUNT)
-      //                              .maxConcurrency(QUEUE_CAPACITY)
-      //                              .build())))
     };
   }
 

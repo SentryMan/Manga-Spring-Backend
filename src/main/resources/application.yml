@@ -24,6 +24,7 @@ roles:
   user:
     username: ${USER_USERNAME:user}
     password: ${USER_PASSWORD:password}
+
 logging:
     level:
         org:

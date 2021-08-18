@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mangasite.record.MangaChangeRequest;
+import com.mangasite.record.changerequests.MangaChangeRequest;
 
 /**
  * A class that represents a single manga <br>

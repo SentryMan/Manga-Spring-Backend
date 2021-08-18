@@ -1,4 +1,4 @@
-package com.mangasite.record;
+package com.mangasite.record.changerequests;
 
 public record PageChangeRequest (
       Integer mangaId,
