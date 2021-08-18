@@ -24,12 +24,11 @@ import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 
 import com.mangasite.domain.init.AppInitializer;
-import com.mangasite.domain.lease.LeaseManager;
-import com.mangasite.record.ChapterChangeRequest;
 import com.mangasite.record.DeviceInfo;
-import com.mangasite.record.MangaChangeRequest;
-import com.mangasite.record.PageChangeRequest;
 import com.mangasite.record.ServerMessage;
+import com.mangasite.record.changerequests.ChapterChangeRequest;
+import com.mangasite.record.changerequests.MangaChangeRequest;
+import com.mangasite.record.changerequests.PageChangeRequest;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 import reactor.core.publisher.Hooks;
@@ -40,7 +39,6 @@ import reactor.core.publisher.Hooks;
         @TypeHint(
             access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
             types = {
-              LeaseManager.class,
               ChangeStreamDocument.class,
               ChapterChangeRequest.class,
               MangaChangeRequest.class,
