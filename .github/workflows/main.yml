@@ -27,14 +27,6 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Cache Docker Layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Cache Maven Dependencies
         uses: actions/cache@v2
         with:
@@ -58,8 +50,6 @@ jobs:
           context: .
           push: true
           tags: registry.heroku.com/manga-spring/web
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Deploy
         env:
