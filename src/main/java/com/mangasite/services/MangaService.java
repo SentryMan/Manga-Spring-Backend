@@ -107,8 +107,7 @@ public class MangaService {
                           .filter(Signal::hasValue)
                           .map(Signal::get)
                           .forEach(popularCache::add);
-                    }))
-        .take(5);
+                    }));
   }
 
   /**
@@ -132,7 +131,7 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    repo.getByt(request.title())
+    return repo.getByTitle(request.title())
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
@@ -156,8 +155,6 @@ public class MangaService {
                     .mapT2(chapterRepo::insert))
         .flatMap(function((manga, chapter) -> manga.zipWith(chapter, (m, c) -> m)))
         .doOnNext(s -> System.out.println("Saved " + s.getT() + " ID: " + s.getId()));
-
-    return null;
   }
 
   /**

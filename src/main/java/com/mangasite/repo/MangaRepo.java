@@ -19,5 +19,6 @@ public interface MangaRepo extends ReactiveMongoRepository<Manga, Integer> {
   @Query("{'ld' : { $gte: ?0, $lte: ?1 } }")
   Flux<Manga> findByLd(long l, long m);
 
-  Mono<Manga> getByt(String t);
+  @Query("{'t' : ?0}")
+  Mono<Manga> getByTitle(String t);
 }

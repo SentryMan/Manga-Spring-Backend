@@ -38,7 +38,7 @@ public class RSocketMangaController {
   @MessageMapping("popular-manga")
   public Flux<Manga> getPopular() {
 
-    return service.findPopular();
+    return service.findPopular().take(5);
   }
 
   @MessageMapping("latest-manga")
