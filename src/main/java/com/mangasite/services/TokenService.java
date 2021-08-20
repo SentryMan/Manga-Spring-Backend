@@ -53,9 +53,9 @@ public class TokenService {
 
   public Mono<Authentication> authenticateToken(Authentication authentication) {
     final var jwt = authentication.getCredentials().toString();
-    final var parser = Jwts.parser().setSigningKey(key);
+    final var parser = key.transform(Jwts.parser()::setSigningKey);
 
-    return Mono.fromSupplier(parser.parseClaimsJws(jwt)::getBody)
+    return Mono.fromSupplier(jwt.transform(parser::parseClaimsJws)::getBody)
         .map(Claims::getSubject)
         .flatMap(userService::findByUsername)
         .switchIfEmpty(Mono.error(new RejectedSetupException("User Doesn't Exist")))

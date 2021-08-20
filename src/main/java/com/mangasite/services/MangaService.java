@@ -131,7 +131,9 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getByTitle(request.title())
+    return request
+        .title()
+        .transform(repo::getByTitle)
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
