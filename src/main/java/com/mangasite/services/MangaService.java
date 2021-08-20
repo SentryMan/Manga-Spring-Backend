@@ -95,7 +95,7 @@ public class MangaService {
             repo.sample(7)
                 .filter(m -> m.getId() != 3 && m.getId() != 4)
                 .take(5)
-                .sort(Comparator.comparingInt(Manga::getH)))
+                .sort(Comparator.comparingInt(Manga::getH).reversed()))
         .andWriteWith(
             (k, signals) ->
                 Mono.fromRunnable(
