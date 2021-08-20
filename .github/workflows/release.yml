@@ -1,6 +1,7 @@
 name: Create Release
 on:
-  push:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
     branches: [main]
 
 # Your workflows jobs.
@@ -34,7 +35,7 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "dev"
           prerelease: true
           title: "Manga-Spring"
           files: |
