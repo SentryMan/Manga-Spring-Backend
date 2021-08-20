@@ -59,7 +59,9 @@ public class Manga {
 
     ld =
         request.updateDateStr() != null
-            ? LocalDate.parse(request.updateDateStr())
+            ? request
+                .updateDateStr()
+                .transform(LocalDate::parse)
                 .atStartOfDay(ZoneId.systemDefault())
                 .toEpochSecond()
             : request.updateDateint();

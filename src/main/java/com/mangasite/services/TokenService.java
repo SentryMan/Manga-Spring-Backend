@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;
 import reactor.core.publisher.Mono;
@@ -52,12 +51,16 @@ public class TokenService {
   }
 
   public Mono<Authentication> authenticateToken(Authentication authentication) {
-    final var jwt = authentication.getCredentials().toString();
-    final var parser = Jwts.parser().setSigningKey(key);
 
-    return Mono.fromSupplier(parser.parseClaimsJws(jwt)::getBody)
-        .map(Claims::getSubject)
-        .flatMap(userService::findByUsername)
+    final var parser = key.transform(Jwts.parser()::setSigningKey);
+
+    return authentication
+        .getCredentials()
+        .toString()
+        .transform(parser::parseClaimsJws)
+        .getBody()
+        .getSubject()
+        .transform(userService::findByUsername)
         .switchIfEmpty(Mono.error(new RejectedSetupException("User Doesn't Exist")))
         .map(
             user ->

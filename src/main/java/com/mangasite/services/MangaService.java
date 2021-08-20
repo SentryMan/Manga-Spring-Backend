@@ -95,7 +95,7 @@ public class MangaService {
             repo.sample(7)
                 .filter(m -> m.getId() != 3 && m.getId() != 4)
                 .take(5)
-                .sort(Comparator.comparingInt(Manga::getH)))
+                .sort(Comparator.comparingInt(Manga::getH).reversed()))
         .andWriteWith(
             (k, signals) ->
                 Mono.fromRunnable(
@@ -131,7 +131,9 @@ public class MangaService {
 
     System.out.println("Populating Database");
 
-    return repo.getByTitle(request.title())
+    return request
+        .title()
+        .transform(repo::getByTitle)
         .hasElement()
         .flatMap(b -> b ? Mono.empty() : Mono.just(request))
         .map(Manga::new)
