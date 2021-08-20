@@ -56,33 +56,8 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
 
-  #Release Creation
-  pre-release:
-    name: "Pre-Release"
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: "16"
-          java-package: jdk
-          architecture: x64
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
-
-      - name: Build Artifact
-        run: mvn clean package
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Create Github Pre-Release tag
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "pre-release"
