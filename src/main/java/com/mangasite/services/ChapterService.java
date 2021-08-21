@@ -6,7 +6,6 @@ import static java.util.Comparator.comparingInt;
 import static reactor.core.publisher.Mono.just;
 import static reactor.function.TupleUtils.function;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -174,7 +173,7 @@ public class ChapterService {
   private Function<MangaChapters, Mono<MangaChapters>> chapterExistsFunc(
       List<PageChangeRequest> request) {
     return c -> {
-      final var existingChapterIndice = new ArrayList<Double>();
+      final var existingChapterIndice = new HashSet<Double>();
 
       c.getChapters()
           .stream()
