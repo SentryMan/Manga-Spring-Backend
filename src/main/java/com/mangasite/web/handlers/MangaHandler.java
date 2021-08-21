@@ -41,7 +41,7 @@ public class MangaHandler {
   public Mono<ServerResponse> patchRank(ServerRequest request) {
     service.patchRank(
         Integer.parseInt(request.pathVariable("id")),
-        request.queryParam("rank").map(Integer::parseInt).get());
+        request.queryParam("rank").map(Integer::parseInt).orElseThrow());
 
     return accepted().bodyValue("Patching Rank");
   }
