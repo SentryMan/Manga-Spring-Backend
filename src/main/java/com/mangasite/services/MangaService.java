@@ -2,6 +2,7 @@ package com.mangasite.services;
 
 import static com.mangasite.domain.Constants.FULL_DOC;
 import static com.mongodb.client.model.changestream.OperationType.DELETE;
+import static java.util.Comparator.comparingInt;
 import static reactor.function.TupleUtils.function;
 
 import java.time.Instant;
@@ -9,13 +10,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoZonedDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
@@ -86,16 +85,14 @@ public class MangaService {
 
     return CacheFlux.lookup(
             k ->
-                Flux.fromIterable(popularCache)
-                    .map(Signal::next)
-                    .collectList()
+                Mono.just(popularCache.stream().map(Signal::next).toList())
                     .filter(Predicate.not(List::isEmpty)),
             "")
         .onCacheMissResume(
             repo.sample(7)
                 .filter(m -> m.getId() != 3 && m.getId() != 4)
                 .take(5)
-                .sort(Comparator.comparingInt(Manga::getH).reversed()))
+                .sort(comparingInt(Manga::getH).reversed()))
         .andWriteWith(
             (k, signals) ->
                 Mono.fromRunnable(
@@ -207,7 +204,7 @@ public class MangaService {
             m -> {
               if (m.getId() == id) m.setH(newRank);
             })
-        .sort(Comparator.comparingInt(Manga::getH))
+        .sort(comparingInt(Manga::getH))
         .collectList()
         .flatMapIterable(
             l -> {
@@ -236,9 +233,8 @@ public class MangaService {
               final var info = m.getInfo();
               final var chapters = info.getChapters();
               nameMap.forEach(
-                  (k, v) -> {
-                    chapters.stream().filter(l -> k.equals(l.get(0))).forEach(l -> l.set(2, v));
-                  });
+                  (k, v) ->
+                      chapters.stream().filter(l -> k.equals(l.get(0))).forEach(l -> l.set(2, v)));
               info.setChapters(chapters);
               m.setInfo(info);
 
@@ -249,7 +245,7 @@ public class MangaService {
   }
 
   public Mono<Integer> generateID() {
-    final Set<Integer> idSet = new HashSet<>();
+    final var idSet = new HashSet<Integer>();
 
     return repo.findAll()
         .collectList()

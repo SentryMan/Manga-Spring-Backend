@@ -31,9 +31,8 @@ public class ServerConfig implements WebFluxConfigurer {
             .retry(
                 Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1))
                     .doBeforeRetry(s -> System.out.println("Disconnected. Trying to resume...")));
-    return rsocketServer -> {
-      rsocketServer.resume(resume);
-    };
+
+    return rsocketServer -> rsocketServer.resume(resume);
   }
 
   @Override

@@ -6,7 +6,6 @@ import static java.util.Comparator.comparingInt;
 import static reactor.core.publisher.Mono.just;
 import static reactor.function.TupleUtils.function;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -141,30 +140,29 @@ public class ChapterService {
    */
   private Consumer<PageChangeRequest> processPageRequests(MangaChapters chapters) {
 
-    return r -> {
-      chapters
-          .getChapters()
-          .stream()
-          .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
-          .map(Chapter::getImages)
-          .flatMap(List::stream)
-          .filter(i -> i.get(0) == r.pageIndex())
-          .findFirst()
-          .ifPresentOrElse(
-              page -> page.set(1, r.pageURL()),
-              () ->
-                  chapters
-                      .getChapters()
-                      .stream()
-                      .filter(p -> p.getChapterIndex().equals(r.getChapterIndex()))
-                      .map(Chapter::getImages)
-                      .forEach(
-                          pages -> {
-                            pages.add(List.of(r.pageIndex(), r.pageURL(), "", ""));
-                            pages.sort(comparingInt(l -> (int) l.get(0)));
-                            reverse(pages);
-                          }));
-    };
+    return r ->
+        chapters
+            .getChapters()
+            .stream()
+            .filter(p -> p.getChapterIndexNum().equals(r.chapterIndex()))
+            .map(Chapter::getImages)
+            .flatMap(List::stream)
+            .filter(i -> i.get(0) == r.pageIndex())
+            .findFirst()
+            .ifPresentOrElse(
+                page -> page.set(1, r.pageURL()),
+                () ->
+                    chapters
+                        .getChapters()
+                        .stream()
+                        .filter(p -> p.getChapterIndexNum().equals(r.chapterIndex()))
+                        .map(Chapter::getImages)
+                        .forEach(
+                            pages -> {
+                              pages.add(List.of(r.pageIndex(), r.pageURL(), "", ""));
+                              pages.sort(comparingInt(l -> (int) l.get(0)));
+                              reverse(pages);
+                            }));
   }
 
   /**
@@ -175,19 +173,16 @@ public class ChapterService {
   private Function<MangaChapters, Mono<MangaChapters>> chapterExistsFunc(
       List<PageChangeRequest> request) {
     return c -> {
-      final var existingChapterIndice = new ArrayList<Double>();
+      final var existingChapterIndice = new HashSet<Double>();
 
       c.getChapters()
           .stream()
-          .map(Chapter::getChapterIndex)
-          .map(s -> s.replace("Chapter ", ""))
+          .map(Chapter::getChapterIndexNum)
           .mapToDouble(Double::parseDouble)
           .forEach(existingChapterIndice::add);
 
       final Predicate<PageChangeRequest> indexExistsTest =
-          r ->
-              !existingChapterIndice.contains(
-                  Double.parseDouble(r.getChapterIndex().replace("Chapter ", "")));
+          r -> !existingChapterIndice.contains(Double.parseDouble(r.chapterIndex()));
 
       final var chaptersDontExist = request.stream().anyMatch(indexExistsTest);
       if (chaptersDontExist) {
@@ -221,13 +216,12 @@ public class ChapterService {
   public void deleteDuplicateChapters(Optional<Integer> idParam) {
 
     idParam.ifPresentOrElse(
-        id -> {
-          repo.findById(id)
-              .flatMap(this::removeChapterDups)
-              .mergeWith(mangaRepo.findById(id).flatMap(this::removeMangaDups))
-              .distinct()
-              .subscribe(System.out::println);
-        },
+        id ->
+            repo.findById(id)
+                .flatMap(this::removeChapterDups)
+                .mergeWith(mangaRepo.findById(id).flatMap(this::removeMangaDups))
+                .distinct()
+                .subscribe(System.out::println),
         () -> {
           final var mangaFixFlux = mangaRepo.findAll().flatMap(this::removeMangaDups);
 
