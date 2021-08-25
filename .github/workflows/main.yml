@@ -55,14 +55,3 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release web -a manga-spring
-
-      - name: Create Github Pre-Release tag
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "pre-release"
-          prerelease: true
-          title: "Manga-Spring"
-          files: |
-            LICENSE.txt
-            *.jar
