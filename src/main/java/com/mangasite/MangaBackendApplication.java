@@ -23,7 +23,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 
-import com.mangasite.domain.init.AppInitializer;
+import com.mangasite.config.init.AppInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
 import com.mangasite.record.changerequests.ChapterChangeRequest;

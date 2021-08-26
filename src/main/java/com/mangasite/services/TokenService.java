@@ -6,6 +6,8 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;
 import reactor.core.publisher.Mono;
@@ -29,8 +32,15 @@ public class TokenService {
 
   private final MapReactiveUserDetailsService userService;
 
+  private JwtParser parser;
+
   public TokenService(MapReactiveUserDetailsService userService) {
     this.userService = userService;
+  }
+
+  @PostConstruct
+  void init() {
+    parser = key.transform(Jwts.parser()::setSigningKey);
   }
 
   public Mono<ServerResponse> getToken(ServerRequest request) {
@@ -51,8 +61,6 @@ public class TokenService {
   }
 
   public Mono<Authentication> authenticateToken(Authentication authentication) {
-
-    final var parser = key.transform(Jwts.parser()::setSigningKey);
 
     return authentication
         .getCredentials()
