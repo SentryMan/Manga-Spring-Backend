@@ -13,7 +13,7 @@ public class SPAWebFilter implements WebFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     final var path = exchange.getRequest().getURI().getPath();
-    if (!path.startsWith("/api") && path.matches("[^\\\\.]*") || path.startsWith("/manga"))
+    if (path.startsWith("/manga") || !path.startsWith("/api") && path.matches("[^\\\\.]*"))
       return chain.filter(
           exchange
               .mutate()

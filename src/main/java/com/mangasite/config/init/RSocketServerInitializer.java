@@ -1,4 +1,4 @@
-package com.mangasite.domain.init;
+package com.mangasite.config.init;
 
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessageHandlerCustomizer;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;

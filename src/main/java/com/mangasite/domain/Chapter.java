@@ -29,6 +29,10 @@ public class Chapter {
     return chapterIndex;
   }
 
+  public String getChapterIndexNum() {
+    return chapterIndex.replace("Chapter ", "");
+  }
+
   public void setChapterIndex(String chapterIndex) {
     this.chapterIndex = chapterIndex;
   }

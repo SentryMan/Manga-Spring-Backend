@@ -1,6 +1,5 @@
 package com.mangasite.rsocket;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -94,11 +93,5 @@ class RSocketMangaControllerTest {
 	    StepVerifier.create(controller.watchForDBChanges()).expectNextCount(3).verifyComplete();
   	}
 
-  @Test
-  void testPatch() throws URISyntaxException {
 
-    doNothing().when(mockservice).patchChapterNames(0, null);
-
-    StepVerifier.create(Mono.fromRunnable(()->controller.patchChapterNames(0, null))).verifyComplete();
-    }
 }

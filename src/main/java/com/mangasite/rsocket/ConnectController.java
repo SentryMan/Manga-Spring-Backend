@@ -30,12 +30,12 @@ public class ConnectController {
   @ConnectMapping
   public Mono<Void> onConnect(
       @Payload String clientName,
-      RSocketRequester rSocketRequester,
-      @AuthenticationPrincipal String authName) {
+      @AuthenticationPrincipal String authName,
+      RSocketRequester rSocketRequester) {
 
+    // Query Client for Current Activity
     ConnectService.startConnectionLog(rSocketRequester, clientName);
 
-    // If Client isn't an Admin, Query Client for Chapters being read
     return userService
         .findByUsername(authName)
         .map(UserDetails::getAuthorities)
@@ -43,6 +43,7 @@ public class ConnectController {
             auth ->
                 System.out.println("Client: " + clientName + " is connected with Roles " + auth))
         .map(Collection::stream)
+        // Query Site for Reading Activity
         .filter(s -> s.noneMatch(a -> a.getAuthority().contains(ADMIN)))
         .map(s -> Tuples.of(rSocketRequester, clientName))
         .doOnNext(consumer(ConnectService::watchUserStream))

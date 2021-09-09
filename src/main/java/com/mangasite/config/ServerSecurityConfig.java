@@ -40,9 +40,15 @@ public class ServerSecurityConfig {
 
     final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     final var userDetails =
-        User.withUsername(userUsername).password(encoder.encode(userPassword)).roles(USER).build();
+        userUsername
+            .transform(User::withUsername)
+            .password(encoder.encode(userPassword))
+            .roles(USER)
+            .build();
+
     final var adminDetails =
-        User.withUsername(adminUsername)
+        adminUsername
+            .transform(User::withUsername)
             .password(encoder.encode(adminPassword))
             .roles(USER, ADMIN)
             .build();
@@ -61,11 +67,7 @@ public class ServerSecurityConfig {
                 authorize
                     .setup()
                     .authenticated()
-                    .route("new-chapter")
-                    .hasRole(ADMIN)
-                    .route("update-page-channel-{id}")
-                    .hasRole(ADMIN)
-                    .route("patch-chapter-names-{id}")
+                    .route("chapter-update-fnf-{id}")
                     .hasRole(ADMIN)
                     .anyRequest()
                     .authenticated()
