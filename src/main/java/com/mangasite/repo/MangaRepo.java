@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.mangasite.domain.Manga;
 
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Repository
 public interface MangaRepo extends ReactiveMongoRepository<Manga, Integer> {
@@ -18,7 +17,4 @@ public interface MangaRepo extends ReactiveMongoRepository<Manga, Integer> {
 
   @Query("{'ld' : { $gte: ?0, $lte: ?1 } }")
   Flux<Manga> findByLd(long l, long m);
-
-  @Query("{'t' : ?0}")
-  Mono<Manga> getByTitle(String t);
 }
