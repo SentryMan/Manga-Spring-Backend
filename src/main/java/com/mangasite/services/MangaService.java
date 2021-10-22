@@ -1,7 +1,6 @@
 package com.mangasite.services;
 
 import static com.mangasite.domain.Constants.FULL_DOC;
-import static com.mongodb.client.model.changestream.OperationType.DELETE;
 import static java.util.Comparator.comparingInt;
 
 import java.util.ArrayList;
@@ -84,8 +83,7 @@ public class MangaService {
                     () -> {
                       popularCache.clear();
 
-                      signals
-                          .stream()
+                      signals.stream()
                           .filter(Signal::hasValue)
                           .map(Signal::get)
                           .forEach(popularCache::add);
@@ -123,8 +121,7 @@ public class MangaService {
                         + " Performed on Manga: "
                         + changedManga.getT());
             })
-        .filter(e -> !DELETE.equals(e.getOperationType()))
-        .map(ChangeStreamEvent::getBody)
+        .mapNotNull(ChangeStreamEvent::getBody)
         .onErrorContinue(
             (ex, o) -> {
               System.err.println("Error processing " + o + " Exception is " + ex);

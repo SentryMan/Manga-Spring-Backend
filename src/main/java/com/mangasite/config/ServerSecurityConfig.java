@@ -22,76 +22,56 @@ import com.mangasite.services.TokenService;
 @EnableWebFluxSecurity
 public class ServerSecurityConfig {
 
-  @Value("${roles.admin.username}")
-  String adminUsername;
+	@Value("${roles.admin.username}")
+	String adminUsername;
 
-  @Value("${roles.admin.password}")
-  String adminPassword;
+	@Value("${roles.admin.password}")
+	String adminPassword;
 
-  @Value("${roles.user.username}")
-  String userUsername;
+	@Value("${roles.user.username}")
+	String userUsername;
 
-  @Value("${roles.user.password}")
-  String userPassword;
+	@Value("${roles.user.password}")
+	String userPassword;
 
-  // Role Configuration
-  @Bean
-  public MapReactiveUserDetailsService userDetailsService() {
+	// Role Configuration
+	@Bean
+	public MapReactiveUserDetailsService userDetailsService() {
 
-    final var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    final var userDetails =
-        userUsername
-            .transform(User::withUsername)
-            .password(encoder.encode(userPassword))
-            .roles(USER)
-            .build();
+		final var encoder = PasswordEncoderFactories
+				.createDelegatingPasswordEncoder();
+		final var userDetails = userUsername.transform(User::withUsername)
+				.password(encoder.encode(userPassword)).roles(USER).build();
 
-    final var adminDetails =
-        adminUsername
-            .transform(User::withUsername)
-            .password(encoder.encode(adminPassword))
-            .roles(USER, ADMIN)
-            .build();
+		final var adminDetails = adminUsername.transform(User::withUsername)
+				.password(encoder.encode(adminPassword)).roles(USER, ADMIN)
+				.build();
 
-    return new MapReactiveUserDetailsService(userDetails, adminDetails);
-  }
+		return new MapReactiveUserDetailsService(userDetails, adminDetails);
+	}
 
-  // RSocket JWT Security Config
-  @Bean
-  public PayloadSocketAcceptorInterceptor rsocketTokenAcceptor(
-      RSocketSecurity security, TokenService tokenService) {
+	// RSocket JWT Security Config
+	@Bean
+	public PayloadSocketAcceptorInterceptor rsocketTokenAcceptor(
+			RSocketSecurity security, TokenService tokenService) {
 
-    return security
-        .authorizePayload(
-            authorize ->
-                authorize
-                    .setup()
-                    .authenticated()
-                    .route("chapter-update-fnf-{id}")
-                    .hasRole(ADMIN)
-                    .anyRequest()
-                    .authenticated()
-                    .anyExchange()
-                    .permitAll())
-        .jwt(jwtSpec -> jwtSpec.authenticationManager(tokenService::authenticateToken))
-        .build();
-  }
+		return security
+				.authorizePayload(authorize -> authorize.setup().authenticated()
+						.route("chapter-update-fnf-{id}").hasRole(ADMIN)
+						.anyRequest().authenticated().anyExchange().permitAll())
+				.jwt(jwtSpec -> jwtSpec
+						.authenticationManager(tokenService::authenticateToken))
+				.build();
+	}
 
-  // CORS and HTTP Security
-  @Bean
-  @Primary
-  public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http.csrf()
-        .disable()
-        .authorizeExchange()
-        .pathMatchers("/api/getToken")
-        .hasRole(USER)
-        .pathMatchers("/api/**")
-        .hasRole(ADMIN)
-        .pathMatchers("/**")
-        .permitAll()
-        .and()
-        .httpBasic();
-    return http.build();
-  }
+	// CORS and HTTP Security
+	@Bean
+	@Primary
+	public SecurityWebFilterChain springSecurityFilterChain(
+			ServerHttpSecurity http) {
+		http.authorizeExchange().pathMatchers("/api/getToken").hasRole(USER)
+				.pathMatchers("/api/**").hasRole(ADMIN).pathMatchers("/**")
+				.permitAll().and().httpBasic();
+		return http.build();
+	}
 }
