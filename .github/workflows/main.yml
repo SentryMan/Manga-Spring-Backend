@@ -40,7 +40,7 @@ jobs:
       - name: Login to Heroku Container Registry
         uses: docker/login-action@v1
         with:
-          registry: registry.heroku.com/manga-spring/web
+          registry: registry.heroku.com/manga-paradise/web
           username: _
           password: ${{ secrets.HEROKU_API_KEY }}
 
@@ -49,9 +49,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: registry.heroku.com/manga-spring/web
+          tags: registry.heroku.com/manga-paradise/web
 
       - name: Deploy
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release web -a manga-spring
+        run: heroku container:release web -a manga-paradise
