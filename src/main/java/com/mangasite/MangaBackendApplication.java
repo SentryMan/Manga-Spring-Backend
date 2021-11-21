@@ -67,10 +67,11 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
-    final var app =
-        new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
 
-    app.addInitializers(new AppInitializer());
-    app.run(args);
+    new SpringApplicationBuilder(MangaBackendApplication.class)
+        .web(REACTIVE)
+        .initializers(new AppInitializer())
+        .build(args)
+        .run(args);
   }
 }

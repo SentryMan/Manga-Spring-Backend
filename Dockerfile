@@ -4,6 +4,9 @@ FROM ghcr.io/graalvm/graalvm-ce:latest AS Native-Image-Compiler
 
 COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
 
+# Install native image utility
+RUN gu install native-image && native-image --version
+
 #Compile Image
 RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
     && native-image \ 
