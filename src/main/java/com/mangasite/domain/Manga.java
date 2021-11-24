@@ -1,14 +1,10 @@
 package com.mangasite.domain;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.mangasite.record.changerequests.MangaChangeRequest;
 
 /**
  * A class that represents a single manga <br>
@@ -45,38 +41,6 @@ public class Manga {
     this.s = s;
     this.t = t;
     this.info = info;
-  }
-
-  public Manga(MangaChangeRequest request) {
-    c = request.genre();
-    h = request.hits();
-    im = request.coverImageURL();
-    s = request.completeStatus();
-    t = request.title();
-    info = new MangaInfo();
-    info.setArtist(request.artist());
-    info.setAuthor(request.author());
-
-    ld =
-        request.updateDateStr() != null
-            ? request
-                .updateDateStr()
-                .transform(LocalDate::parse)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toEpochSecond()
-            : request.updateDateint();
-
-    final List<List<String>> list =
-        List.of(
-            List.of(
-                request.firstChapterIndex(),
-                "" + request.updateDateint(),
-                request.firstChapterName(),
-                ""));
-
-    info.setChapters(list);
-    info.setDescription(request.description());
-    info.setReleased(request.releaseDate());
   }
 
   public int getId() {

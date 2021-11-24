@@ -26,9 +26,6 @@ import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.config.init.AppInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
-import com.mangasite.record.changerequests.ChapterChangeRequest;
-import com.mangasite.record.changerequests.MangaChangeRequest;
-import com.mangasite.record.changerequests.PageChangeRequest;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 import reactor.core.publisher.Hooks;
@@ -40,9 +37,6 @@ import reactor.core.publisher.Hooks;
             access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
             types = {
               ChangeStreamDocument.class,
-              ChapterChangeRequest.class,
-              MangaChangeRequest.class,
-              PageChangeRequest.class,
               ServerMessage.class,
               DeviceInfo.class,
             }))
