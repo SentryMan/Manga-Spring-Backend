@@ -1,8 +1,8 @@
 package com.mangasite;
 
 import static org.springframework.boot.WebApplicationType.REACTIVE;
-import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
-import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
+import static org.springframework.nativex.hint.TypeAccess.PUBLIC_CONSTRUCTORS;
+import static org.springframework.nativex.hint.TypeAccess.PUBLIC_METHODS;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
@@ -34,7 +34,7 @@ import reactor.core.publisher.Hooks;
 @NativeHint(
     types =
         @TypeHint(
-            access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
+            access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
             types = {
               ChangeStreamDocument.class,
               ServerMessage.class,
