@@ -12,11 +12,12 @@ RUN gu install native-image && native-image --version
 #Compile Image
 RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
     && native-image \ 
-    # --static --libc=musl \
+    --static --libc=musl \
+    # -H:+StaticExecutableWithDynamicLibC \
     -H:Name=manga-backend -H:+StaticExecutableWithDynamicLibC -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
-FROM frolvlad/alpine-glibc
+FROM scratch
 
 LABEL Author="The Man Himself, Josiah"
 
