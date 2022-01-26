@@ -1,10 +1,8 @@
 package com.mangasite.services;
 
 import static com.mangasite.domain.Constants.FULL_DOC;
-import static com.mongodb.client.model.changestream.OperationType.DELETE;
 import static java.util.Comparator.comparingInt;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -31,7 +29,7 @@ public class MangaService {
 
   private final MangaRepo repo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
-  private final List<Manga> popularCache = new ArrayList<>();
+  private List<Manga> popularCache = List.of();
 
   public MangaService(MangaRepo repo, ReactiveMongoTemplate reactiveMongoTemplate) {
     this.repo = repo;
@@ -81,15 +79,9 @@ public class MangaService {
         .andWriteWith(
             (k, signals) ->
                 Mono.fromRunnable(
-                    () -> {
-                      popularCache.clear();
-
-                      signals
-                          .stream()
-                          .filter(Signal::hasValue)
-                          .map(Signal::get)
-                          .forEach(popularCache::add);
-                    }));
+                    () ->
+                        popularCache =
+                            signals.stream().filter(Signal::hasValue).map(Signal::get).toList()));
   }
 
   /**
@@ -123,8 +115,7 @@ public class MangaService {
                         + " Performed on Manga: "
                         + changedManga.getT());
             })
-        .filter(e -> !DELETE.equals(e.getOperationType()))
-        .map(ChangeStreamEvent::getBody)
+        .mapNotNull(ChangeStreamEvent::getBody)
         .onErrorContinue(
             (ex, o) -> {
               System.err.println("Error processing " + o + " Exception is " + ex);

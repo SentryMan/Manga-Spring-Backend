@@ -81,9 +81,7 @@ public class ServerSecurityConfig {
   @Bean
   @Primary
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http.csrf()
-        .disable()
-        .authorizeExchange()
+    http.authorizeExchange()
         .pathMatchers("/api/getToken")
         .hasRole(USER)
         .pathMatchers("/api/**")

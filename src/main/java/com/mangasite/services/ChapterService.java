@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.repo.ChapterRepo;
-import com.mangasite.repo.MangaRepo;
 
 import reactor.core.publisher.Mono;
 
@@ -18,7 +17,7 @@ public class ChapterService {
 
   private final ChapterRepo repo;
 
-  public ChapterService(ChapterRepo repo, MangaRepo mangaRepo) {
+  public ChapterService(ChapterRepo repo) {
     this.repo = repo;
   }
 

@@ -30,8 +30,8 @@ public class RSocketChapterController {
   }
 
   @MessageMapping("chapter-update-fnf-{id}")
-  public Mono<Void> updateClients(@DestinationVariable("id") int id) {
+  public void updateClients(@DestinationVariable("id") int id) {
 
-    return getChapter(id).flatMap(ConnectService::fireAndForgetChapterUpdate);
+    getChapter(id).flatMap(ConnectService::fireAndForgetChapterUpdate).subscribe();
   }
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.2</version>
+		<version>2.6.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mangasite</groupId>
@@ -13,10 +13,10 @@
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>17</java.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
-		<spring.native.version>0.10.3</spring.native.version>
+		<spring.native.version>0.11.2</spring.native.version>
 	</properties>
 
 	<dependencies>
@@ -70,7 +70,9 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
-		</dependency> <!-- RSocket Dependencies -->
+		</dependency>
+
+		<!-- RSocket Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-rsocket</artifactId>
@@ -84,13 +86,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-messaging</artifactId>
 		</dependency>
-
-		<!--/	<dependency>
-			<groupId>com.netflix.concurrency-limits</groupId>
-			<artifactId>concurrency-limits-core</artifactId>
-			<version>0.3.6</version>
-		</dependency> -->
-
 
 		<!--/Boot Dependencies -->
 
@@ -130,12 +125,6 @@
 				<artifactId>spring-aot-maven-plugin</artifactId>
 				<version>${spring.native.version}</version>
 				<executions>
-					<execution>
-						<id>test-generate</id>
-						<goals>
-							<goal>test-generate</goal>
-						</goals>
-					</execution>
 					<execution>
 						<id>generate</id>
 						<goals>

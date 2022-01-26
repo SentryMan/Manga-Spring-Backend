@@ -1,8 +1,8 @@
 package com.mangasite;
 
 import static org.springframework.boot.WebApplicationType.REACTIVE;
-import static org.springframework.nativex.hint.AccessBits.PUBLIC_CONSTRUCTORS;
-import static org.springframework.nativex.hint.AccessBits.PUBLIC_METHODS;
+import static org.springframework.nativex.hint.TypeAccess.PUBLIC_CONSTRUCTORS;
+import static org.springframework.nativex.hint.TypeAccess.PUBLIC_METHODS;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
@@ -26,9 +26,6 @@ import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.config.init.AppInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
-import com.mangasite.record.changerequests.ChapterChangeRequest;
-import com.mangasite.record.changerequests.MangaChangeRequest;
-import com.mangasite.record.changerequests.PageChangeRequest;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 import reactor.core.publisher.Hooks;
@@ -37,12 +34,9 @@ import reactor.core.publisher.Hooks;
 @NativeHint(
     types =
         @TypeHint(
-            access = PUBLIC_CONSTRUCTORS | PUBLIC_METHODS,
+            access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
             types = {
               ChangeStreamDocument.class,
-              ChapterChangeRequest.class,
-              MangaChangeRequest.class,
-              PageChangeRequest.class,
               ServerMessage.class,
               DeviceInfo.class,
             }))
@@ -67,10 +61,11 @@ public class MangaBackendApplication {
 
   public static void main(String[] args) {
     Hooks.onErrorDropped(t -> {});
-    final var app =
-        new SpringApplicationBuilder(MangaBackendApplication.class).web(REACTIVE).build(args);
 
-    app.addInitializers(new AppInitializer());
-    app.run(args);
+    new SpringApplicationBuilder(MangaBackendApplication.class)
+        .web(REACTIVE)
+        .initializers(new AppInitializer())
+        .build(args)
+        .run(args);
   }
 }
