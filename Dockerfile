@@ -17,7 +17,7 @@ RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
     -H:Name=manga-backend -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
 
 # We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
-FROM scratch
+FROM frolvlad/alpine-glibc
 
 LABEL Author="The Man Himself, Josiah"
 
