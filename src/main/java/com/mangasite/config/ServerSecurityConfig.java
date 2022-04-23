@@ -3,9 +3,12 @@ package com.mangasite.config;
 import static com.mangasite.domain.Constants.ADMIN;
 import static com.mangasite.domain.Constants.USER;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -15,6 +18,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.mangasite.services.TokenService;
 
@@ -91,5 +97,18 @@ public class ServerSecurityConfig {
         .and()
         .httpBasic();
     return http.build();
+  }
+
+  @Bean
+  CorsConfigurationSource corsConfiguration() {
+    final var corsConfig = new CorsConfiguration();
+    corsConfig.applyPermitDefaultValues();
+    corsConfig.addAllowedMethod(HttpMethod.GET);
+    corsConfig.setAllowedOrigins(
+        List.of("http://www.manga-spring.com", "http://localhost:4200", "http://localhost:8080"));
+
+    final var source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", corsConfig);
+    return source;
   }
 }

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -33,16 +32,6 @@ public class ServerConfig implements WebFluxConfigurer {
                     .doBeforeRetry(s -> System.out.println("Disconnected. Trying to resume...")));
 
     return rsocketServer -> rsocketServer.resume(resume);
-  }
-
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-
-    WebFluxConfigurer.super.addCorsMappings(registry);
-    registry
-        .addMapping("/**")
-        .allowedOrigins("*")
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
   }
 
   @Override
