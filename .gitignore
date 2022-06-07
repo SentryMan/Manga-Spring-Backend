@@ -12,3 +12,4 @@ target/**
 *.class
 bin/**
 *.log
+.settings/application.properties
