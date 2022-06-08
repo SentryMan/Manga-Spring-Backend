@@ -26,7 +26,5 @@ COPY --from=Native-Image-Compiler "/build/manga-backend" manga-backend
 
 RUN apk --no-cache add gcompat    
 
-
-
 # Fire up our native app by default
 ENTRYPOINT ["/manga-backend"]
