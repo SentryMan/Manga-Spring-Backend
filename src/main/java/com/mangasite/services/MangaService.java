@@ -3,9 +3,9 @@ package com.mangasite.services;
 import static com.mangasite.domain.Constants.FULL_DOC;
 import static java.util.Comparator.comparingInt;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import com.mangasite.domain.Manga;
 import com.mangasite.repo.MangaRepo;
 
-import reactor.cache.CacheFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Signal;
 
 /**
  * Service class that handles all CRUD operations
@@ -29,7 +27,7 @@ public class MangaService {
 
   private final MangaRepo repo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
-  private List<Manga> popularCache = List.of();
+  private List<Manga> popularCache = new ArrayList<>();
 
   public MangaService(MangaRepo repo, ReactiveMongoTemplate reactiveMongoTemplate) {
     this.repo = repo;
@@ -66,22 +64,14 @@ public class MangaService {
    */
   public Flux<Manga> findPopular() {
 
-    return CacheFlux.lookup(
-            k ->
-                Mono.just(popularCache.stream().map(Signal::next).toList())
-                    .filter(Predicate.not(List::isEmpty)),
-            "")
-        .onCacheMissResume(
-            repo.sample(7)
-                .filter(m -> m.getId() != 3 && m.getId() != 4)
-                .take(5)
-                .sort(comparingInt(Manga::getH).reversed()))
-        .andWriteWith(
-            (k, signals) ->
-                Mono.fromRunnable(
-                    () ->
-                        popularCache =
-                            signals.stream().filter(Signal::hasValue).map(Signal::get).toList()));
+    if (popularCache.isEmpty())
+      return repo.sample(7)
+          .filter(m -> m.getId() != 3 && m.getId() != 4)
+          .take(5)
+          .sort(comparingInt(Manga::getH).reversed())
+          .doOnNext(popularCache::add);
+
+    return Flux.fromIterable(popularCache);
   }
 
   /**
