@@ -105,7 +105,11 @@ public class ServerSecurityConfig {
     corsConfig.applyPermitDefaultValues();
     corsConfig.addAllowedMethod(HttpMethod.GET);
     corsConfig.setAllowedOrigins(
-        List.of("http://www.manga-spring.com", "http://localhost:4200", "http://localhost:8080"));
+        List.of(
+            "http://www.manga-spring.com",
+            "http://localhost:4200",
+            "http://localhost:8080",
+            "https://manga-spring.fly.dev"));
 
     final var source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", corsConfig);

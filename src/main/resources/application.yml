@@ -1,5 +1,5 @@
 server:
-   port: ${PORT:8080}
+  port: ${PORT:8080}
 spring:
   data:
     mongodb:
@@ -12,10 +12,10 @@ spring:
 jwt:
   validity: 18000
   secret:
-     key: ${SECRET_KEY}
+    key: ${SECRET_KEY}
 
 popular:
-  manga: ${POPULAR:fate-redline, 20th-century-boys, record-of-ragnarock, one-punch-man, vagabond} 
+  manga: ${POPULAR:fate-redline, 20th-century-boys, record-of-ragnarock, one-punch-man, vagabond}
 
 roles:
   admin:
@@ -26,11 +26,11 @@ roles:
     password: ${USER_PASSWORD:password}
 
 logging:
-    level:
-        org:
-          mongodb:
-            driver:
-              cluster: OFF   
-        io:
-         rsocket:
+  level:
+    org:
+      mongodb:
+        driver:
+          cluster: OFF
+    io:
+      rsocket:
 #           FrameLogger: DEBUG
