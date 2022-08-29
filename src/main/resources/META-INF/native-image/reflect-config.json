@@ -1,0 +1,11 @@
+[
+	{
+		"name": "com.mongodb.client.model.changestream.ChangeStreamDocument",
+		"allPublicMethods": true,
+		"methods": [
+			{
+				"name": "<init>"
+			}
+		]
+	}
+]

@@ -26,20 +26,19 @@ import org.springframework.nativex.hint.TypeHint;
 import com.mangasite.config.init.AppInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
-import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
 import reactor.core.publisher.Hooks;
 
 // set native image reflective access
 @NativeHint(
-    types =
-        @TypeHint(
-            access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
-            types = {
-              ChangeStreamDocument.class,
-              ServerMessage.class,
-              DeviceInfo.class,
-            }))
+    types = {
+      @TypeHint(
+          access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
+          types = {
+            ServerMessage.class,
+            DeviceInfo.class,
+          })
+    })
 @SpringBootApplication(
     exclude = {
       AopAutoConfiguration.class,
