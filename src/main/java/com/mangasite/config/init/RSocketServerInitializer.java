@@ -12,7 +12,7 @@ import org.springframework.web.method.ControllerAdviceBean;
 import io.rsocket.core.Resume;
 import reactor.util.retry.Retry;
 
-public record RSocketServerInitializer()
+public class RSocketServerInitializer
     implements ApplicationContextInitializer<GenericApplicationContext> {
 
   @Override
