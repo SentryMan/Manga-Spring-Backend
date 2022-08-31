@@ -27,6 +27,7 @@ import com.mangasite.config.init.AppInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.client.model.changestream.OperationType;
 
 import reactor.core.publisher.Hooks;
 
@@ -36,6 +37,7 @@ import reactor.core.publisher.Hooks;
         @TypeHint(
             access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
             types = {
+              OperationType.class,
               ChangeStreamDocument.class,
               ServerMessage.class,
               DeviceInfo.class,
