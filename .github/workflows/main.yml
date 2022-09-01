@@ -59,7 +59,7 @@ jobs:
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v2
         with:
-          url: http://www.manga-spring.com/home
+          url: https://www.manga-spring.com/home
           follow-redirect: true
           max-attempts: 3
           retry-delay: 5s

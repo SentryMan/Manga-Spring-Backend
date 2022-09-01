@@ -23,10 +23,7 @@ public class MangaChapters {
   public MangaChapters(int id, String mangaName, String index, String firstPageURL) {
 
     this.id = id;
-    final var chapter = new Chapter();
-    chapter.setChapterIndex("Chapter " + index);
-    final List<List<Object>> imageList = List.of(List.of(0, firstPageURL));
-    chapter.setImages(imageList);
+    final var chapter = new Chapter("Chapter " + index, List.of(List.of(0, firstPageURL)));
     this.mangaName = mangaName;
     chapters = List.of(chapter);
   }
