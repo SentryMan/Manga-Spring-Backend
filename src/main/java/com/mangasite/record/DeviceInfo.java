@@ -1,10 +1,10 @@
 package com.mangasite.record;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public record DeviceInfo(
     String userAgent,
     String os,
     String browser,
-    @JsonProperty("os_version") String osVersion,
-    @JsonProperty("browser_version") String browserVersion) {}
+    @JsonAlias("os_version") String osVersion,
+    @JsonAlias("browser_version") String browserVersion) {}
