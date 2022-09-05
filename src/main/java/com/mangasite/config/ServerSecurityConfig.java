@@ -88,12 +88,10 @@ public class ServerSecurityConfig {
   @Primary
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     http.authorizeExchange()
-        .pathMatchers("/api/getToken")
-        .hasRole(USER)
         .pathMatchers("/api/**")
         .hasRole(ADMIN)
-        .pathMatchers("/**")
-        .permitAll()
+        .anyExchange()
+        .authenticated()
         .and()
         .httpBasic();
     return http.build();
