@@ -3,7 +3,7 @@ package com.mangasite.domain;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -32,7 +32,7 @@ public class Manga {
   private Integer s;
   private MangaInfo info;
 
-  @PersistenceCreator
+  @PersistenceConstructor
   public Manga(List<String> c, Integer h, String im, long ld, Integer s, String t, MangaInfo info) {
     this.c = c;
     this.h = h;

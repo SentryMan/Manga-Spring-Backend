@@ -2,7 +2,7 @@ package com.mangasite.domain;
 
 import java.util.List;
 
-import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -20,7 +20,7 @@ public class MangaInfo {
   private String description;
   private Integer released;
 
-  @PersistenceCreator
+  @PersistenceConstructor
   public MangaInfo(
       String artist,
       String author,
