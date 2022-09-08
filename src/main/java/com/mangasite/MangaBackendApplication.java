@@ -4,6 +4,9 @@ import static org.springframework.boot.WebApplicationType.REACTIVE;
 import static org.springframework.nativex.hint.TypeAccess.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.TypeAccess.PUBLIC_METHODS;
 
+import org.bson.BsonDocument;
+import org.bson.BsonInt64;
+import org.bson.BsonTimestamp;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -27,6 +30,7 @@ import com.mangasite.config.init.RSocketServerInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.client.model.changestream.UpdateDescription;
 
 import reactor.core.publisher.Hooks;
 
@@ -39,6 +43,10 @@ import reactor.core.publisher.Hooks;
               ChangeStreamDocument.class,
               ServerMessage.class,
               DeviceInfo.class,
+              BsonDocument.class,
+              BsonTimestamp.class,
+              UpdateDescription.class,
+              BsonInt64.class
             }))
 @SpringBootApplication(
     exclude = {
