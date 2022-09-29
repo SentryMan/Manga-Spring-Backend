@@ -20,14 +20,6 @@ public class MangaChapters {
     this.chapters = chapters;
   }
 
-  public MangaChapters(int id, String mangaName, String index, String firstPageURL) {
-
-    this.id = id;
-    final var chapter = new Chapter("Chapter " + index, List.of(List.of(0, firstPageURL)));
-    this.mangaName = mangaName;
-    chapters = List.of(chapter);
-  }
-
   public Integer getId() {
     return id;
   }

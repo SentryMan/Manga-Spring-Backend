@@ -10,10 +10,8 @@ public record Chapter(
     /**
      * [0] is page number <br>
      * [1] is the image url <br>
-     * [2] is x resolution <br>
-     * [3] is y resolution
      */
-    List<List<Object>> images) {
+    List<String[]> images) {
 
   public String getChapterIndex() {
     return chapterIndex;
@@ -23,7 +21,7 @@ public record Chapter(
     return chapterIndex.replace("Chapter ", "");
   }
 
-  public List<List<Object>> getImages() {
+  public List<String[]> getImages() {
     return images;
   }
 }
