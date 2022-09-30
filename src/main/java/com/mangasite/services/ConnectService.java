@@ -71,7 +71,7 @@ public interface ConnectService {
   static Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
 
     return Flux.fromIterable(CLIENT_MANGA_MAP.entrySet())
-        .filter(es -> es.getValue().contains(updatedChapter.getMangaName()))
+        .filter(es -> es.getValue().contains(updatedChapter.mangaName()))
         .map(Entry::getKey)
         .doOnNext(client -> System.out.println("Sending Updated Chapter to Client: " + client))
         .map(CLIENT_REQUESTER_MAP::get)
@@ -79,7 +79,7 @@ public interface ConnectService {
             requester ->
                 requester
                     .metadata(
-                        new ServerMessage("Chapters Modified for " + updatedChapter.getMangaName()),
+                        new ServerMessage("Chapters Modified for " + updatedChapter.mangaName()),
                         MediaType.APPLICATION_JSON)
                     .data(updatedChapter)
                     .send())
