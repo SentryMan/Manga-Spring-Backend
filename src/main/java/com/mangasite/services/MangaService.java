@@ -27,7 +27,7 @@ public class MangaService {
 
   private final MangaRepo repo;
   private final ReactiveMongoTemplate reactiveMongoTemplate;
-  private final List<Manga> popularCache = new ArrayList<>();
+  private List<Manga> popularCache = new ArrayList<>();
 
   public MangaService(MangaRepo repo, ReactiveMongoTemplate reactiveMongoTemplate) {
     this.repo = repo;
@@ -66,9 +66,9 @@ public class MangaService {
 
     if (popularCache.isEmpty())
       return repo.sample(7)
-          .filter(m -> m.id() != 3 && m.id() != 4)
+          .filter(m -> m.getId() != 3 && m.getId() != 4)
           .take(5)
-          .sort(comparingInt(Manga::h).reversed())
+          .sort(comparingInt(Manga::getH).reversed())
           .doOnNext(popularCache::add);
 
     return Flux.fromIterable(popularCache);
@@ -103,7 +103,7 @@ public class MangaService {
                     "Operation "
                         + operation.getValue()
                         + " Performed on Manga: "
-                        + changedManga.t());
+                        + changedManga.getT());
             })
         .mapNotNull(ChangeStreamEvent::getBody)
         .onErrorContinue(
