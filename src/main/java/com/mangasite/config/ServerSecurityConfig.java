@@ -95,7 +95,10 @@ public class ServerSecurityConfig {
         .pathMatchers("/**")
         .permitAll()
         .and()
-        .httpBasic();
+        .httpBasic()
+        .and()
+        .csrf()
+        .disable();
     return http.build();
   }
 
