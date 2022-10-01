@@ -13,6 +13,7 @@ import com.mangasite.rsocket.ConnectController;
 import com.mangasite.rsocket.RSocketAdvice;
 import com.mangasite.rsocket.RSocketChapterController;
 import com.mangasite.rsocket.RSocketMangaController;
+import com.mangasite.security.ServerSecurityConfig;
 
 import io.avaje.inject.BeanScope;
 import io.rsocket.core.Resume;
@@ -33,6 +34,8 @@ public class AvajeSpringAdapter
         RSocketMangaController.class, () -> scope.get(RSocketMangaController.class));
     context.registerBean(
         RSocketChapterController.class, () -> scope.get(RSocketChapterController.class));
+
+    context.registerBean(ServerSecurityConfig.class, ServerSecurityConfig::new);
     context.registerBean(ConnectController.class, ConnectController::new);
     context.registerBean(
         RSocketServerCustomizer.class,

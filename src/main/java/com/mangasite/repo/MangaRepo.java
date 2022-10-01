@@ -6,8 +6,6 @@ import static com.mongodb.client.model.Filters.lte;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.repository.Query;
-
 import com.mangasite.domain.Manga;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
@@ -28,7 +26,6 @@ public class MangaRepo extends Repository<Manga> {
     return toFlux(coll.aggregate(List.of(Aggregates.sample(i))));
   }
 
-  @Query("{'ld' : { $gte: ?0, $lte: ?1 } }")
   public Flux<Manga> findByLd(long l, long m) {
     return toFlux(coll.find(and(gte("ld", l), lte("ld", m))));
   }

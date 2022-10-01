@@ -7,6 +7,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessagingAutoConfiguration;
+import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.rsocket.RSocketSecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
@@ -33,7 +34,8 @@ import io.javalin.Javalin;
             }))
 @ImportAutoConfiguration({
   RSocketMessagingAutoConfiguration.class,
-  RSocketSecurityAutoConfiguration.class
+  RSocketSecurityAutoConfiguration.class,
+  RSocketStrategiesAutoConfiguration.class
 })
 @SpringBootConfiguration
 public class MangaBackendApplication {

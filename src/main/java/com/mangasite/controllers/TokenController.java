@@ -1,5 +1,7 @@
-package com.mangasite.web.routers;
+package com.mangasite.controllers;
 
+import com.mangasite.security.AppRole;
+import com.mangasite.security.Roles;
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
 import com.mangasite.services.TokenService;
@@ -18,11 +20,13 @@ public class TokenController {
     this.chapterService = chapterService;
   }
 
+  @Roles(AppRole.ANYONE)
   @Get("/getToken")
   public void getToken(Context ctx) {
-    ctx.result(TokenService.getToken(ctx));
+    ctx.status(200).result(TokenService.getToken(ctx));
   }
 
+  @Roles(AppRole.ADMIN)
   @Get("/chapter/update/{id}")
   public void updateClients(int id, Context ctx) {
     ctx.status(202);

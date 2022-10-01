@@ -5,7 +5,7 @@ import static com.mangasite.security.AppRole.getRole;
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -34,7 +34,7 @@ public class TokenService {
   public static String getToken(Context ctx) {
     final var role = getRole(ctx.basicAuthCredentials());
     return Jwts.builder()
-        .setClaims(Map.of())
+        .setClaims(HashMap.newHashMap(1))
         .setSubject(role.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + VALIDITY * 100))

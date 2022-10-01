@@ -46,9 +46,7 @@ public abstract class Repository<T> {
             () -> {
               var stream = Flux.<T>empty();
               try (var cursor = iterable.iterator()) {
-                while (cursor.hasNext()) {
-                  stream = stream.concatWithValues(cursor.next());
-                }
+                while (cursor.hasNext()) stream = stream.concatWithValues(cursor.next());
               }
               return stream;
             })

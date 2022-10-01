@@ -3,8 +3,8 @@ package com.mangasite.security;
 import java.util.Arrays;
 
 import io.avaje.config.Config;
-import io.javalin.core.security.BasicAuthCredentials;
-import io.javalin.core.security.RouteRole;
+import io.javalin.security.BasicAuthCredentials;
+import io.javalin.security.RouteRole;
 
 public enum AppRole implements RouteRole {
   ANYONE("", ""),

@@ -2,9 +2,6 @@ package com.mangasite.domain;
 
 import java.util.List;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document
 public record MangaInfo(
     String artist,
     String author,

@@ -1,15 +1,14 @@
 package com.mangasite.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
 
 import com.mangasite.services.TokenService;
 
-import jakarta.inject.Singleton;
-
-@Singleton
+@Configuration
 @EnableRSocketSecurity
 public class ServerSecurityConfig {
 

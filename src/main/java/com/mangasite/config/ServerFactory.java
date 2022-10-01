@@ -1,9 +1,10 @@
 package com.mangasite.config;
 
+import static com.mangasite.security.AppRole.ANYONE;
+import static com.mangasite.security.AppRole.getRole;
+
 import java.util.List;
 import java.util.Set;
-
-import com.mangasite.security.AppRole;
 
 import io.avaje.http.api.WebRoutes;
 import io.avaje.inject.Bean;
@@ -21,6 +22,7 @@ public class ServerFactory {
         Set.of(
             "*manga-spring.com/",
             "http://localhost:4200",
+            "http://localhost:8080",
             "https://manga-spring.firebaseapp.com",
             "https://manga-spring.web.app");
 
@@ -28,27 +30,24 @@ public class ServerFactory {
         "/*",
         ctx -> {
           final var origin = ctx.header("Origin");
+          final var h = ctx.headerMap();
 
           if (cors.contains(origin)
-              || origin.startsWith("https://manga-spring--") && origin.endsWith(".web.app")) {
-
+              || origin.startsWith("https://manga-spring--") && origin.endsWith(".web.app"))
             ctx.header("Access-Control-Allow-Methods", "GET")
-                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Origin", origin)
                 .header("Access-Control-Allow-Headers", "authorization");
-          } else ctx.status(401);
+          else ctx.status(401);
         },
-        AppRole.ANYONE);
+        ANYONE);
 
     app.routes(() -> routes.forEach(WebRoutes::registerRoutes));
 
-    app._conf.accessManager(
+    app.cfg.accessManager(
         (handler, ctx, routeRoles) -> {
-          if (ctx.basicAuthCredentialsExist()
-              && routeRoles.contains(AppRole.getRole(ctx.basicAuthCredentials()))) {
-            handler.handle(ctx);
-          } else {
-            ctx.status(401);
-          }
+          if (routeRoles.contains(ANYONE)
+              || (routeRoles.contains(getRole(ctx.basicAuthCredentials())))) handler.handle(ctx);
+          else ctx.status(401);
         });
 
     return app;

@@ -2,9 +2,6 @@ package com.mangasite.domain;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
  * A class that represents a single manga <br>
  * <br>
@@ -19,9 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author Josiah
  */
-@Document(collection = "Manga")
 public record Manga(
-    @Id Integer id,
+    Integer id,
     String t,
     List<String> c,
     Integer h,
