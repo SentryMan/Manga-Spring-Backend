@@ -9,6 +9,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.web.method.ControllerAdviceBean;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mangasite.rsocket.ConnectController;
 import com.mangasite.rsocket.RSocketAdvice;
 import com.mangasite.rsocket.RSocketChapterController;
@@ -30,13 +31,16 @@ public class AvajeSpringAdapter
 
   @Override
   public void initialize(GenericApplicationContext context) {
+
     context.registerBean(
         RSocketMangaController.class, () -> scope.get(RSocketMangaController.class));
     context.registerBean(
         RSocketChapterController.class, () -> scope.get(RSocketChapterController.class));
-
+    final var m = new ObjectMapper();
+    context.registerBean(ObjectMapper.class, () -> m);
     context.registerBean(ServerSecurityConfig.class, ServerSecurityConfig::new);
     context.registerBean(ConnectController.class, ConnectController::new);
+
     context.registerBean(
         RSocketServerCustomizer.class,
         () -> {

@@ -7,6 +7,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessagingAutoConfiguration;
+import org.springframework.boot.autoconfigure.rsocket.RSocketServerAutoConfiguration;
 import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.rsocket.RSocketSecurityAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -35,14 +36,15 @@ import io.javalin.Javalin;
 @ImportAutoConfiguration({
   RSocketMessagingAutoConfiguration.class,
   RSocketSecurityAutoConfiguration.class,
-  RSocketStrategiesAutoConfiguration.class
+  RSocketStrategiesAutoConfiguration.class,
+  RSocketServerAutoConfiguration.class,
 })
 @SpringBootConfiguration
 public class MangaBackendApplication {
 
   public static void main(String[] args) {
     try {
-      final var scope = BeanScope.builder().build();
+      final var scope = BeanScope.builder().shutdownHook(true).build();
       scope.get(Javalin.class).start(Config.getInt("server.port", 8080));
 
       new SpringApplicationBuilder(MangaBackendApplication.class)
