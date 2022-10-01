@@ -1,8 +1,8 @@
 # Manga-Spring.com
 
-This is the backend to [manga-spring](http://www.manga-spring.com) built using Java, SpringBoot, RSocket, MongoDB, and Other Technologies.
+This is the backend to [manga-spring](http://www.manga-spring.com) built using Java, SpringBoot, RSocket, MongoDB, and other cool tech.
 
-I consider this to be the coolest API I've built so far, with the power of Reactive Streams, Rsocket, GraalVM Native Images, it's got the whole package.
+I consider this to be the coolest API I've built so far, with the power of Virtual Threads, Reactive Streams, Rsocket, GraalVM Native Images, it's got the whole package.
 
 Unless you can guess my passwords you won't be able to connect to the DB. 
 
