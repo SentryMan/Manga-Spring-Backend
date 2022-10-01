@@ -9,14 +9,31 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.web.method.ControllerAdviceBean;
 
+import com.mangasite.rsocket.ConnectController;
+import com.mangasite.rsocket.RSocketAdvice;
+import com.mangasite.rsocket.RSocketChapterController;
+import com.mangasite.rsocket.RSocketMangaController;
+
+import io.avaje.inject.BeanScope;
 import io.rsocket.core.Resume;
 import reactor.util.retry.Retry;
 
-public class RSocketServerInitializer
+public class AvajeSpringAdapter
     implements ApplicationContextInitializer<GenericApplicationContext> {
+
+  private final BeanScope scope;
+
+  public AvajeSpringAdapter(BeanScope scope) {
+    this.scope = scope;
+  }
 
   @Override
   public void initialize(GenericApplicationContext context) {
+    context.registerBean(
+        RSocketMangaController.class, () -> scope.get(RSocketMangaController.class));
+    context.registerBean(
+        RSocketChapterController.class, () -> scope.get(RSocketChapterController.class));
+    context.registerBean(ConnectController.class, ConnectController::new);
     context.registerBean(
         RSocketServerCustomizer.class,
         () -> {
@@ -40,7 +57,7 @@ public class RSocketServerInitializer
 
               handler.registerMessagingAdvice(
                   new ControllerAdviceWrapper(
-                      ControllerAdviceBean.findAnnotatedBeans(context).get(0)));
+                      new ControllerAdviceBean(scope.get(RSocketAdvice.class))));
             });
   }
 }

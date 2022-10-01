@@ -1,66 +1,48 @@
 package com.mangasite.services;
 
+import static com.mangasite.security.AppRole.ANYONE;
+import static com.mangasite.security.AppRole.getRole;
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
-import java.security.Principal;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.mangasite.security.AppRole;
+
+import io.avaje.config.Config;
+import io.javalin.http.Context;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;
 import reactor.core.publisher.Mono;
 
-@Service
 public class TokenService {
+  private TokenService() {}
 
-  @Value("${jwt.validity:1800}")
-  private int jwtTokenValidity;
+  private static final int VALIDITY = Config.getInt("jwt.validity", 1800);
 
-  @Value("${jwt.secret.key:secretkey}")
-  private String key;
+  private static final String KEY = Config.get("jwt.secret.key", "secretkey");
 
-  private final MapReactiveUserDetailsService userService;
+  private static final JwtParser parser = KEY.transform(Jwts.parser()::setSigningKey);
 
-  private JwtParser parser;
-
-  public TokenService(MapReactiveUserDetailsService userService) {
-    this.userService = userService;
+  public static String getToken(Context ctx) {
+    final var role = getRole(ctx.basicAuthCredentials());
+    return Jwts.builder()
+        .setClaims(Map.of())
+        .setSubject(role.getUsername())
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + VALIDITY * 100))
+        .signWith(HS256, KEY)
+        .compact();
   }
 
-  @PostConstruct
-  void init() {
-    parser = key.transform(Jwts.parser()::setSigningKey);
-  }
-
-  public Mono<ServerResponse> getToken(ServerRequest request) {
-    return request
-        .principal()
-        .map(Principal::getName)
-        .flatMap(userService::findByUsername)
-        .map(
-            userDetails ->
-                Jwts.builder()
-                    .setClaims(new HashMap<>())
-                    .setSubject(userDetails.getUsername())
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 100))
-                    .signWith(HS256, key)
-                    .compact())
-        .flatMap(ServerResponse.ok()::bodyValue);
-  }
-
-  public Mono<Authentication> authenticateToken(Authentication authentication) {
+  public static Mono<Authentication> authenticateToken(Authentication authentication) {
 
     return authentication
         .getCredentials()
@@ -68,11 +50,13 @@ public class TokenService {
         .transform(parser::parseClaimsJws)
         .getBody()
         .getSubject()
-        .transform(userService::findByUsername)
+        .transform(Mono::just)
+        .map(AppRole::getRole)
+        .filter(Predicate.not(ANYONE::equals))
         .switchIfEmpty(Mono.error(new RejectedSetupException("User Doesn't Exist")))
         .map(
             user ->
                 new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), null, user.getAuthorities()));
+                    user.getUsername(), null, Set.of(new SimpleGrantedAuthority(user.name()))));
   }
 }

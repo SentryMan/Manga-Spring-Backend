@@ -1,20 +1,35 @@
 package com.mangasite.repo;
 
-import org.springframework.data.mongodb.repository.Aggregation;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.gte;
+import static com.mongodb.client.model.Filters.lte;
+
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.stereotype.Repository;
 
 import com.mangasite.domain.Manga;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Aggregates;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Flux;
 
-@Repository
-public interface MangaRepo extends ReactiveMongoRepository<Manga, Integer> {
+@Singleton
+public class MangaRepo extends Repository<Manga> {
 
-  @Aggregation("{$sample: {size: ?0}}")
-  Flux<Manga> sample(int size);
+  @Inject
+  public MangaRepo(MongoCollection<Manga> coll) {
+    super(coll);
+  }
+
+  public Flux<Manga> sample(int i) {
+    return toFlux(coll.aggregate(List.of(Aggregates.sample(i))));
+  }
 
   @Query("{'ld' : { $gte: ?0, $lte: ?1 } }")
-  Flux<Manga> findByLd(long l, long m);
+  public Flux<Manga> findByLd(long l, long m) {
+    return toFlux(coll.find(and(gte("ld", l), lte("ld", m))));
+  }
 }

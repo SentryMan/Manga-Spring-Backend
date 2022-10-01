@@ -6,11 +6,12 @@ import org.springframework.stereotype.Controller;
 
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.services.ChapterService;
-import com.mangasite.services.ConnectService;
 
 import io.rsocket.exceptions.CustomRSocketException;
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Mono;
 
+@Singleton
 @Controller
 public class RSocketChapterController {
 
@@ -27,11 +28,5 @@ public class RSocketChapterController {
         .getByID(id)
         .switchIfEmpty(
             Mono.error(new CustomRSocketException(0x404, "Could Not Find Chapter in DB")));
-  }
-
-  @MessageMapping("chapter-update-fnf-{id}")
-  public void updateClients(@DestinationVariable("id") int id) {
-
-    getChapter(id).flatMap(ConnectService::fireAndForgetChapterUpdate).subscribe();
   }
 }

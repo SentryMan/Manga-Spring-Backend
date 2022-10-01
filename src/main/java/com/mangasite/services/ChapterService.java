@@ -1,10 +1,9 @@
 package com.mangasite.services;
 
-import org.springframework.stereotype.Service;
-
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.repo.ChapterRepo;
 
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Mono;
 
 /**
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Josiah
  */
-@Service
+@Singleton
 public class ChapterService {
 
   private final ChapterRepo repo;
