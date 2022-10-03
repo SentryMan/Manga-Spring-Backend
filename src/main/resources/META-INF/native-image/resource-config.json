@@ -1,89 +1,141 @@
 {
-  "resources": {
-    "includes": [
-      {
-        "pattern": "META-INF/MANIFEST.MF"
-      },
-      {
-        "pattern": "META-INF/additional-spring-configuration-metadata.json"
-      },
-      {
-        "pattern": "META-INF/services/.*"
-      },
-      {
-        "pattern": "META-INF/spring.binders"
-      },
-      {
-        "pattern": "META-INF/spring.components"
-      },
-      {
-        "pattern": "^META-INF/build-info.properties"
-      },
-      {
-        "pattern": "^META-INF/resources/.*"
-      },
-      {
-        "pattern": "^git.properties"
-      },
-      {
-        "pattern": "^public/.*"
-      },
-      {
-        "pattern": "^resources/.*"
-      },
-      {
-        "pattern": "^static/.*"
-      },
-      {
-        "pattern": "^templates/.*"
-      },
-      {
-        "pattern": "application.*.properties"
-      },
-      {
-        "pattern": "application.*.yaml"
-      },
-      {
-        "pattern": "application.*.yml"
-      },
-      {
-        "pattern": "application.properties"
-      },
-      {
-        "pattern": "banner.txt"
-      },
-      {
-        "pattern": "db/.*"
-      },
-      {
-        "pattern": "logging.properties"
-      },
-      {
-        "pattern": "messages/.*"
-      },
-      {
-        "pattern": "org/springframework/boot/logging/.*.properties"
-      },
-      {
-        "pattern": "org/springframework/boot/logging/.*.xml"
-      },
-      {
-        "pattern": "org/springframework/boot/logging/java/logging.properties"
-      },
-      {
-        "pattern": "org/springframework/http/mime.types"
-      },
-      {
-        "pattern": "org/springframework/web/util/HtmlCharacterEntityReferences.properties"
-      },
-      {
-        "pattern": "spring.properties"
-      }
-    ]
-  },
-  "bundles": [
+  "resources":{
+  "includes":[
     {
-      "name": "org.springframework.security.messages"
+      "pattern":"\\QMETA-INF/maven/io.javalin/javalin/pom.properties\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_x86_64.so\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/io.avaje.inject.spi.Module\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.eclipse.jetty.http.HttpFieldPreEncoder\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.eclipse.jetty.websocket.core.Extension\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/spring.factories\\E"
+    }, 
+    {
+      "pattern":"\\Qapplication.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qjndi.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/eclipse/jetty/http/encoding.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/eclipse/jetty/http/mime.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/eclipse/jetty/version/build.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfigureAfter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfigureBefore.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnBean.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnClass.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnProperty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketMessagingAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$EmbeddedServerConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$OnRSocketWebServerCondition$HasMappingPathConfigured.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$OnRSocketWebServerCondition$HasNoPortConfigured.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$OnRSocketWebServerCondition$HasWebsocketTransportConfigured.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$OnRSocketWebServerCondition$IsReactiveWebApplication.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$OnRSocketWebServerCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration$WebFluxServerConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketServerAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketStrategiesAutoConfiguration$JacksonCborStrategyConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketStrategiesAutoConfiguration$JacksonJsonStrategyConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketStrategiesAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/rsocket/RSocketSecurityAutoConfiguration$RSocketSecurityMessageHandlerConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/rsocket/RSocketSecurityAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/context/properties/EnableConfigurationProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/context/properties/EnableConfigurationPropertiesRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/annotation/Conditional.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/annotation/Configuration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/annotation/Import.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/annotation/ImportBeanDefinitionRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/rsocket/EnableRSocketSecurity.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/rsocket/RSocketSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/rsocket/SecuritySocketAcceptorInterceptorConfiguration.class\\E"
+    }
+  ]},
+  "bundles":[
+    {
+      "name":"jakarta.servlet.LocalStrings",
+      "locales":[""]
+    }, 
+    {
+      "name":"jakarta.servlet.http.LocalStrings",
+      "locales":[""]
     }
   ]
 }

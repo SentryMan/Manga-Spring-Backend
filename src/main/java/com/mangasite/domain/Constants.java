@@ -10,14 +10,18 @@ import org.springframework.messaging.rsocket.RSocketRequester;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
-public interface Constants {
+public class Constants {
+  private Constants() {}
 
-  String ADMIN = "ADMIN";
-  String USER = "USER";
+  public static final String ADMIN = "ADMIN";
+  public static final String USER = "USER";
 
-  AtomicInteger ACTIVE_CONNECTIONS = new AtomicInteger();
-  Map<String, RSocketRequester> CLIENT_REQUESTER_MAP = new HashMap<>();
-  Map<String, String> CLIENT_MANGA_MAP = new HashMap<>();
-  Scheduler VIRTUAL_SCHEDULER =
+  public static final AtomicInteger ACTIVE_CONNECTIONS = new AtomicInteger();
+
+  public static final Map<String, RSocketRequester> CLIENT_REQUESTER_MAP = new HashMap<>();
+
+  public static final Map<String, String> CLIENT_MANGA_MAP = new HashMap<>();
+
+  public static final Scheduler VIRTUAL_SCHEDULER =
       Schedulers.fromExecutor(Executors.newVirtualThreadPerTaskExecutor());
 }
