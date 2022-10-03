@@ -13,7 +13,7 @@
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>19</java.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 		<spring.native.version>0.12.1</spring.native.version>
