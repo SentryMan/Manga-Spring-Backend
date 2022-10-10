@@ -4,6 +4,9 @@ import static org.springframework.boot.WebApplicationType.REACTIVE;
 import static org.springframework.nativex.hint.TypeAccess.PUBLIC_CONSTRUCTORS;
 import static org.springframework.nativex.hint.TypeAccess.PUBLIC_METHODS;
 
+import org.springframework.aot.hint.ExecutableMode;
+import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
@@ -67,5 +70,19 @@ public class MangaBackendApplication {
         .initializers(new RSocketServerInitializer())
         .build(args)
         .run(args);
+  }
+
+  static class Hints implements RuntimeHintsRegistrar {
+
+    @Override
+    public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+      hints
+          .reflection()
+          .registerConstructor(SimpleHelloService.class.getConstructors()[0], ExecutableMode.INVOKE)
+          .registerMethod(
+              ReflectionUtils.findMethod(SimpleHelloService.class, "sayHello", String.class),
+              ExecutableMode.INVOKE);
+      hints.resources().registerPattern("hello.txt");
+    }
   }
 }

@@ -6,8 +6,6 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +17,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.rsocket.exceptions.RejectedSetupException;
+import jakarta.annotation.PostConstruct;
 import reactor.core.publisher.Mono;
 
 @Service
