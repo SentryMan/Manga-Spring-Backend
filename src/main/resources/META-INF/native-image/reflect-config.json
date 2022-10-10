@@ -15,9 +15,6 @@
     "name": "[Lorg.springframework.boot.context.config.ConfigDataLocation;"
   },
   {
-    "name": "[Lorg.springframework.core.annotation.AnnotationAttributes;"
-  },
-  {
     "name": "[Lorg.springframework.util.ConcurrentReferenceHashMap$Segment;"
   },
   {
@@ -96,14 +93,14 @@
         "name": "readValues",
         "parameterTypes": [
           "com.fasterxml.jackson.core.JsonParser",
-          "com.fasterxml.jackson.core.type.TypeReference"
+          "com.fasterxml.jackson.core.type.ResolvedType"
         ]
       },
       {
         "name": "readValues",
         "parameterTypes": [
           "com.fasterxml.jackson.core.JsonParser",
-          "java.lang.Class"
+          "com.fasterxml.jackson.core.type.TypeReference"
         ]
       }
     ]
@@ -301,7 +298,7 @@
     ]
   },
   {
-    "name": "com.mangasite.MangaBackendApplication$$EnhancerBySpringCGLIB$$756a6af3",
+    "name": "com.mangasite.MangaBackendApplication$$EnhancerBySpringCGLIB$$52cacc1b",
     "allDeclaredFields": true,
     "queryAllDeclaredMethods": true,
     "queryAllDeclaredConstructors": true,
@@ -331,52 +328,200 @@
   },
   {
     "name": "com.mangasite.domain.Chapter",
-    "allPublicFields": true,
     "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.mangasite.domain.DTO",
-    "allDeclaredConstructors": true,
-    "allDeclaredMethods": true
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "queryAllPublicConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.util.List"
+        ]
+      },
+      {
+        "name": "chapterIndex",
+        "parameterTypes": []
+      },
+      {
+        "name": "images",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "com.mangasite.domain.Manga",
-    "allPublicFields": true,
     "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getC",
+        "parameterTypes": []
+      },
+      {
+        "name": "getH",
+        "parameterTypes": []
+      },
+      {
+        "name": "getId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getIm",
+        "parameterTypes": []
+      },
+      {
+        "name": "getInfo",
+        "parameterTypes": []
+      },
+      {
+        "name": "getLd",
+        "parameterTypes": []
+      },
+      {
+        "name": "getS",
+        "parameterTypes": []
+      },
+      {
+        "name": "getT",
+        "parameterTypes": []
+      },
+      {
+        "name": "setC",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      },
+      {
+        "name": "setH",
+        "parameterTypes": [
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "setId",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setIm",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setInfo",
+        "parameterTypes": [
+          "com.mangasite.domain.MangaInfo"
+        ]
+      },
+      {
+        "name": "setLd",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setS",
+        "parameterTypes": [
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "setT",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
   },
   {
     "name": "com.mangasite.domain.MangaChapters",
-    "allPublicFields": true,
     "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "getChapters",
+        "parameterTypes": []
+      },
+      {
+        "name": "getId",
+        "parameterTypes": []
+      },
+      {
+        "name": "getMangaName",
+        "parameterTypes": []
+      },
+      {
+        "name": "setChapters",
+        "parameterTypes": [
+          "java.util.List"
+        ]
+      },
+      {
+        "name": "setId",
+        "parameterTypes": [
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "setMangaName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
   },
   {
     "name": "com.mangasite.domain.MangaInfo",
-    "allPublicFields": true,
     "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "com.mangasite.record.DeviceInfo",
-    "allDeclaredFields": true,
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "queryAllPublicConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "java.lang.String",
+          "java.util.List",
+          "java.lang.String",
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "artist",
+        "parameterTypes": []
+      },
+      {
+        "name": "author",
+        "parameterTypes": []
+      },
+      {
+        "name": "chapters",
+        "parameterTypes": []
+      },
+      {
+        "name": "description",
+        "parameterTypes": []
+      },
+      {
+        "name": "released",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "com.mangasite.record.DeviceInfo",
@@ -388,8 +533,15 @@
   },
   {
     "name": "com.mangasite.record.ServerMessage",
-    "allPublicConstructors": true,
-    "allPublicMethods": true
+    "allDeclaredFields": true,
+    "queryAllDeclaredMethods": true,
+    "queryAllDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "message",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "com.mangasite.repo.Repository"
@@ -468,7 +620,7 @@
     ]
   },
   {
-    "name": "com.mangasite.security.ServerSecurityConfig$$EnhancerBySpringCGLIB$$ff597a56",
+    "name": "com.mangasite.security.ServerSecurityConfig$$EnhancerBySpringCGLIB$$dcb9db7e",
     "fields": [
       {
         "name": "CGLIB$CALLBACK_FILTER"
@@ -503,6 +655,9 @@
     "allPublicFields": true
   },
   {
+    "name": "com.mongodb.assertions.Assertions"
+  },
+  {
     "name": "com.mongodb.client.internal.ClientSessionBinding"
   },
   {
@@ -514,8 +669,25 @@
   {
     "name": "com.mongodb.client.model.changestream.ChangeStreamDocument",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String",
+          "org.bson.BsonDocument",
+          "org.bson.BsonDocument",
+          "org.bson.BsonDocument",
+          "java.lang.Object",
+          "org.bson.BsonDocument",
+          "org.bson.BsonTimestamp",
+          "com.mongodb.client.model.changestream.UpdateDescription",
+          "org.bson.BsonInt64",
+          "org.bson.BsonDocument"
+        ]
+      }
+    ]
   },
   {
     "name": "com.mongodb.client.model.changestream.TruncatedArray",
@@ -1626,9 +1798,29 @@
         "parameterTypes": []
       },
       {
-        "name": "startVirtualThread",
+        "name": "ofVirtual",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.lang.Thread$Builder",
+    "methods": [
+      {
+        "name": "unstarted",
         "parameterTypes": [
           "java.lang.Runnable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "java.lang.Thread$Builder$OfVirtual",
+    "methods": [
+      {
+        "name": "name",
+        "parameterTypes": [
+          "java.lang.String"
         ]
       }
     ]
@@ -1655,16 +1847,6 @@
   {
     "name": "java.lang.annotation.Inherited",
     "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "java.lang.annotation.Repeatable",
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "value",
-        "parameterTypes": []
-      }
-    ]
   },
   {
     "name": "java.lang.annotation.Retention",
@@ -2147,18 +2329,6 @@
   },
   {
     "name": "org.slf4j.spi.LocationAwareLogger"
-  },
-  {
-    "name": "org.springframework.aot$StaticSpringFactories"
-  },
-  {
-    "name": "org.springframework.aot.StaticSpringFactories"
-  },
-  {
-    "name": "org.springframework.aot.test.context.bootstrap.generator$AotTestContextProcessor"
-  },
-  {
-    "name": "org.springframework.aot.test.context.bootstrap.generator.AotTestContextProcessor"
   },
   {
     "name": "org.springframework.beans.ExtendedBeanInfoFactory",
@@ -3667,127 +3837,6 @@
         "parameterTypes": [
           "org.springframework.util.RouteMatcher"
         ]
-      }
-    ]
-  },
-  {
-    "name": "org.springframework.nativex.NativeListener",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.springframework.nativex.hint.AotProxyHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.FieldHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.InitializationHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.JdkProxyHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.MethodHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.NativeHint",
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "abortIfTypesMissing",
-        "parameterTypes": []
-      },
-      {
-        "name": "aotProxies",
-        "parameterTypes": []
-      },
-      {
-        "name": "extractTypesFromAttributes",
-        "parameterTypes": []
-      },
-      {
-        "name": "follow",
-        "parameterTypes": []
-      },
-      {
-        "name": "imports",
-        "parameterTypes": []
-      },
-      {
-        "name": "initialization",
-        "parameterTypes": []
-      },
-      {
-        "name": "jdkProxies",
-        "parameterTypes": []
-      },
-      {
-        "name": "options",
-        "parameterTypes": []
-      },
-      {
-        "name": "resources",
-        "parameterTypes": []
-      },
-      {
-        "name": "serializables",
-        "parameterTypes": []
-      },
-      {
-        "name": "trigger",
-        "parameterTypes": []
-      },
-      {
-        "name": "types",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.springframework.nativex.hint.ResourceHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.SerializationHint",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "org.springframework.nativex.hint.TypeHint",
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "access",
-        "parameterTypes": []
-      },
-      {
-        "name": "fields",
-        "parameterTypes": []
-      },
-      {
-        "name": "methods",
-        "parameterTypes": []
-      },
-      {
-        "name": "queriedMethods",
-        "parameterTypes": []
-      },
-      {
-        "name": "typeNames",
-        "parameterTypes": []
-      },
-      {
-        "name": "types",
-        "parameterTypes": []
       }
     ]
   },
