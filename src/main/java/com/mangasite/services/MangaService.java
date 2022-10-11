@@ -1,6 +1,5 @@
 package com.mangasite.services;
 
-import static com.mangasite.domain.Constants.VIRTUAL_SCHEDULER;
 import static java.util.Comparator.comparingInt;
 
 import java.util.ArrayList;
@@ -87,8 +86,7 @@ public class MangaService {
    */
   public Flux<Manga> watchDBChanges() {
 
-    return repo.changeStream()
-        .subscribeOn(VIRTUAL_SCHEDULER)
+    return repo.changeStream(Manga.class)
         .doOnNext(
             event -> {
               final var changedManga = event.getFullDocument();

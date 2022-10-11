@@ -1,7 +1,7 @@
 package com.mangasite.repo;
 
 import com.mangasite.domain.MangaChapters;
-import com.mongodb.client.MongoCollection;
+import com.mongodb.reactivestreams.client.MongoCollection;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

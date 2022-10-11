@@ -7,8 +7,8 @@ import static com.mongodb.client.model.Filters.lte;
 import java.util.List;
 
 import com.mangasite.domain.Manga;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.reactivestreams.client.MongoCollection;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -23,10 +23,10 @@ public class MangaRepo extends Repository<Manga> {
   }
 
   public Flux<Manga> sample(int i) {
-    return toFlux(coll.aggregate(List.of(Aggregates.sample(i))));
+    return Flux.from((coll.aggregate(List.of(Aggregates.sample(i)))));
   }
 
   public Flux<Manga> findByLd(long l, long m) {
-    return toFlux(coll.find(and(gte("ld", l), lte("ld", m))));
+    return Flux.from(coll.find(and(gte("ld", l), lte("ld", m))));
   }
 }
