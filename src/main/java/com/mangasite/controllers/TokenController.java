@@ -1,35 +1,41 @@
 package com.mangasite.controllers;
 
-import com.mangasite.security.AppRole;
-import com.mangasite.security.Roles;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
+import java.net.URI;
+
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
 import com.mangasite.services.ChapterService;
 import com.mangasite.services.ConnectService;
 import com.mangasite.services.TokenService;
 
-import io.avaje.http.api.Controller;
-import io.avaje.http.api.Get;
-import io.avaje.http.api.Path;
-import io.javalin.http.Context;
+import io.avaje.inject.Bean;
+import io.avaje.inject.Factory;
 
-@Path("api")
-@Controller
+@Factory
 public class TokenController {
-  private final ChapterService chapterService;
 
-  public TokenController(ChapterService chapterService) {
-    this.chapterService = chapterService;
-  }
+  @Bean
+  RouterFunction<ServerResponse> tokenRoute(ChapterService chapterService) {
+    return route(GET("api/getToken"), TokenService::getToken)
+        .andRoute(
+            GET("api/chapter/update/{id}").negate(),
+            req -> {
+              final var id = req.pathVariable("id").transform(Integer::parseInt);
+              chapterService
+                  .getByID(id)
+                  .flatMap(ConnectService::fireAndForgetChapterUpdate)
+                  .subscribe();
 
-  @Roles(AppRole.ANYONE)
-  @Get("/getToken")
-  public void getToken(Context ctx) {
-    ctx.status(200).result(TokenService.getToken(ctx));
-  }
-
-  @Roles(AppRole.ADMIN)
-  @Get("/chapter/update/{id}")
-  public void updateClients(int id, Context ctx) {
-    ctx.status(202);
-    chapterService.getByID(id).flatMap(ConnectService::fireAndForgetChapterUpdate).subscribe();
+              return ServerResponse.accepted().build();
+            })
+        .andRoute(
+            GET("api/getToken").or(GET("api/chapter/update/{id}")).negate(),
+            req ->
+                ServerResponse.permanentRedirect(URI.create("https://manga-spring.com/404"))
+                    .build());
   }
 }

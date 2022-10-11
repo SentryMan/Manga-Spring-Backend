@@ -5,12 +5,18 @@ import java.util.function.Supplier;
 
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessageHandlerCustomizer;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.method.ControllerAdviceBean;
+import org.springframework.web.reactive.function.server.RouterFunction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mangasite.config.ServerFactory$DI;
+import com.mangasite.controllers.TokenController$DI;
 import com.mangasite.rsocket.ConnectController;
 import com.mangasite.rsocket.RSocketAdvice;
 import com.mangasite.rsocket.RSocketChapterController;
@@ -24,11 +30,7 @@ import reactor.util.retry.Retry;
 public class AvajeSpringAdapter
     implements ApplicationContextInitializer<GenericApplicationContext> {
 
-  private final BeanScope scope;
-
-  public AvajeSpringAdapter(BeanScope scope) {
-    this.scope = scope;
-  }
+  private static final BeanScope scope = BeanScope.builder().shutdownHook(true).build();
 
   @Override
   public void initialize(GenericApplicationContext context) {
@@ -41,6 +43,22 @@ public class AvajeSpringAdapter
     context.registerBean(ObjectMapper.class, mapper);
     context.registerBean(ServerSecurityConfig.class, ServerSecurityConfig::new);
     context.registerBean(ConnectController.class, ConnectController::new);
+    context.registerBean(RSocketAdvice.class, () -> scope.get(RSocketAdvice.class));
+    context.registerBean(
+        WebServerFactoryCustomizer.class, () -> scope.get(WebServerFactoryCustomizer.class));
+    context.registerBean(
+        MapReactiveUserDetailsService.class, () -> scope.get(MapReactiveUserDetailsService.class));
+    context.registerBean(
+        WebServerFactoryCustomizer.class,
+        () ->
+            scope.get(
+                ServerFactory$DI.TYPE_WebServerFactoryCustomizerConfigurableJettyWebServerFactory,
+                null));
+    context.registerBean(
+        CorsConfigurationSource.class, () -> scope.get(CorsConfigurationSource.class));
+    context.registerBean(
+        RouterFunction.class,
+        () -> scope.get(TokenController$DI.TYPE_RouterFunctionServerResponse, null));
 
     context.registerBean(
         RSocketServerCustomizer.class,
