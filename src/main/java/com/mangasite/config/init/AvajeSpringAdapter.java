@@ -1,6 +1,7 @@
 package com.mangasite.config.init;
 
 import java.time.Duration;
+import java.util.function.Supplier;
 
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessageHandlerCustomizer;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
@@ -36,8 +37,8 @@ public class AvajeSpringAdapter
         RSocketMangaController.class, () -> scope.get(RSocketMangaController.class));
     context.registerBean(
         RSocketChapterController.class, () -> scope.get(RSocketChapterController.class));
-    final var m = new ObjectMapper();
-    context.registerBean(ObjectMapper.class, () -> m);
+    final Supplier<ObjectMapper> mapper = ObjectMapper::new;
+    context.registerBean(ObjectMapper.class, mapper);
     context.registerBean(ServerSecurityConfig.class, ServerSecurityConfig::new);
     context.registerBean(ConnectController.class, ConnectController::new);
 
