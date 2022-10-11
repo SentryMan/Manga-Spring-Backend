@@ -17,7 +17,6 @@
 		<avaje.inject.version>8.9</avaje.inject.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
-		<spring.native.version>0.12.1</spring.native.version>
 	</properties>
 
 
@@ -26,7 +25,6 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-reactivestreams</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -116,12 +114,18 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
-
 	</dependencies>
 
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>@{argLine} --enable-preview</argLine>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -146,6 +150,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<compilerArgs>
+						<arg>--enable-preview</arg>
 						<arg>-XDcompilePolicy=simple</arg>
 						<arg>-Xplugin:ErrorProne</arg>
 					</compilerArgs>
