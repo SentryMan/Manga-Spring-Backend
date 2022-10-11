@@ -34,7 +34,7 @@ public class TokenService {
   public static String getToken(Context ctx) {
     final var role = getRole(ctx.basicAuthCredentials());
     return Jwts.builder()
-        .setClaims(HashMap.newHashMap(1))
+        .setClaims(new HashMap<>())
         .setSubject(role.getUsername())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + VALIDITY * 100))

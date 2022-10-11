@@ -2,7 +2,6 @@ package com.mangasite.domain;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -22,6 +21,7 @@ public class Constants {
 
   public static final Map<String, String> CLIENT_MANGA_MAP = new HashMap<>();
 
-  public static final Scheduler VIRTUAL_SCHEDULER =
-      Schedulers.fromExecutor(Executors.newVirtualThreadPerTaskExecutor());
+  //  public static final Scheduler VIRTUAL_SCHEDULER =
+  //	      Schedulers.fromExecutor(Executors.newVirtualThreadPerTaskExecutor());
+  public static final Scheduler VIRTUAL_SCHEDULER = Schedulers.boundedElastic();
 }
