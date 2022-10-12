@@ -1,14 +1,15 @@
 package com.mangasite.repo;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.stereotype.Repository;
-
 import com.mangasite.domain.MangaChapters;
+import com.mongodb.reactivestreams.client.MongoCollection;
 
-import reactor.core.publisher.Mono;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-@Repository
-public interface ChapterRepo extends ReactiveMongoRepository<MangaChapters, Integer> {
-
-  Mono<MangaChapters> getByMangaName(String name);
+@Singleton
+public class ChapterRepo extends Repository<MangaChapters> {
+  @Inject
+  public ChapterRepo(MongoCollection<MangaChapters> coll) {
+    super(coll);
+  }
 }

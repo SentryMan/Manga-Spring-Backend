@@ -24,9 +24,11 @@ import reactor.core.publisher.Mono;
  *
  * @author Josiah
  */
-public interface ConnectService {
+public final class ConnectService {
 
-  String CLIENT = "Client: ";
+  private ConnectService() {}
+
+  private static final String CLIENT = "Client: ";
 
   /**
    * Logs Rsocket Connect/Disconnect events
@@ -34,7 +36,7 @@ public interface ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  static void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
+  public static void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
     final var startTime = Instant.now();
     rSocketRequester
         .rsocketClient()
@@ -68,7 +70,7 @@ public interface ConnectService {
   }
 
   /** Fires off chapter updates to relevant clients */
-  static Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
+  public static Mono<Void> fireAndForgetChapterUpdate(MangaChapters updatedChapter) {
 
     return Flux.fromIterable(CLIENT_MANGA_MAP.entrySet())
         .filter(es -> es.getValue().contains(updatedChapter.getMangaName()))
@@ -92,7 +94,7 @@ public interface ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  static void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
+  public static void watchUserStream(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
         .metadata(
@@ -108,7 +110,7 @@ public interface ConnectService {
    * @param rSocketRequester The clients RSocket
    * @param clientName The name of the client
    */
-  static void requestDeviceInfo(RSocketRequester rSocketRequester, String clientName) {
+  public static void requestDeviceInfo(RSocketRequester rSocketRequester, String clientName) {
 
     rSocketRequester
         .metadata(new ServerMessage("What device is this?"), MediaType.APPLICATION_JSON)

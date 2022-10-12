@@ -2,10 +2,6 @@ package com.mangasite.domain;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
  * A class that represents a single manga <br>
  * <br>
@@ -20,10 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author Josiah
  */
-@Document(collection = "Manga")
 public class Manga {
 
-  @Id private Integer id;
+  private Integer id;
   private String t;
   private List<String> c;
   private Integer h;
@@ -31,17 +26,6 @@ public class Manga {
   private long ld;
   private Integer s;
   private MangaInfo info;
-
-  @PersistenceCreator
-  public Manga(List<String> c, Integer h, String im, long ld, Integer s, String t, MangaInfo info) {
-    this.c = c;
-    this.h = h;
-    this.im = im;
-    this.ld = ld;
-    this.s = s;
-    this.t = t;
-    this.info = info;
-  }
 
   public int getId() {
     return id;
