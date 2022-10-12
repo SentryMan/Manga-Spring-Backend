@@ -20,7 +20,6 @@ public class MangaRepo extends Repository<Manga> {
   @Inject
   public MangaRepo(MongoCollection<Manga> coll) {
     super(coll);
-    findAll().subscribe(System.out::println);
   }
 
   public Flux<Manga> sample(int i) {
