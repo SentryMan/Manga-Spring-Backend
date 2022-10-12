@@ -40,7 +40,7 @@ public class TokenService {
         .map(
             role ->
                 Jwts.builder()
-                    .setClaims(new HashMap<>())
+                    .setClaims(HashMap.newHashMap(1))
                     .setSubject(role.getUsername())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + VALIDITY * 100))
