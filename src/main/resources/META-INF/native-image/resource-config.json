@@ -2,19 +2,10 @@
   "resources":{
   "includes":[
     {
-      "pattern":"\\QMETA-INF/maven/io.javalin/javalin/pom.properties\\E"
-    }, 
-    {
       "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_x86_64.so\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/services/io.avaje.inject.spi.Module\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.eclipse.jetty.http.HttpFieldPreEncoder\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.eclipse.jetty.websocket.core.Extension\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
@@ -26,19 +17,16 @@
       "pattern":"\\Qapplication.properties\\E"
     }, 
     {
-      "pattern":"\\Qjndi.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/eclipse/jetty/http/encoding.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/eclipse/jetty/http/mime.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/eclipse/jetty/version/build.properties\\E"
+      "pattern":"\\Qcom/mangasite/security/ServerSecurityConfig.class\\E"
     }, 
     {
       "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/beans/factory/Aware.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/beans/factory/BeanFactoryAware.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfiguration.class\\E"
@@ -50,13 +38,25 @@
       "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfigureBefore.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfigureOrder.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnBean.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnClass.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnProperty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/condition/ConditionalOnWebApplication.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/context/PropertyPlaceholderAutoConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketMessagingAutoConfiguration.class\\E"
@@ -95,16 +95,79 @@
       "pattern":"\\Qorg/springframework/boot/autoconfigure/rsocket/RSocketStrategiesAutoConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/SecurityDataConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/reactive/ReactiveSecurityAutoConfiguration$EnableWebFluxSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/reactive/ReactiveSecurityAutoConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/security/rsocket/RSocketSecurityAutoConfiguration$RSocketSecurityMessageHandlerConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/security/rsocket/RSocketSecurityAutoConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/servlet/SecurityAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/servlet/SpringBootWebSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/HttpHandlerAutoConfiguration$AnnotationConfig.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/HttpHandlerAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryAutoConfiguration$BeanPostProcessorsRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryConfiguration$EmbeddedJetty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryConfiguration$EmbeddedNetty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryConfiguration$EmbeddedTomcat.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/ReactiveWebServerFactoryConfiguration$EmbeddedUndertow.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration$EnableWebFluxConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration$MaxIdleTimeInMemoryWebSessionStore.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration$ResourceChainCustomizerConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration$WebFluxConfig.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration$WelcomePageConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebFluxAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/error/ErrorWebFluxAutoConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/boot/context/properties/EnableConfigurationProperties.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/context/properties/EnableConfigurationPropertiesRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/ApplicationContextAware.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/context/annotation/Conditional.class\\E"
@@ -119,6 +182,12 @@
       "pattern":"\\Qorg/springframework/context/annotation/ImportBeanDefinitionRegistrar.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/core/annotation/Order.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/http/codec/CodecConfigurer.properties\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/security/config/annotation/rsocket/EnableRSocketSecurity.class\\E"
     }, 
     {
@@ -126,16 +195,37 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/security/config/annotation/rsocket/SecuritySocketAcceptorInterceptorConfiguration.class\\E"
-    }
-  ]},
-  "bundles":[
-    {
-      "name":"jakarta.servlet.LocalStrings",
-      "locales":[""]
     }, 
     {
-      "name":"jakarta.servlet.http.LocalStrings",
-      "locales":[""]
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/reactive/EnableWebFluxSecurity.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/reactive/ReactiveOAuth2ClientImportSelector.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/reactive/ServerHttpSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/reactive/WebFluxSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/DelegatingWebFluxConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurationSupport$EmptyHandlerMapping.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurationSupport$NoOpValidator.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurationSupport$NoUpgradeStrategyWebSocketService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurationSupport.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurer.class\\E"
     }
-  ]
+  ]},
+  "bundles":[]
 }

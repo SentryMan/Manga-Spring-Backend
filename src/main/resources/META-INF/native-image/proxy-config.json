@@ -10,5 +10,8 @@
   },
   {
     "interfaces":["org.springframework.messaging.handler.annotation.Payload","org.springframework.core.annotation.SynthesizedAnnotation"]
+  },
+  {
+    "interfaces":["org.springframework.web.bind.annotation.ControllerAdvice","org.springframework.core.annotation.SynthesizedAnnotation"]
   }
 ]
