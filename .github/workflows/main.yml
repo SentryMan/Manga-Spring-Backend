@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Artifact
         run: mvn clean package
-
+        
       - name: Multi-Stage Docker Build And Deploy
         - uses: superfly/flyctl-actions/setup-flyctl@master
         - run: flyctl deploy --remote-only
