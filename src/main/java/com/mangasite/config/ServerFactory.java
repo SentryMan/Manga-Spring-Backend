@@ -5,8 +5,6 @@ import static com.mangasite.security.AppRole.USER;
 
 import java.util.List;
 
-import org.springframework.boot.web.embedded.jetty.ConfigurableJettyWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
@@ -20,11 +18,6 @@ import io.avaje.inject.Factory;
 
 @Factory
 public class ServerFactory {
-  @Bean
-  public WebServerFactoryCustomizer<ConfigurableJettyWebServerFactory> jettyPoolCustomizer() {
-
-    return server -> server.setThreadPool(new LoomThreadPool());
-  }
 
   @Bean
   public MapReactiveUserDetailsService userDetailsService() {

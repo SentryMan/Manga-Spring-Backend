@@ -23,7 +23,7 @@ public class MangaRepo extends Repository<Manga> {
   }
 
   public Flux<Manga> sample(int i) {
-    return Flux.from((coll.aggregate(List.of(Aggregates.sample(i)))));
+    return Flux.from(coll.aggregate(List.of(Aggregates.sample(i))));
   }
 
   public Flux<Manga> findByLd(long l, long m) {

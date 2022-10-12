@@ -3,6 +3,7 @@ package com.mangasite.services;
 import com.mangasite.domain.MangaChapters;
 import com.mangasite.repo.ChapterRepo;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ public class ChapterService {
 
   private final ChapterRepo repo;
 
+  @Inject
   public ChapterService(ChapterRepo repo) {
     this.repo = repo;
   }

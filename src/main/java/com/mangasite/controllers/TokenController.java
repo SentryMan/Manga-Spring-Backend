@@ -22,7 +22,7 @@ public class TokenController {
   RouterFunction<ServerResponse> tokenRoute(ChapterService chapterService) {
     return route(GET("api/getToken"), TokenService::getToken)
         .andRoute(
-            GET("api/chapter/update/{id}").negate(),
+            GET("api/chapter/update/{id}"),
             req -> {
               final var id = req.pathVariable("id").transform(Integer::parseInt);
               chapterService
