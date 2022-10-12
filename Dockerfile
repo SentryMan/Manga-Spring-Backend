@@ -1,14 +1,12 @@
 # Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
 # https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-FROM ghcr.io/graalvm/graalvm-ce:latest AS Native-Image-Compiler
-# FROM docker.io/library/graal19  AS Native-Image-Compiler
+# FROM ghcr.io/graalvm/graalvm-ce:latest AS Native-Image-Compiler
+FROM ghcr.io/sentryman/java-19-graalvm-build-image:latest AS Native-Image-Compiler
 
 ENV HOME=/build
 WORKDIR $HOME
-
 # Install native image utility
 RUN gu install native-image && native-image --version
-
 COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
 
 # CMD java -agentlib:native-image-agent=config-output-dir=/configs --enable-preview -jar manga-backend.jar
