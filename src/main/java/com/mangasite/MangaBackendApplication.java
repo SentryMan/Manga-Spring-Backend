@@ -23,7 +23,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 
-import com.mangasite.config.init.AppInitializer;
+import com.mangasite.config.init.RSocketServerInitializer;
 import com.mangasite.record.DeviceInfo;
 import com.mangasite.record.ServerMessage;
 
@@ -63,7 +63,7 @@ public class MangaBackendApplication {
 
     new SpringApplicationBuilder(MangaBackendApplication.class)
         .web(REACTIVE)
-        .initializers(new AppInitializer())
+        .initializers(new RSocketServerInitializer())
         .build(args)
         .run(args);
   }
