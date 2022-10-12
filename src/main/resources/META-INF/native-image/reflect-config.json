@@ -353,199 +353,30 @@
   {
     "name": "com.mangasite.domain.Chapter",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "queryAllPublicConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.util.List"
-        ]
-      },
-      {
-        "name": "chapterIndex",
-        "parameterTypes": []
-      },
-      {
-        "name": "images",
-        "parameterTypes": []
-      }
-    ]
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.mangasite.domain.Manga",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      },
-      {
-        "name": "getC",
-        "parameterTypes": []
-      },
-      {
-        "name": "getH",
-        "parameterTypes": []
-      },
-      {
-        "name": "getId",
-        "parameterTypes": []
-      },
-      {
-        "name": "getIm",
-        "parameterTypes": []
-      },
-      {
-        "name": "getInfo",
-        "parameterTypes": []
-      },
-      {
-        "name": "getLd",
-        "parameterTypes": []
-      },
-      {
-        "name": "getS",
-        "parameterTypes": []
-      },
-      {
-        "name": "getT",
-        "parameterTypes": []
-      },
-      {
-        "name": "setC",
-        "parameterTypes": [
-          "java.util.List"
-        ]
-      },
-      {
-        "name": "setH",
-        "parameterTypes": [
-          "java.lang.Integer"
-        ]
-      },
-      {
-        "name": "setId",
-        "parameterTypes": [
-          "int"
-        ]
-      },
-      {
-        "name": "setIm",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setInfo",
-        "parameterTypes": [
-          "com.mangasite.domain.MangaInfo"
-        ]
-      },
-      {
-        "name": "setLd",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setS",
-        "parameterTypes": [
-          "java.lang.Integer"
-        ]
-      },
-      {
-        "name": "setT",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.mangasite.domain.MangaChapters",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      },
-      {
-        "name": "getChapters",
-        "parameterTypes": []
-      },
-      {
-        "name": "getId",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMangaName",
-        "parameterTypes": []
-      },
-      {
-        "name": "setChapters",
-        "parameterTypes": [
-          "java.util.List"
-        ]
-      },
-      {
-        "name": "setId",
-        "parameterTypes": [
-          "java.lang.Integer"
-        ]
-      },
-      {
-        "name": "setMangaName",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.mangasite.domain.MangaInfo",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "queryAllPublicConstructors": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.lang.String",
-          "java.util.List",
-          "java.lang.String",
-          "java.lang.Integer"
-        ]
-      },
-      {
-        "name": "artist",
-        "parameterTypes": []
-      },
-      {
-        "name": "author",
-        "parameterTypes": []
-      },
-      {
-        "name": "chapters",
-        "parameterTypes": []
-      },
-      {
-        "name": "description",
-        "parameterTypes": []
-      },
-      {
-        "name": "released",
-        "parameterTypes": []
-      }
-    ]
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.mangasite.record.DeviceInfo",
@@ -558,14 +389,9 @@
   {
     "name": "com.mangasite.record.ServerMessage",
     "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "message",
-        "parameterTypes": []
-      }
-    ]
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.mangasite.rsocket.ConnectController",
@@ -593,39 +419,13 @@
     "name": "com.mangasite.rsocket.RSocketChapterController",
     "allDeclaredFields": true,
     "allDeclaredClasses": true,
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "getChapter",
-        "parameterTypes": [
-          "int"
-        ]
-      }
-    ]
+    "allDeclaredMethods": true
   },
   {
     "name": "com.mangasite.rsocket.RSocketMangaController",
     "allDeclaredFields": true,
     "allDeclaredClasses": true,
-    "queryAllDeclaredMethods": true,
-    "methods": [
-      {
-        "name": "getAll",
-        "parameterTypes": []
-      },
-      {
-        "name": "getLatest",
-        "parameterTypes": []
-      },
-      {
-        "name": "getPopular",
-        "parameterTypes": []
-      },
-      {
-        "name": "watchForDBChanges",
-        "parameterTypes": []
-      }
-    ]
+    "allDeclaredMethods": true
   },
   {
     "name": "com.mangasite.security.ServerSecurityConfig",
