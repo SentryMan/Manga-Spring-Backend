@@ -10,7 +10,7 @@ on:
 # Your workflows jobs.
 jobs:
   Build-Compile-Deploy:
-    environment: manga-spring.com
+    environment: fly.io
     concurrency:
       group: concurrency-group-1
       cancel-in-progress: true
@@ -38,10 +38,10 @@ jobs:
 
       - name: Build Artifact
         run: mvn clean package
-      
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Multi-Stage Docker Build And Deploy
-        run: flyctl deploy --remote-only
+        run: flyctl deploy
 
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v2
