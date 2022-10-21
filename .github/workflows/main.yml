@@ -10,7 +10,7 @@ on:
 # Your workflows jobs.
 jobs:
   Build-Compile-Deploy:
-    environment: fly.io
+    environment: manga-spring.com
     concurrency:
       group: concurrency-group-1
       cancel-in-progress: true
