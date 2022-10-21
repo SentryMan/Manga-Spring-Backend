@@ -1,19 +1,16 @@
 package com.mangasite.services;
 
-import static com.mangasite.domain.Constants.FULL_DOC;
 import static java.util.Comparator.comparingInt;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.mongodb.core.ChangeStreamEvent;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.stereotype.Service;
-
 import com.mangasite.domain.Manga;
 import com.mangasite.repo.MangaRepo;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,16 +19,14 @@ import reactor.core.publisher.Mono;
  *
  * @author Josiah
  */
-@Service
+@Singleton
 public class MangaService {
 
   private final MangaRepo repo;
-  private final ReactiveMongoTemplate reactiveMongoTemplate;
-  private List<Manga> popularCache = new ArrayList<>();
+  private final List<Manga> popularCache = new ArrayList<>();
 
-  public MangaService(MangaRepo repo, ReactiveMongoTemplate reactiveMongoTemplate) {
+  public MangaService(MangaRepo repo) {
     this.repo = repo;
-    this.reactiveMongoTemplate = reactiveMongoTemplate;
   }
 
   // Get Methods
@@ -91,13 +86,11 @@ public class MangaService {
    */
   public Flux<Manga> watchDBChanges() {
 
-    return reactiveMongoTemplate
-        .changeStream("Manga", FULL_DOC, Manga.class)
+    return repo.changeStream(Manga.class)
         .doOnNext(
             event -> {
-              final var changedManga = event.getBody();
+              final var changedManga = event.getFullDocument();
               final var operation = event.getOperationType();
-
               if (changedManga != null)
                 System.out.println(
                     "Operation "
@@ -105,7 +98,7 @@ public class MangaService {
                         + " Performed on Manga: "
                         + changedManga.getT());
             })
-        .mapNotNull(ChangeStreamEvent::getBody)
+        .mapNotNull(ChangeStreamDocument::getFullDocument)
         .onErrorContinue(
             (ex, o) -> {
               System.err.println("Error processing " + o + " Exception is " + ex);

@@ -1,5 +1,7 @@
-name: Compile/Deploy Native Image To Heroku.
+name: Compile/Deploy Native Image To Fly.io
 # Controls when the action will run.
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_AUTH }}
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   pull_request:
@@ -8,7 +10,7 @@ on:
 # Your workflows jobs.
 jobs:
   Build-Compile-Deploy:
-    environment: manga-spring.com
+    environment: fly.io
     concurrency:
       group: concurrency-group-1
       cancel-in-progress: true
@@ -20,7 +22,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
-          java-version: "17"
+          java-version: "19"
           java-package: jdk
           architecture: x64
 
@@ -37,24 +39,9 @@ jobs:
       - name: Build Artifact
         run: mvn clean package
 
-      - name: Login to Heroku Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: registry.heroku.com/manga-spring/web
-          username: _
-          password: ${{ secrets.HEROKU_API_KEY }}
-
-      - name: Multi-Stage Docker Build And Push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: registry.heroku.com/manga-spring/web
-
-      - name: Deploy
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release web -a manga-spring
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Multi-Stage Docker Build And Deploy
+        run: flyctl deploy
 
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v2

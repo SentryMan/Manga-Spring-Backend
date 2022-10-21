@@ -13,3 +13,4 @@ target/**
 bin/**
 *.log
 .settings/application.properties
+props.env

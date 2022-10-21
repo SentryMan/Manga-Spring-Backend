@@ -8,9 +8,11 @@ import com.mangasite.domain.Manga;
 import com.mangasite.services.MangaService;
 
 import io.rsocket.exceptions.CustomRSocketException;
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Singleton
 @Controller
 public class RSocketMangaController {
 

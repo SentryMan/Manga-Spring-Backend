@@ -1,7 +1,9 @@
 package com.mangasite.record;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record DeviceInfo(
     String userAgent,
     String os,

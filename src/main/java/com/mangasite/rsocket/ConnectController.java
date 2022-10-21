@@ -1,16 +1,15 @@
 package com.mangasite.rsocket;
 
-import static com.mangasite.domain.Constants.ADMIN;
+import static com.mangasite.security.AppRole.ADMIN;
+import static com.mangasite.security.AppRole.getRole;
 import static reactor.function.TupleUtils.consumer;
 
-import java.util.Collection;
+import java.util.function.Predicate;
 
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 import com.mangasite.services.ConnectService;
@@ -21,12 +20,6 @@ import reactor.util.function.Tuples;
 @Controller
 public class ConnectController {
 
-  private final MapReactiveUserDetailsService userService;
-
-  public ConnectController(MapReactiveUserDetailsService userService) {
-    this.userService = userService;
-  }
-
   @ConnectMapping
   public Mono<Void> onConnect(
       @Payload String clientName,
@@ -35,16 +28,13 @@ public class ConnectController {
 
     // Query Client for Current Activity
     ConnectService.startConnectionLog(rSocketRequester, clientName);
-
-    return userService
-        .findByUsername(authName)
-        .map(UserDetails::getAuthorities)
+    return Mono.just(getRole(authName))
         .doOnNext(
             auth ->
-                System.out.println("Client: " + clientName + " is connected with Roles " + auth))
-        .map(Collection::stream)
+                System.out.println(
+                    "Client: " + clientName + " is connected with Roles " + auth.name()))
         // Query Site for Reading Activity
-        .filter(s -> s.noneMatch(a -> a.getAuthority().contains(ADMIN)))
+        .filter(Predicate.not(ADMIN::equals))
         .map(s -> Tuples.of(rSocketRequester, clientName))
         .doOnNext(consumer(ConnectService::watchUserStream))
         .doOnNext(consumer(ConnectService::requestDeviceInfo))

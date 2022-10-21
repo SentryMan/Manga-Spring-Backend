@@ -1,71 +1,47 @@
 package com.mangasite;
 
-import static org.springframework.boot.WebApplicationType.REACTIVE;
-import static org.springframework.nativex.hint.TypeAccess.PUBLIC_CONSTRUCTORS;
-import static org.springframework.nativex.hint.TypeAccess.PUBLIC_METHODS;
-
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
-import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
-import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
-import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.reactive.function.client.ClientHttpConnectorAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.rsocket.RSocketMessagingAutoConfiguration;
+import org.springframework.boot.autoconfigure.rsocket.RSocketServerAutoConfiguration;
+import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.rsocket.RSocketSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.nativex.hint.NativeHint;
-import org.springframework.nativex.hint.TypeHint;
 
-import com.mangasite.config.init.RSocketServerInitializer;
-import com.mangasite.record.DeviceInfo;
-import com.mangasite.record.ServerMessage;
-import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mangasite.config.init.AvajeSpringAdapter;
 
-import reactor.core.publisher.Hooks;
-
-// set native image reflective access
-@NativeHint(
-    types =
-        @TypeHint(
-            access = {PUBLIC_CONSTRUCTORS, PUBLIC_METHODS},
-            types = {
-              ChangeStreamDocument.class,
-              ServerMessage.class,
-              DeviceInfo.class,
-            }))
-@SpringBootApplication(
-    exclude = {
-      AopAutoConfiguration.class,
-      CacheAutoConfiguration.class,
-      WebClientAutoConfiguration.class,
-      TransactionAutoConfiguration.class,
-      RestTemplateAutoConfiguration.class,
-      MessageSourceAutoConfiguration.class,
-      TaskExecutionAutoConfiguration.class,
-      TaskSchedulingAutoConfiguration.class,
-      SecurityFilterAutoConfiguration.class,
-      UserDetailsServiceAutoConfiguration.class,
-      ClientHttpConnectorAutoConfiguration.class,
-      OAuth2ResourceServerAutoConfiguration.class,
-      ApplicationAvailabilityAutoConfiguration.class,
-      ReactiveUserDetailsServiceAutoConfiguration.class,
-    })
+@ImportAutoConfiguration({
+  ErrorWebFluxAutoConfiguration.class,
+  HttpHandlerAutoConfiguration.class,
+  PropertyPlaceholderAutoConfiguration.class,
+  RSocketMessagingAutoConfiguration.class,
+  RSocketSecurityAutoConfiguration.class,
+  RSocketServerAutoConfiguration.class,
+  RSocketStrategiesAutoConfiguration.class,
+  ReactiveSecurityAutoConfiguration.class,
+  ReactiveWebServerFactoryAutoConfiguration.class,
+  SecurityAutoConfiguration.class,
+  WebFluxAutoConfiguration.class,
+})
+@SpringBootConfiguration
 public class MangaBackendApplication {
 
   public static void main(String[] args) {
-    Hooks.onErrorDropped(t -> {});
+    try {
 
-    new SpringApplicationBuilder(MangaBackendApplication.class)
-        .web(REACTIVE)
-        .initializers(new RSocketServerInitializer())
-        .build(args)
-        .run(args);
+      new SpringApplicationBuilder(MangaBackendApplication.class)
+          .initializers(new AvajeSpringAdapter())
+          .build()
+          .run(args);
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
   }
 }

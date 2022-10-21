@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import io.rsocket.exceptions.CustomRSocketException;
 import io.rsocket.exceptions.RejectedException;
+import jakarta.inject.Singleton;
 import reactor.core.publisher.Mono;
 
+@Singleton
 @ControllerAdvice
 public class RSocketAdvice {
 
@@ -18,7 +20,7 @@ public class RSocketAdvice {
   }
 
   @MessageExceptionHandler
-  public Mono<CustomRSocketException> customRsocketEX(CustomRSocketException ex) {
+  public Mono<CustomRSocketException> customExceotion(CustomRSocketException ex) {
 
     return Mono.error(ex);
   }

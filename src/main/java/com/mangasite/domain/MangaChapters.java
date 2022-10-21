@@ -2,31 +2,11 @@ package com.mangasite.domain;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "Chapters")
 public class MangaChapters {
 
-  @Id private Integer id;
+  private Integer id;
   private String mangaName;
   private List<Chapter> chapters;
-
-  @PersistenceCreator
-  public MangaChapters(String mangaName, List<Chapter> chapters) {
-
-    this.mangaName = mangaName;
-    this.chapters = chapters;
-  }
-
-  public MangaChapters(int id, String mangaName, String index, String firstPageURL) {
-
-    this.id = id;
-    final var chapter = new Chapter("Chapter " + index, List.of(List.of(0, firstPageURL)));
-    this.mangaName = mangaName;
-    chapters = List.of(chapter);
-  }
 
   public Integer getId() {
     return id;
