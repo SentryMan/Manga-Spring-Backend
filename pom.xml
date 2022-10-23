@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.mangasite</groupId>
 	<artifactId>manga-backend</artifactId>
-	<version>3.0.0</version>
+	<version>3.3.0</version>
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
