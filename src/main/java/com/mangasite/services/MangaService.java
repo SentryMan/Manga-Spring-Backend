@@ -5,11 +5,16 @@ import static java.util.Comparator.comparingInt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.repo.MangaRepo;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 
+import io.avaje.inject.PostConstruct;
+import io.avaje.inject.PreDestroy;
 import jakarta.inject.Singleton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,10 +28,24 @@ import reactor.core.publisher.Mono;
 public class MangaService {
 
   private final MangaRepo repo;
-  private final List<Manga> popularCache = new ArrayList<>();
+  private final List<Manga> popularCache = new ArrayList<>(5);
+
+  private final ScheduledExecutorService cacheClearExecutor =
+      Executors.newSingleThreadScheduledExecutor(
+          Thread.ofVirtual().name("Virtual Cache Clearer").factory());
 
   public MangaService(MangaRepo repo) {
     this.repo = repo;
+  }
+
+  @PostConstruct
+  void startCacheClear() {
+    cacheClearExecutor.scheduleAtFixedRate(popularCache::clear, 0, 30, TimeUnit.MINUTES);
+  }
+
+  @PreDestroy
+  void shutdownExecutor() {
+    cacheClearExecutor.shutdownNow();
   }
 
   // Get Methods
