@@ -1,30 +1,19 @@
-# Simple Dockerfile adding Maven and GraalVM Native Image compiler to the standard
-# https://github.com/orgs/graalvm/packages/container/package/graalvm-ce image
-# FROM ghcr.io/graalvm/graalvm-ce:latest AS Native-Image-Compiler
-FROM ghcr.io/sentryman/java-19-graalvm-build-image:latest AS Native-Image-Compiler
+FROM amazoncorretto:19-alpine-jdk as jreBuilder
 
-ENV HOME=/build
-WORKDIR $HOME
-# Install native image utility
-RUN gu install native-image && native-image --version
-COPY ./target/manga-backend-*jar $HOME/manga-backend.jar
+RUN apk add binutils
+RUN jlink \
+    --add-modules \
+    java.base,java.desktop,java.instrument,java.logging,java.management,java.naming,java.net.http,java.sql,java.xml,jdk.crypto.ec,jdk.naming.dns,jdk.unsupported,jdk.incubator.concurrent\
+    --verbose \
+    --strip-debug \
+    --compress 2 \
+    --no-header-files \
+    --no-man-pages \
+    --output /jre
 
-# CMD java -agentlib:native-image-agent=config-output-dir=/configs --enable-preview -jar manga-backend.jar
-#Compile Image
-RUN jar -xvf manga-backend.jar && cp -R META-INF BOOT-INF/classes\
-    && native-image \ 
-    # --static --libc=musl \
-    -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'`
-
-# We use a Docker multi-stage build here in order that we only take the compiled native Spring Boot App from the first build container
 FROM alpine
 
-LABEL Author="The Man Himself, Josiah"
+COPY --from=jreBuilder /jre /usr/lib/jre
+COPY ./target/manga-support-*-SNAPSHOT-* manga-backend.jar
+ENTRYPOINT ["/usr/lib/jre/bin/java","--enable-preview", "--add-modules=jdk.incubator.concurrent", "-XX:MaxRAMPercentage=80.0","-jar", "./manga-backend.jar"]
 
-# Copy native app to Container
-COPY --from=Native-Image-Compiler "/build/manga-backend" manga-backend
-
-RUN apk --no-cache add gcompat    
-
-# Fire up our native app by default
-ENTRYPOINT ["/manga-backend"]
