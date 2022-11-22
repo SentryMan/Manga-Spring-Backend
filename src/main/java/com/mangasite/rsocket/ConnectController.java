@@ -1,7 +1,7 @@
 package com.mangasite.rsocket;
 
 import static com.mangasite.security.AppRole.ADMIN;
-import static com.mangasite.security.AppRole.getRole;
+import static com.mangasite.security.AppRole.getByUserName;
 import static reactor.function.TupleUtils.consumer;
 
 import java.util.function.Predicate;
@@ -28,7 +28,7 @@ public class ConnectController {
 
     // Query Client for Current Activity
     ConnectService.startConnectionLog(rSocketRequester, clientName);
-    return Mono.just(getRole(authName))
+    return Mono.just(getByUserName(authName))
         .doOnNext(
             auth ->
                 System.out.println(

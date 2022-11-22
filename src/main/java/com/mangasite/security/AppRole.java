@@ -25,10 +25,18 @@ public enum AppRole {
     return password;
   }
 
-  public static AppRole getRole(String auth) {
+  public static AppRole getByUserName(String auth) {
 
     return Arrays.stream(AppRole.values())
         .filter(r -> r.username.equals(auth))
+        .findAny()
+        .orElse(ANYONE);
+  }
+
+  public static AppRole getByRole(String role) {
+
+    return Arrays.stream(AppRole.values())
+        .filter(r -> r.name().equals(role))
         .findAny()
         .orElse(ANYONE);
   }
