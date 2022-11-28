@@ -9,6 +9,7 @@ import com.mangasite.services.ChapterService;
 
 import io.rsocket.exceptions.CustomRSocketException;
 import jakarta.inject.Singleton;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Singleton
@@ -28,5 +29,10 @@ public class RSocketChapterController {
         .getByID(id)
         .switchIfEmpty(
             Mono.error(new CustomRSocketException(0x404, "Could Not Find Chapter in DB")));
+  }
+
+  @MessageMapping("chapter-change-stream")
+  public Flux<MangaChapters> watchForDBChanges() {
+    return service.watchChapterChanges();
   }
 }
