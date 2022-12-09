@@ -47,7 +47,7 @@ public class RSocketMangaController {
     return service.findLatest();
   }
 
-  @MessageMapping("manga-change-stream")
+  @MessageMapping("mongo-change-stream")
   public Flux<Manga> watchForDBChanges() {
     return service.watchDBChanges();
   }
