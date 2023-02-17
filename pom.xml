@@ -14,7 +14,7 @@
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
 		<java.version>19</java.version>
-		<avaje.inject.version>8.11</avaje.inject.version>
+		<avaje.inject.version>8.12</avaje.inject.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 	</properties>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>io.avaje</groupId>
 			<artifactId>avaje-config</artifactId>
-			<version>2.4</version>
+			<version>2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.auth0</groupId>
