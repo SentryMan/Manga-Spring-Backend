@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mangasite</groupId>
@@ -14,24 +14,19 @@
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
 		<java.version>19</java.version>
-		<avaje.inject.version>8.10</avaje.inject.version>
+		<avaje.inject.version>8.12</avaje.inject.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>
 	</properties>
-
-
 	<dependencies>
-
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-reactivestreams</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>io.avaje</groupId>
 			<artifactId>avaje-inject</artifactId>
@@ -40,9 +35,8 @@
 		<dependency>
 			<groupId>io.avaje</groupId>
 			<artifactId>avaje-config</artifactId>
-			<version>2.4</version>
+			<version>2.5</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
@@ -67,13 +61,10 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
-
-
 		<dependency>
 			<groupId>io.projectreactor.addons</groupId>
 			<artifactId>reactor-extra</artifactId>
 		</dependency>
-
 		<!-- RSocket Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -93,7 +84,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-rsocket</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-messaging</artifactId>
@@ -102,15 +92,20 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-resource-server</artifactId>
 		</dependency>
-		<!-- Thanks for using https://jar-download.com -->
-
-
 		<!--/Boot Dependencies -->
-
-
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_core</artifactId>
+			<version>2.15.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.avaje</groupId>
+			<artifactId>avaje-inject-generator</artifactId>
+			<version>${avaje.inject.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-
-
 	<build>
 		<plugins>
 			<plugin>
@@ -148,25 +143,8 @@
 						<arg>-XDcompilePolicy=simple</arg>
 						<arg>-Xplugin:ErrorProne</arg>
 					</compilerArgs>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>com.google.errorprone</groupId>
-							<artifactId>error_prone_core</artifactId>
-							<version>2.15.0</version>
-						</path>
-						<path>
-							<groupId>io.avaje</groupId>
-							<artifactId>avaje-inject-generator</artifactId>
-							<version>${avaje.inject.version}</version>
-						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>1.18.24</version>
-						</path>
-					</annotationProcessorPaths>
 				</configuration>
-			</plugin> <!--Enforcecorrectloggingframework-->
+			</plugin> <!--Enforce correct logging framework-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -185,7 +163,7 @@
 								<banDuplicatePomDependencyVersions />
 								<bannedDependencies>
 									<excludes>
-										<!--slf4jshouldbeusedinstead-->
+										<!--slf4j should be used instead-->
 										<exclude>commons-logging:commons-logging</exclude>
 										<exclude>commons-logging:commons-logging-api</exclude>
 										<exclude>org.apache.logging.log4j:log4j-core</exclude>
@@ -224,8 +202,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 	<repositories>
 		<repository>
 			<id>spring-libs-milestone</id>
@@ -243,7 +219,6 @@
 			<url>https://repo.spring.io/release</url>
 		</repository>
 	</repositories>
-
 	<pluginRepositories>
 		<pluginRepository>
 			<id>spring-libs-milestone</id>
