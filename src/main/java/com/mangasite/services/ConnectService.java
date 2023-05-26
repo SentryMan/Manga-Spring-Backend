@@ -1,5 +1,9 @@
 package com.mangasite.services;
 
+import static com.mangasite.domain.Constants.ACTIVE_CONNECTIONS;
+import static com.mangasite.domain.Constants.CLIENT_MANGA_MAP;
+import static com.mangasite.domain.Constants.CLIENT_REQUESTER_MAP;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;

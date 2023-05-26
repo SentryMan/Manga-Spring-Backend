@@ -1,4 +1,4 @@
-FROM amazoncorretto:19-alpine-jdk as jreBuilder
+FROM amazoncorretto:20-alpine-jdk as jreBuilder
 
 RUN apk add binutils
 RUN jlink \
