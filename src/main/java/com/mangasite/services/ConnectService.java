@@ -46,7 +46,7 @@ public final class ConnectService {
     var sameClientConnections =
         maxNumberOfConnections.compute(clientName, (k, v) -> v == null ? 0 : v + 1);
 
-    if (sameClientConnections > 3) {
+    if (sameClientConnections > 1) {
       throw new RejectedSetupException(
           "too many connections from the same place, leave some for the rest of us");
     }
