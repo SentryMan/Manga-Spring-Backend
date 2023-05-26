@@ -1,4 +1,4 @@
-package com.mangasite.record;
+package com.mangasite.records;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
