@@ -1,17 +1,19 @@
 FROM amazoncorretto:20-alpine-jdk as jreBuilder
 
 RUN apk add binutils
-COPY ./target/modules /modules
 RUN jlink \
-    --add-modules manga.spring \
-    --module-path /modules:${JAVA_HOME}/jmods \
+    --add-modules \
+    java.base,java.desktop,java.instrument,java.logging,java.management,java.naming,java.net.http,java.sql,java.xml,jdk.crypto.ec,jdk.naming.dns,jdk.unsupported,jdk.incubator.concurrent\
+    --verbose \
     --strip-debug \
     --compress 2 \
     --no-header-files \
     --no-man-pages \
-    --output /jre 
+    --output /jre
 
 FROM alpine
 
 COPY --from=jreBuilder /jre /usr/lib/jre
-ENTRYPOINT ["/usr/lib/jre/bin/java","--enable-preview", "-XX:MaxRAMPercentage=80.0","-m", " manga.spring/com.mangasite.MangaBackendApplication"]
+COPY ./target/manga-backend-*jar manga-backend.jar
+ENTRYPOINT ["/usr/lib/jre/bin/java","--enable-preview", "--add-modules=jdk.incubator.concurrent", "-XX:MaxRAMPercentage=80.0","-jar", "./manga-backend.jar"]
+
