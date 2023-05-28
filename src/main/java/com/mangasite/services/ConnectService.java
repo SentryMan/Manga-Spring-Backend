@@ -6,16 +6,19 @@ import static com.mangasite.domain.Constants.CLIENT_REQUESTER_MAP;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
 
 import com.mangasite.domain.MangaChapters;
-import com.mangasite.record.DeviceInfo;
-import com.mangasite.record.ServerMessage;
+import com.mangasite.records.DeviceInfo;
+import com.mangasite.records.ServerMessage;
 
 import io.rsocket.RSocket;
+import io.rsocket.exceptions.RejectedSetupException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,6 +32,7 @@ public final class ConnectService {
   private ConnectService() {}
 
   private static final String CLIENT = "Client: ";
+  private static final Map<String, Integer> maxNumberOfConnections = new HashMap<>();
 
   /**
    * Logs Rsocket Connect/Disconnect events
@@ -38,6 +42,15 @@ public final class ConnectService {
    */
   public static void startConnectionLog(RSocketRequester rSocketRequester, String clientName) {
     final var startTime = Instant.now();
+
+    var sameClientConnections =
+        maxNumberOfConnections.compute(clientName, (k, v) -> v == null ? 0 : v + 1);
+
+    if (sameClientConnections > 1) {
+      throw new RejectedSetupException(
+          "too many connections from the same place, leave some for the rest of us");
+    }
+
     rSocketRequester
         .rsocketClient()
         .source()
@@ -60,6 +73,13 @@ public final class ConnectService {
                   "Total Remaining Connections: " + ACTIVE_CONNECTIONS.decrementAndGet());
               CLIENT_REQUESTER_MAP.remove(clientName);
               CLIENT_MANGA_MAP.remove(clientName);
+              var frequency = maxNumberOfConnections.get(clientName);
+
+              if (frequency == 0) {
+                maxNumberOfConnections.remove(clientName);
+              } else {
+                maxNumberOfConnections.put(clientName, frequency - 1);
+              }
             })
         .subscribe(
             null,

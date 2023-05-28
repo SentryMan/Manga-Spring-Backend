@@ -379,7 +379,7 @@
     "allPublicConstructors": true
   },
   {
-    "name": "com.mangasite.record.DeviceInfo",
+    "name": "com.mangasite.records.DeviceInfo",
     "allDeclaredFields": true,
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
@@ -387,7 +387,7 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.mangasite.record.ServerMessage",
+    "name": "com.mangasite.records.ServerMessage",
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true,
