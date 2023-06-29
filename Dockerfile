@@ -11,9 +11,10 @@ RUN jlink \
     --no-man-pages \
     --output /jre
 
-FROM alpine
+FROM scratch
 
 COPY --from=jreBuilder /jre /usr/lib/jre
+COPY --from=jreBuilder /lib/*musl* /lib
 COPY ./target/manga-backend-*jar manga-backend.jar
 ENTRYPOINT ["/usr/lib/jre/bin/java","--enable-preview", "--add-modules=jdk.incubator.concurrent", "-XX:MaxRAMPercentage=80.0","-jar", "./manga-backend.jar"]
 
