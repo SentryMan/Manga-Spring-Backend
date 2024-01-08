@@ -2,8 +2,9 @@ package com.mangasite.rsocket;
 
 import static com.mangasite.security.AppRole.ADMIN;
 import static com.mangasite.security.AppRole.getByUserName;
-import static reactor.function.TupleUtils.consumer;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.springframework.messaging.handler.annotation.Payload;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import com.mangasite.services.ConnectService;
 
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 @Controller
@@ -39,5 +41,9 @@ public class ConnectController {
         .doOnNext(consumer(ConnectService::watchUserStream))
         .doOnNext(consumer(ConnectService::requestDeviceInfo))
         .then();
+  }
+
+  private <T, T2> Consumer<? super Tuple2<T, T2>> consumer(BiConsumer<T, T2> bi) {
+    return t -> bi.accept(t.getT1(), t.getT2());
   }
 }
