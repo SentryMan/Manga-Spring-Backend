@@ -30,6 +30,7 @@ public class ServerSecurityConfig {
         .httpBasic();
     return http.build();
   }
+
   // RSocket JWT Security Config
   @Bean
   public PayloadSocketAcceptorInterceptor rsocketTokenAcceptor(RSocketSecurity security) {
