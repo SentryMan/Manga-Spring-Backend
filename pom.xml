@@ -13,7 +13,8 @@
 	<name>MangaBackend</name>
 	<description>RSocket API for Manga-Spring Site</description>
 	<properties>
-		<java.version>22</java.version>
+		<java.version>23</java.version>
+    <maven.compiler.proc>full</maven.compiler.proc>
 		<avaje.inject.version>9.10</avaje.inject.version>
 		<mainClass>com.mangasite.MangaBackendApplication</mainClass>
 		<start-class>com.mangasite.MangaBackendApplication</start-class>

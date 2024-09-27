@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 
 import com.mangasite.domain.Manga;
 import com.mangasite.services.MangaService;
+import com.mongodb.MongoTimeoutException;
 
 import io.rsocket.exceptions.CustomRSocketException;
 import jakarta.inject.Singleton;
@@ -24,7 +25,7 @@ public class RSocketMangaController {
 
   @MessageMapping("get-mangas")
   public Flux<Manga> getAll() {
-    return service.findAll();
+    return service.findAll().doOnError(MongoTimeoutException.class, e -> System.exit(0));
   }
 
   @MessageMapping("get-manga-{id}")
