@@ -4,22 +4,20 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
     groups:
       dependencies:
         patterns:
         - "*"
     labels:
       - "dependencies"
-    target-branch: "master"
+    target-branch: "main"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
     commit-message:
       prefix: "[workflow]"
     labels:
       - "dependencies"
-    target-branch: "master"
+    target-branch: "main"
