@@ -1,9 +1,9 @@
-FROM amazoncorretto:23-alpine-jdk as jreBuilder
+FROM amazoncorretto:24-alpine-jdk as jreBuilder
 
 RUN apk add binutils
 RUN jlink \
     --add-modules \
-    java.base,java.desktop,java.instrument,java.logging,java.management,java.naming,java.net.http,java.sql,java.xml,jdk.crypto.ec,jdk.naming.dns,jdk.unsupported\
+    java.base,java.desktop,java.instrument,java.logging,java.management,java.naming,java.net.http,java.sql,java.xml,jdk.naming.dns,jdk.unsupported\
     --verbose \
     --strip-debug \
     --no-header-files \

@@ -77,8 +77,7 @@ public class AvajeSpringAdapter
                   .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
 
               handler.registerMessagingAdvice(
-                  new ControllerAdviceWrapper(
-                      new ControllerAdviceBean(scope.get(RSocketAdvice.class))));
+                  new ControllerAdviceWrapper(context.getBean(ControllerAdviceBean.class)));
             });
   }
 }
