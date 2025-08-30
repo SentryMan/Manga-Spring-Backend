@@ -10,7 +10,6 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.method.ControllerAdviceBean;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,8 +76,7 @@ public class AvajeSpringAdapter
                   .addCustomResolver(new AuthenticationPrincipalArgumentResolver());
 
               handler.registerMessagingAdvice(
-                  new ControllerAdviceWrapper(
-                      new ControllerAdviceBean(scope.get(RSocketAdvice.class))));
+                  new ControllerAdviceWrapper(scope.get(RSocketAdvice.class)));
             });
   }
 }
