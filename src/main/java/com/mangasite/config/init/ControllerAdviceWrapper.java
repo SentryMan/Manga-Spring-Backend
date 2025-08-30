@@ -1,33 +1,34 @@
 package com.mangasite.config.init;
 
 import org.springframework.messaging.handler.MessagingAdviceBean;
-import org.springframework.web.method.ControllerAdviceBean;
+
+import com.mangasite.rsocket.RSocketAdvice;
 
 public class ControllerAdviceWrapper implements MessagingAdviceBean {
-  private final ControllerAdviceBean delegate;
+  private final RSocketAdvice delegate;
 
-  public ControllerAdviceWrapper(ControllerAdviceBean delegate) {
-    this.delegate = delegate;
+  public ControllerAdviceWrapper(RSocketAdvice rSocketAdvice) {
+    this.delegate = rSocketAdvice;
   }
 
   @Override
   public int getOrder() {
-    return delegate.getOrder();
+    return 1;
   }
 
   @Override
   public Class<?> getBeanType() {
-    return delegate.getBeanType();
+    return delegate.getClass();
   }
 
   @Override
   public Object resolveBean() {
-    return delegate.resolveBean();
+    return delegate;
   }
 
   @Override
   public boolean isApplicableToBeanType(Class<?> beanType) {
-    return delegate.isApplicableToBeanType(beanType);
+    return beanType.isAssignableFrom(delegate.getClass());
   }
   // delegate all methods
 }
