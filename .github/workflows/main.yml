@@ -26,7 +26,7 @@ jobs:
           release: GA
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
 
       - name: Cache Maven Dependencies
         uses: actions/cache@v2
