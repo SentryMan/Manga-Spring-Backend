@@ -2,9 +2,9 @@ package com.mangasite.services;
 
 import static java.util.Comparator.comparingInt;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
 public class MangaService {
 
   private final MangaRepo repo;
-  private final List<Manga> popularCache = new ArrayList<>(5);
+  private final List<Manga> popularCache = new CopyOnWriteArrayList<>();
 
   private final ScheduledExecutorService cacheClearExecutor =
       Executors.newSingleThreadScheduledExecutor(

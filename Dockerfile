@@ -1,4 +1,4 @@
-FROM amazoncorretto:24-alpine-jdk as jreBuilder
+FROM amazoncorretto:26-alpine-jdk as jreBuilder
 
 RUN apk add binutils
 RUN jlink \
@@ -14,5 +14,5 @@ FROM alpine
 
 COPY --from=jreBuilder /jre /usr/lib/jre
 COPY ./target/manga-backend-*jar manga-backend.jar
-ENTRYPOINT ["/usr/lib/jre/bin/java","--enable-preview", "-XX:MaxRAMPercentage=80.0","-jar", "./manga-backend.jar"]
+ENTRYPOINT ["/usr/lib/jre/bin/java", "--enable-preview", "-XX:MaxRAMPercentage=75.0", "-XX:+UseCompactObjectHeaders", "-XX:MaxMetaspaceSize=64m", "-Xss256k", "-jar", "./manga-backend.jar"]
 

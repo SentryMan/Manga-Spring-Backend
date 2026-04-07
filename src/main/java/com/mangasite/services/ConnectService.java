@@ -6,9 +6,9 @@ import static com.mangasite.domain.Constants.CLIENT_REQUESTER_MAP;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.http.MediaType;
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -32,7 +32,7 @@ public final class ConnectService {
   private ConnectService() {}
 
   private static final String CLIENT = "Client: ";
-  private static final Map<String, Integer> maxNumberOfConnections = new HashMap<>();
+  private static final Map<String, Integer> maxNumberOfConnections = new ConcurrentHashMap<>();
 
   /**
    * Logs Rsocket Connect/Disconnect events
